@@ -36,11 +36,6 @@ public class oZee {
             }
         } catch (Throwable e) {
             e.printStackTrace();
-            try {
-                throw e;
-            } catch (Throwable e1) {
-                e1.printStackTrace();
-            }
         }
     }    
 }
