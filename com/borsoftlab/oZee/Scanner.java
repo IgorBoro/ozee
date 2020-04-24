@@ -8,7 +8,7 @@ public class Scanner{
 
     public Scanner(final Text text){
         this.text = text;
-        nextChar();
+    //    nextChar();
     }
 
 

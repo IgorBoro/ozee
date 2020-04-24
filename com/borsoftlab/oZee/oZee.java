@@ -23,6 +23,8 @@ public class oZee {
                 final Parser parser = new Parser(scanner);
                 parser.compile();
                 System.out.println();
+                System.out.println("Line count:       "+text.loc.line);
+                System.out.println("Position in line: "+text.loc.pos);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

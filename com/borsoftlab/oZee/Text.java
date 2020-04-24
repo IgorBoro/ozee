@@ -13,6 +13,8 @@ public class Text {
 
     public Text(InputStream file){
         this.file = file;
+        loc.pos = 0;
+        loc.line = 1;
     }
 
 	public int nextChar() {
