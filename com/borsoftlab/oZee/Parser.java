@@ -2,8 +2,10 @@ package com.borsoftlab.oZee;
 
 public class Parser{
     
-    public void Parser(){
+    private Text text;
 
+    public Parser(final Text text){
+        this.text = text;
     }
 
     public void compile(){
