@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 public class oZee {
     public static void main(final String[] args) {
-        System.out.println("\n...oZee compiler...");
+        System.out.println("\n...oZee compiler...\n");
 
         final InputStream f;
 
@@ -22,9 +22,8 @@ public class oZee {
                 final Scanner scanner = new Scanner(text);
                 final Parser parser = new Parser(scanner);
                 parser.compile();
-                System.out.println();
-                System.out.println("Line count:       "+text.loc.line);
-                System.out.println("Position in line: "+text.loc.pos);
+                System.out.println('\n');
+                System.out.println(text.loc.line + " lines processed");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
