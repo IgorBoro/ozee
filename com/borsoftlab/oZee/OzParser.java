@@ -2,10 +2,10 @@ package com.borsoftlab.oZee;
 
 public class OzParser{
 
-    Scanner scanner;
+    OzScanner scanner;
     int aheadLexeme = 0;
 
-    public OzParser(final Scanner scanner){
+    public OzParser(final OzScanner scanner){
         this.scanner = scanner;
         // nextLexeme();
     }

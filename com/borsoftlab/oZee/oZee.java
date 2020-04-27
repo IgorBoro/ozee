@@ -19,7 +19,7 @@ public class oZee {
             f = new FileInputStream("program01.oZee");
             try {
                 final Text text = new Text(f);
-                final Scanner scanner = new Scanner(text);
+                final OzScanner scanner = new OzScanner(text);
                 final OzParser parser = new OzParser(scanner);
                 parser.compile();
                 System.out.println('\n');

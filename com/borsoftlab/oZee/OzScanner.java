@@ -1,12 +1,12 @@
 package com.borsoftlab.oZee;
 
-public class Scanner{
+public class OzScanner{
 
     public int lexeme;
     private Text text;
     private char lookAhead;
 
-    public Scanner(final Text text){
+    public OzScanner(final Text text){
         this.text = text;
     //    nextChar();
     }
