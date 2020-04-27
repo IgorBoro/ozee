@@ -60,8 +60,9 @@ public class OzVm{
         final int[] stack = new int[64];
         int pc = 0;
         int sp = 0;
-        System.out.println("\noZee virtual machine started...\n");
+        System.out.println("\noZee virtual machine started...");
 
+        long startMillis = System.currentTimeMillis();
 
         byte cmd = mem[pc];
 
@@ -90,8 +91,9 @@ public class OzVm{
             }
             cmd = mem[pc];
         }
-        System.out.println("\noZee virtual machine stopped.\n");
-
+        long execTime = System.currentTimeMillis() - startMillis;
+        System.out.println("oZee virtual machine stopped");
+        System.out.print("Execution time: " + execTime + " ms");
 
     }
     
