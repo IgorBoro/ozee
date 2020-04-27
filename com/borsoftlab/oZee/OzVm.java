@@ -84,6 +84,9 @@ public class OzVm{
                 case OPCODE_DROP:
                     --sp;
                 break;
+                case OPCODE_JUMP:
+                    pc = stack[--sp];
+                break;
             }
             cmd = mem[pc];
         }
