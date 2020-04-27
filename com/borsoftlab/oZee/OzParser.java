@@ -4,7 +4,7 @@ public class OzParser{
 
     OzScanner scanner;
     int aheadLexeme = 0;
-    byte[] memory = new byte [12];
+    byte[] mem = new byte [12];
     int pc = 0;
 
     public OzParser(final OzScanner scanner){
@@ -26,12 +26,10 @@ public class OzParser{
 
     public byte[] getExecMemModule(){
         int value = 1234567890;
-        memory[pc++] = OzVm.OPCODE_PUSH;
-        memory[pc++] = (byte)  (value & 0x000000FF);
-        memory[pc++] = (byte) ((value & 0x0000FF00) >>  8);
-        memory[pc++] = (byte) ((value & 0x00FF0000) >> 16);
-        memory[pc++] = (byte) ((value & 0xFF000000) >> 24);
-        memory[pc++] = OzVm.OPCODE_STOP;
-        return memory;
+        mem[pc++] = OzVm.OPCODE_PUSH;
+        OzUtils.storeIntValue(mem, pc, value);
+        pc += 4;
+        mem[pc++] = OzVm.OPCODE_STOP;
+        return mem;
     }
 }
