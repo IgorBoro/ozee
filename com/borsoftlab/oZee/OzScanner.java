@@ -3,10 +3,10 @@ package com.borsoftlab.oZee;
 public class OzScanner{
 
     public int lexeme;
-    private Text text;
+    private OzText text;
     private char lookAhead;
 
-    public OzScanner(final Text text){
+    public OzScanner(final OzText text){
         this.text = text;
     //    nextChar();
     }

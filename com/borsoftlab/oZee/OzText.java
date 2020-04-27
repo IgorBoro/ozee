@@ -3,7 +3,7 @@ package com.borsoftlab.oZee;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Text {
+public class OzText {
 
     static final int  TABSIZE = 4;    
 
@@ -11,7 +11,7 @@ public class Text {
     int cchar;
     public Location loc = new Location();
 
-    public Text(InputStream file){
+    public OzText(InputStream file){
         this.file = file;
         loc.pos = 0;
         loc.line = 1;
