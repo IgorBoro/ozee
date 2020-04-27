@@ -9,7 +9,7 @@ public class OzUtils{
         mem[addr++] = (byte) ((value & 0xFF000000) >> 24);
     }
 
-    static public int getIntValue(final byte[] mem, final int addr){
+    static public int fetchIntValue(final byte[] mem, final int addr){
         return  (mem[addr+3] << 24) & 0xFF000000 |
                 (mem[addr+2] << 16) & 0x00FF0000 |
                 (mem[addr+1] <<  8) & 0x0000FF00 |

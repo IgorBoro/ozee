@@ -70,7 +70,7 @@ public class OzVm{
             ++pc;
             switch(cmd){
                 case OPCODE_PUSH:
-                    stack[sp++] = OzUtils.getIntValue(mem, pc);
+                    stack[sp++] = OzUtils.fetchIntValue(mem, pc);
                     pc += 4;
                     System.out.println(stack[sp-1]);
                 break;
