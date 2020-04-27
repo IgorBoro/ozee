@@ -24,6 +24,9 @@ public class oZee {
                 parser.compile();
                 System.out.println('\n');
                 System.out.println(text.loc.line + " lines processed");
+                final OzVm vm = new OzVm();
+                byte[] mem = parser.getExecMemModule();
+                vm.execute(mem);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
