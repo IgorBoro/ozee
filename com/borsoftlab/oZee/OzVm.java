@@ -56,8 +56,8 @@ public class OzVm{
 
 
 
-    public void execute(byte[] mem){
-        int[] stack = new int[64];
+    public void execute(final byte[] mem) {
+        final int[] stack = new int[64];
         int pc = 0;
         int sp = 0;
         System.out.println("\noZee virtual machine started...\n");
