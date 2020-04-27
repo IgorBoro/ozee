@@ -20,7 +20,7 @@ public class oZee {
             try {
                 final Text text = new Text(f);
                 final Scanner scanner = new Scanner(text);
-                final Parser parser = new Parser(scanner);
+                final OzParser parser = new OzParser(scanner);
                 parser.compile();
                 System.out.println('\n');
                 System.out.println(text.loc.line + " lines processed");
