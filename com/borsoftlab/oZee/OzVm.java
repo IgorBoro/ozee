@@ -90,7 +90,7 @@ public class OzVm{
             }
             cmd = mem[pc];
         }
-        System.out.println("\noZee virtual machine stoped.\n");
+        System.out.println("\noZee virtual machine stopped.\n");
 
 
     }
