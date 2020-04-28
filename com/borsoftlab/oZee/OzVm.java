@@ -56,8 +56,8 @@ public class OzVm{
     private static final int DEF_MEMORY_SIZE = 1024;
     private static final int DEF_STACK_SIZE  = 128;
 
-    byte[] memory = new byte[128];
-    int[] stack = new int[64];
+    byte[] memory = new byte[128];  // little-endian
+    int[] stack = new int[64];      // the stack is growing up
 
     public OzVm(){
         memory = new byte[DEF_MEMORY_SIZE];
