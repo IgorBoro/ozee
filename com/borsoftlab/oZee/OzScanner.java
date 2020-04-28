@@ -2,11 +2,19 @@ package com.borsoftlab.oZee;
 
 public class OzScanner{
 
+    public static final int lexUNDEF       = -1;
     public static final int lexEOF         =  0;
-    public static final int lexNAME        =  1;
+    public static final int lexNAME       =  1;
     public static final int lexNUMBER      =  2;
+    public static final int lexPLUS        =  3;
+    public static final int lexMINUS       =  4;
+    public static final int lexMUL         =  5;
+    public static final int lexDIV         =  6;
+    public static final int lexLPAREN      =  7;
+    public static final int lexRPAREN      =  8;
+    public static final int lexASSIGN      =  9;
+    public static final int lexCOMMA       = 10; 
     public static final int lexSEMICOLON   = 11;
-    public static final int lexDIV         = 12;
 
     public int lexeme;
     private OzText text;
@@ -22,10 +30,32 @@ public class OzScanner{
         skipSpaces();
         text.loc.lexemePos = text.loc.pos;
 
+        if( Character.isLetter(lookAhead) ) {
+            getName();
+            return lexNAME;
+        } else if( Character.isDigit(lookAhead) || lookAhead == '.' ) {
+            getNumber();
+            return lexNUMBER;
+        } else
         switch(lookAhead){
             case ';':
                 nextChar();
                 return lexSEMICOLON;
+            case '+':
+                nextChar();
+                return lexPLUS;
+            case '-':
+                nextChar();
+                return lexMINUS;
+            case '*':
+                nextChar();
+                return lexMUL;
+            case '(':
+                nextChar();
+                return lexLPAREN;
+                case ')':
+                nextChar();
+                return lexRPAREN;
             case '/':
                 nextChar();
                 if( lookAhead == '*' ){
@@ -41,7 +71,7 @@ public class OzScanner{
                 return lexEOF;
             default:
                 nextChar();
-            return 1;
+                return lexUNDEF;
         }
     }
 
@@ -86,5 +116,16 @@ public class OzScanner{
             System.out.println("\nError! Unclosed comment!");
         }
     }
-    
+
+    private void getNumber() {
+        while( Character.isDigit(lookAhead) || lookAhead == '.' ){
+            nextChar();
+        }
+    }
+
+    private void getName() {
+        while( Character.isLetterOrDigit(lookAhead) ){
+            nextChar();
+        }
+    }
 }
