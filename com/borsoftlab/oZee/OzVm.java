@@ -54,19 +54,15 @@ public class OzVm{
     public static final byte OPCODE_RET  = (byte) 0x47;
 
     private static final int DEF_MEMORY_SIZE = 1024;
-    private static final int DEF_STACK_SIZE  = 128;
 
     byte[] memory = new byte[128];  // little-endian
-    int[] stack = new int[64];      // the stack is growing up
 
     public OzVm(){
         memory = new byte[DEF_MEMORY_SIZE];
-        stack  = new int [DEF_STACK_SIZE];
     }
 
-    public OzVm(final int memorySize, final int stackSize){
+    public OzVm(final int memorySize){
         memory = new byte[memorySize];
-        stack = new int[stackSize];
     }
 
 	public void loadProgram(byte[] program) {
@@ -75,7 +71,7 @@ public class OzVm{
 
     public void execute() {
         int pc = 0;
-        int sp = 0;
+        int sp = memory.length - 5; // the stack is growing down, origin pos - little byte of free cell
         System.out.println("\noZee virtual machine started...");
 
         long startMillis = System.currentTimeMillis();
@@ -85,24 +81,28 @@ public class OzVm{
         while( cmd != OPCODE_STOP){
             ++pc;
             switch(cmd){
-                case OPCODE_PUSH:
-                    stack[sp++] = OzUtils.fetchIntValueFromMemory(memory, pc);
-                    pc += 4;
-                    System.out.println(stack[sp - 1]);
-                break;
-                case OPCODE_EVAL:
-                    stack[sp] = memory[stack[sp]];
-                break;
+                case OPCODE_PUSH:   // push const to stack
+                    System.arraycopy(memory, pc, memory, sp, 4);
+                    sp -= 4; // stack is growing
+                    pc += 4; // skip const in memory
 
-                case OPCODE_SAVE:
-                    OzUtils.storeIntValueToMemory(memory, stack[sp - 2], stack[sp - 1]);
-                    --sp;
+                    System.out.println(OzUtils.fetchIntValueFromMemory(memory, sp + 4));
+                break;
+                case OPCODE_EVAL: // expensive operation
+                sp -= 4;
+                int valueAddr = OzUtils.fetchIntValueFromMemory(memory, sp - 4);
+                System.arraycopy(memory, sp, memory, valueAddr, 4);
+                //                    stack[sp] = memory[stack[sp]];
+                break;
+                case OPCODE_SAVE: // expensive operation
+//                    OzUtils.storeIntValueToMemory(memory, stack[sp - 2], stack[sp - 1]);
+//                    --sp;
                 break;
                 case OPCODE_DROP:
-                    --sp;
+//                    --sp;
                 break;
                 case OPCODE_JUMP:
-                    pc = stack[--sp];
+//                    pc = stack[--sp];
                 break;
             }
             cmd = memory[pc];

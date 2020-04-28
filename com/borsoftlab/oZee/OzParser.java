@@ -15,7 +15,7 @@ public class OzParser{
     public void compile(){
         pc = 0;
         nextLexeme();
-        while(aheadLexeme != 0 ){
+        while(aheadLexeme != OzScanner.lexEOF ){
             nextLexeme();
         }
     }

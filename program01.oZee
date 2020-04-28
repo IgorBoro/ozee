@@ -1,4 +1,5 @@
-int iVariable = 180, jVar=5; 
-jVar = 5 + 1; 
-byte byteTemp=45; 
+// comment 0
+int iVariable = 180, jVar=5; // comment 1
+/* /* jVar = 15*8+1; */
+byte byteTemp=45; /***//**/ */
 float fResult = iVariable -0.523*12.3+ 41.6/32 * (32+76);
