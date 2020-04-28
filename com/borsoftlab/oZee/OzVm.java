@@ -53,33 +53,49 @@ public class OzVm{
     public static final byte OPCODE_CALL = (byte) 0x46;
     public static final byte OPCODE_RET  = (byte) 0x47;
 
+    private static final int DEF_MEMORY_SIZE = 1024;
+    private static final int DEF_STACK_SIZE  = 128;
 
+    byte[] memory = new byte[128];
+    int[] stack = new int[64];
 
+    public OzVm(){
+        memory = new byte[DEF_MEMORY_SIZE];
+        stack  = new int [DEF_STACK_SIZE];
+    }
 
-    public void execute(final byte[] mem) {
-        final int[] stack = new int[64];
+    public OzVm(final int memorySize, final int stackSize){
+        memory = new byte[memorySize];
+        stack = new int[stackSize];
+    }
+
+	public void loadProgram(byte[] program) {
+        System.arraycopy(program, 0, memory, 0, program.length);
+	}
+
+    public void execute() {
         int pc = 0;
         int sp = 0;
         System.out.println("\noZee virtual machine started...");
 
         long startMillis = System.currentTimeMillis();
 
-        byte cmd = mem[pc];
+        byte cmd = memory[pc];
 
         while( cmd != OPCODE_STOP){
             ++pc;
             switch(cmd){
                 case OPCODE_PUSH:
-                    stack[sp++] = OzUtils.fetchIntValue(mem, pc);
+                    stack[sp++] = OzUtils.fetchIntValueFromMemory(memory, pc);
                     pc += 4;
-                    System.out.println(stack[sp-1]);
+                    System.out.println(stack[sp - 1]);
                 break;
                 case OPCODE_EVAL:
-                    stack[sp] = mem[stack[sp]];
+                    stack[sp] = memory[stack[sp]];
                 break;
 
                 case OPCODE_SAVE:
-                    OzUtils.storeIntValue(mem, stack[sp - 2], stack[sp - 1]);
+                    OzUtils.storeIntValueToMemory(memory, stack[sp - 2], stack[sp - 1]);
                     --sp;
                 break;
                 case OPCODE_DROP:
@@ -89,12 +105,11 @@ public class OzVm{
                     pc = stack[--sp];
                 break;
             }
-            cmd = mem[pc];
+            cmd = memory[pc];
         }
         long execTime = System.currentTimeMillis() - startMillis;
         System.out.println("oZee virtual machine stopped");
         System.out.print("Execution time: " + execTime + " ms");
 
     }
-    
 }

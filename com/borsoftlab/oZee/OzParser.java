@@ -27,7 +27,7 @@ public class OzParser{
     public byte[] getExecMemModule(){
         int value = 1234567890;
         mem[pc++] = OzVm.OPCODE_PUSH;
-        OzUtils.storeIntValue(mem, pc, value);
+        OzUtils.storeIntValueToMemory(mem, pc, value);
         pc += 4;
         mem[pc++] = OzVm.OPCODE_STOP;
         return mem;
