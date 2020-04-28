@@ -9,16 +9,18 @@ public class OzVm{
     /*
      * Arithmetic operations
      */
-     public static final byte OPCODE_ADD  = (byte) 0x10;
-     public static final byte OPCODE_ADDF = (byte) 0x11;
-     public static final byte OPCODE_SUB  = (byte) 0x12;
-     public static final byte OPCODE_SUBF = (byte) 0x13;
-     public static final byte OPCODE_DIV  = (byte) 0x14;
-     public static final byte OPCODE_DIVF = (byte) 0x15;
-     public static final byte OPCODE_MOD  = (byte) 0x16;
-     public static final byte OPCODE_NEG  = (byte) 0x17;
-     public static final byte OPCODE_NEGF = (byte) 0x18;
-     public static final byte OPCODE_CMP  = (byte) 0x19;
+     public static final byte OPCODE_INC  = (byte) 0x10;
+     public static final byte OPCODE_DEC  = (byte) 0x11;
+     public static final byte OPCODE_ADD  = (byte) 0x12;
+     public static final byte OPCODE_ADDF = (byte) 0x13;
+     public static final byte OPCODE_SUB  = (byte) 0x14;
+     public static final byte OPCODE_SUBF = (byte) 0x15;
+     public static final byte OPCODE_DIV  = (byte) 0x16;
+     public static final byte OPCODE_DIVF = (byte) 0x17;
+     public static final byte OPCODE_MOD  = (byte) 0x18;
+     public static final byte OPCODE_NEG  = (byte) 0x19;
+     public static final byte OPCODE_NEGF = (byte) 0x1A;
+     public static final byte OPCODE_CMP  = (byte) 0x1B;
 
     /*
      * Memory operations
