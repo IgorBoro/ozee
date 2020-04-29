@@ -21,8 +21,25 @@ public class OzParser{
     }
 
     void stmtList(){
-        while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
-            scanner.nextLexeme();
+        stmt();
+        while( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON){
+            match( OzScanner.lexSEMICOLON, ";");
+    //        System.out.print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  ");
+    //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
+
+            stmt();
+        }
+    }
+
+    void stmt(){
+        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+            // declareVars();
+        }
+        else if( scanner.lookAheadLexeme == OzScanner.lexNAME) {
+            // assignStmt();
+        }
+        else {
+            // expression();
         }
     }
 

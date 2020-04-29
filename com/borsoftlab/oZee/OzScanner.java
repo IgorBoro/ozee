@@ -15,6 +15,7 @@ public class OzScanner{
     public static final int lexASSIGN      =  9;
     public static final int lexCOMMA       = 10; 
     public static final int lexSEMICOLON   = 11;
+    public static final int lexVARTYPE     = 12;
 
     public int lookAheadLexeme;
     public OzText text;
