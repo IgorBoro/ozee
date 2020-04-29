@@ -88,11 +88,11 @@ public class OzVm{
                     sp -= 4; // stack is growing
                     pc += 4; // skip const in memory
 
-                    System.out.println(OzUtils.fetchIntValueFromMemory(memory, sp + 4));
+                    System.out.println(OzUtils.fetchIntFromByteArray(memory, sp + 4));
                 break;
                 case OPCODE_EVAL: // expensive operation
                 sp -= 4;
-                int valueAddr = OzUtils.fetchIntValueFromMemory(memory, sp - 4);
+                int valueAddr = OzUtils.fetchIntFromByteArray(memory, sp - 4);
                 System.arraycopy(memory, sp, memory, valueAddr, 4);
                 //                    stack[sp] = memory[stack[sp]];
                 break;
