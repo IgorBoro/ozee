@@ -18,50 +18,48 @@ public class OzScanner{
 
     public int lexeme;
     private OzText text;
-    private char lookAhead;
 
     public OzScanner(final OzText text){
         this.text = text;
-        nextChar(); // seed reading
+        text.nextChar(); // seed reading
     }
-
 
     int nextLexeme(){
         skipSpaces();
         text.loc.lexemePos = text.loc.pos;
 
-        if( Character.isLetter(lookAhead) ) {
+        if( Character.isLetter(text.lookAhead) ) {
             getName();
             return lexNAME;
-        } else if( Character.isDigit(lookAhead) || lookAhead == '.' ) {
+        } else if( Character.isDigit(text.lookAhead) || text.lookAhead == '.' ) {
             getNumber();
             return lexNUMBER;
         } else
-        switch(lookAhead){
+        switch(text.lookAhead){
             case ';':
-                nextChar();
+                text.nextChar();
                 return lexSEMICOLON;
             case '+':
-                nextChar();
+                text.nextChar();
                 return lexPLUS;
             case '-':
-                nextChar();
+                text.nextChar();
                 return lexMINUS;
             case '*':
-                nextChar();
+                text.nextChar();
                 return lexMUL;
             case '(':
-                nextChar();
+                text.nextChar();
                 return lexLPAREN;
                 case ')':
-                nextChar();
+                text.nextChar();
                 return lexRPAREN;
             case '/':
-                nextChar();
-                if( lookAhead == '*' ){
+                text.nextChar();
+                if( text.lookAhead == '*' ){
                     skipBlockComment();
                     return nextLexeme();
-                } else if( lookAhead == '/'){
+                } else if( text.lookAhead == '/'){
                     skipLineComment();
                     return nextLexeme();
                 } else {
@@ -70,47 +68,43 @@ public class OzScanner{
             case 0:
                 return lexEOF;
             default:
-                nextChar();
+                text.nextChar();
                 return lexUNDEF;
         }
     }
 
-    private void nextChar() {
-        lookAhead = (char) text.nextChar();
-    }
-
     private void skipSpaces() {
-        while (Character.isSpaceChar(lookAhead)) {
-            nextChar();
+        while (Character.isSpaceChar(text.lookAhead)) {
+            text.nextChar();
         }
     }
 
     private void skipLineComment() {
-        while( lookAhead != '\n'){
-            nextChar();
+        while( text.lookAhead != '\n'){
+            text.nextChar();
         }
     }
 
     private void skipBlockComment() {
-        nextChar();
+        text.nextChar();
         do{
-            while(lookAhead != '*' && lookAhead != 0 ) {
-                if( lookAhead == '/') {
-                    nextChar();
-                    if( lookAhead == '*' ){
+            while(text.lookAhead != '*' && text.lookAhead != 0 ) {
+                if( text.lookAhead == '/') {
+                    text.nextChar();
+                    if( text.lookAhead == '*' ){
                         skipBlockComment();
                     }
                 } else {
-                    nextChar();
+                    text.nextChar();
                 }
             }
-            if( lookAhead == '*' ){
-                nextChar();
+            if( text.lookAhead == '*' ){
+                text.nextChar();
             }
 
-        } while(lookAhead != '/' && lookAhead != 0);
-        if( lookAhead == '/'){
-            nextChar();
+        } while( text.lookAhead != '/' && text.lookAhead != 0 );
+        if( text.lookAhead == '/'){
+            text.nextChar();
         } else {
             text.loc.lexemePos = text.loc.pos;
             System.out.println("\nError! Unclosed comment!");
@@ -118,14 +112,14 @@ public class OzScanner{
     }
 
     private void getNumber() {
-        while( Character.isDigit(lookAhead) || lookAhead == '.' ){
-            nextChar();
+        while( Character.isDigit( text.lookAhead ) || text.lookAhead == '.' ){
+            text.nextChar();
         }
     }
 
     private void getName() {
-        while( Character.isLetterOrDigit(lookAhead) ){
-            nextChar();
+        while( Character.isLetterOrDigit( text.lookAhead ) ){
+            text.nextChar();
         }
     }
 }

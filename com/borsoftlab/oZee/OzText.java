@@ -8,7 +8,7 @@ public class OzText {
     static final int  TABSIZE = 4;    
 
     InputStream file;
-    int cchar;
+    int lookAhead;
     public Location loc = new Location();
 
     public OzText(InputStream file){
@@ -17,19 +17,19 @@ public class OzText {
         loc.line = 1;
     }
 
-	public int nextChar() {
+	public void nextChar() {
         try {
-            if( (cchar = file.read()) == -1 )
-                cchar = '\0';
-            else if( cchar == '\n' ) {
+            if(( lookAhead = file.read() ) == -1 )
+                lookAhead = '\0';
+            else if( lookAhead == '\n' ) {
                System.out.println();
                loc.line++;
                loc.pos = 0;
-               cchar = '\n';
-            } else if( cchar == '\r' )
+               lookAhead = '\n';
+            } else if( lookAhead == '\r' )
                nextChar();
-            else if( cchar != '\t' ) {
-               System.out.write(cchar);
+            else if( lookAhead != '\t' ) {
+               System.out.write(lookAhead);
                loc.pos++;
             } else {
                do
@@ -37,7 +37,6 @@ public class OzText {
                while( ++loc.pos % TABSIZE != 0 );
             }
          } catch (IOException e) {};     
-         return cchar;
     }
     
     class Location {
