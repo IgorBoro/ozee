@@ -14,14 +14,14 @@ public class OzParser{
     
     public void compile(){
         pc = 0;
-        nextLexeme();
-        while(aheadLexeme != OzScanner.lexEOF ){
-            nextLexeme();
-        }
-    }
+        int n = 0;
+        scanner.nextLexeme();
+        while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
+            n++;
+            scanner.nextLexeme();
 
-    private void nextLexeme(){
-        aheadLexeme = scanner.nextLexeme();
+        }
+        System.out.println("\n" + n + " lexeme processed");
     }
 
     public byte[] getExecMemModule(){
