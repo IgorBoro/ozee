@@ -115,7 +115,7 @@ public class OzScanner{
             text.nextChar();
         } else {
             text.loc.lexemePos = text.loc.pos;
-            System.out.println("\nError! Unclosed comment!");
+            OzCompileError.message( text, "Unclosed comment!" );
         }
     }
 

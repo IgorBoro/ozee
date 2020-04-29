@@ -9,19 +9,18 @@ public class OzParser{
 
     public OzParser(final OzScanner scanner){
         this.scanner = scanner;
-        // nextLexeme();
     }
     
     public void compile(){
         pc = 0;
-        int n = 0;
+        int nLexeme = 0;
         scanner.nextLexeme();
         while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
-            n++;
+            nLexeme++;
             scanner.nextLexeme();
 
         }
-        System.out.println("\n" + n + " lexeme processed");
+        System.out.println("\n" + nLexeme + " lexeme processed");
     }
 
     public byte[] getExecMemModule(){
