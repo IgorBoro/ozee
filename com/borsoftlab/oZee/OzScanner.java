@@ -4,7 +4,7 @@ public class OzScanner{
 
     public static final int lexUNDEF       = -1;
     public static final int lexEOF         =  0;
-    public static final int lexNAME       =  1;
+    public static final int lexNAME        =  1;
     public static final int lexNUMBER      =  2;
     public static final int lexPLUS        =  3;
     public static final int lexMINUS       =  4;
@@ -17,10 +17,33 @@ public class OzScanner{
     public static final int lexSEMICOLON   = 11;
     public static final int lexVARTYPE     = 12;
 
+    public static final int VARTYPE_UNDEF  = 0;
+    public static final int VARTYPE_INT      = 1;
+    public static final int VARTYPE_SHORT    = 2;
+    public static final int VARTYPE_BYTE     = 3;
+    public static final int VARTYPE_FLOAT    = 4;
+
     public int lookAheadLexeme;
     public OzText text;
 
+    OzSymbols symbolTable = new OzSymbols();
+    OzSymbols.Symbol symbol = null;
+
+    int numberType = VARTYPE_UNDEF;
+    private int numberInt = 0;
+    private float numberFloat = 0;
+
+    public static final int IDENT_MAX_SIZE = 32;
+    char[] identBuffer = new char[IDENT_MAX_SIZE];
+
+
     public OzScanner(final OzText text){
+
+        symbolTable.install( "int",   lexVARTYPE, VARTYPE_INT   );
+        symbolTable.install( "short", lexVARTYPE, VARTYPE_SHORT );
+        symbolTable.install( "byte",  lexVARTYPE, VARTYPE_BYTE  );
+        symbolTable.install( "float", lexVARTYPE, VARTYPE_FLOAT );
+
         this.text = text;
         text.nextChar(); // seed reading
     }
@@ -31,15 +54,17 @@ public class OzScanner{
 
         if( Character.isLetter(text.lookAheadChar) ) {
             getName();
-            lookAheadLexeme = lexNAME;
         } else if( Character.isDigit(text.lookAheadChar) || text.lookAheadChar == '.' ) {
             getNumber();
-            lookAheadLexeme =  lexNUMBER;
         } else
         switch(text.lookAheadChar){
             case ';':
                 text.nextChar();
                 lookAheadLexeme = lexSEMICOLON;
+                break;
+                case '=':
+                text.nextChar();
+                lookAheadLexeme = lexASSIGN;
                 break;
             case '+':
                 text.nextChar();
@@ -66,27 +91,26 @@ public class OzScanner{
                 if( text.lookAheadChar == '*' ){
                     skipBlockComment();
                     nextLexeme();
-                    text.loc.lexemeCount--;
+                    return;
                 } else if( text.lookAheadChar == '/'){
                     skipLineComment();
                     nextLexeme();
-                    text.loc.lexemeCount--;
+                    return;
                 } else {
                     lookAheadLexeme = lexDIV;
                 }
                 break;
             case 0:
                 lookAheadLexeme = lexEOF;
-                break;
+                return;
             default:
-                text.nextChar();
-                lookAheadLexeme = lexUNDEF;
+                OzCompileError.message(text, "Invalid character");
         }
         text.loc.lexemeCount++;
     }
 
     private void skipSpaces() {
-        while (Character.isSpaceChar(text.lookAheadChar)) {
+        while (Character.isSpaceChar(text.lookAheadChar) || text.lookAheadChar == '\n') {
             text.nextChar();
         }
     }
@@ -124,14 +148,41 @@ public class OzScanner{
     }
 
     private void getNumber() {
-        while( Character.isDigit( text.lookAheadChar ) || text.lookAheadChar == '.' ){
+        numberInt = 0;
+        do {
+            numberInt = numberInt * 10 + (text.lookAheadChar - '0');
             text.nextChar();
+        } while( text.lookAheadChar != '\0' && Character.isDigit(text.lookAheadChar));
+        if( text.lookAheadChar == '.' ){
+            text.nextChar();
+            numberFloat = 0.0f;
+            float k = 10.0f;
+            do {
+                numberFloat += (text.lookAheadChar - '0')/k;
+                k *= 10.0f;
+                text.nextChar();
+            } while (text.lookAheadChar != '\0' && Character.isDigit(text.lookAheadChar));
+            numberFloat += numberInt;
+            numberType = VARTYPE_FLOAT;
+        }  else {
+            numberType = VARTYPE_INT;
         }
+        lookAheadLexeme =  lexNUMBER;
     }
 
     private void getName() {
-        while( Character.isLetterOrDigit( text.lookAheadChar ) ){
+        int i = 0;
+        do{
+            if( i == IDENT_MAX_SIZE)
+                break;
+            identBuffer[i++] = (char) text.lookAheadChar;
             text.nextChar();
+        }while (Character.isLetterOrDigit(text.lookAheadChar));
+        String ident = String.valueOf(identBuffer, 0, i);
+        symbol = symbolTable.lookup(ident);
+        if(symbol == null){
+            symbol = symbolTable.install(ident, lexNAME, VARTYPE_UNDEF);
         }
+        lookAheadLexeme = symbol.lexeme;
     }
 }

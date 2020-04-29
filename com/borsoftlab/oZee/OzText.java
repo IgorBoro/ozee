@@ -26,11 +26,11 @@ public class OzText {
                System.out.println();
                loc.line++;
                loc.pos = 0;
-               lookAheadChar = '\n';
             } else if( lookAheadChar == '\r' )
                nextChar();
             else if( lookAheadChar != '\t' ) {
                System.out.write(lookAheadChar);
+               System.out.flush();
                loc.pos++;
             } else {
                do
