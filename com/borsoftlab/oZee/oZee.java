@@ -23,7 +23,7 @@ public class oZee {
                 final OzParser parser = new OzParser(scanner);
                 parser.compile();
                 System.out.println('\n');
-                System.out.println(text.loc.line + " lines processed");
+                System.out.println(text.loc.line + " lines compiled");
                 final OzVm vm = new OzVm();
                 byte[] program = parser.getExecMemModule();
                 vm.loadProgram(program);

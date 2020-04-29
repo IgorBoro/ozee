@@ -17,7 +17,7 @@ public class OzScanner{
     public static final int lexSEMICOLON   = 11;
 
     public int lookAheadLexeme;
-    private OzText text;
+    public OzText text;
 
     public OzScanner(final OzText text){
         this.text = text;
@@ -65,9 +65,11 @@ public class OzScanner{
                 if( text.lookAheadChar == '*' ){
                     skipBlockComment();
                     nextLexeme();
+                    text.loc.lexemeCount--;
                 } else if( text.lookAheadChar == '/'){
                     skipLineComment();
                     nextLexeme();
+                    text.loc.lexemeCount--;
                 } else {
                     lookAheadLexeme = lexDIV;
                 }
@@ -79,6 +81,7 @@ public class OzScanner{
                 text.nextChar();
                 lookAheadLexeme = lexUNDEF;
         }
+        text.loc.lexemeCount++;
     }
 
     private void skipSpaces() {

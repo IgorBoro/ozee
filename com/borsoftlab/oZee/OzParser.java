@@ -13,14 +13,17 @@ public class OzParser{
     
     public void compile(){
         pc = 0;
-        int nLexeme = 0;
         scanner.nextLexeme();
-        while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
-            nLexeme++;
-            scanner.nextLexeme();
 
+        stmtList();
+
+        System.out.println("\n" + scanner.text.loc.lexemeCount + " lexemes processed");
+    }
+
+    void stmtList(){
+        while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
+            scanner.nextLexeme();
         }
-        System.out.println("\n" + nLexeme + " lexeme processed");
     }
 
     public byte[] getExecMemModule(){
@@ -31,4 +34,12 @@ public class OzParser{
         mem[pc++] = OzVm.OPCODE_STOP;
         return mem;
     }
+
+    private void match(final int lexeme, final String msg) {
+        if( scanner.lookAheadLexeme == lexeme ){
+            scanner.nextLexeme();
+        } else {
+            OzCompileError.expected(scanner.text, msg);
+        }
+    }     
 }
