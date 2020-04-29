@@ -16,4 +16,13 @@ public class OzCompileError {
         System.out.println();
         System.exit(0);        
     }
+
+    static void expected( final OzText text, final String msg) {
+        message(text, "Expected " + msg);
+     }
+     
+    static void warning(final String msg) {
+        System.out.println();
+        System.out.println("Warning: " + msg);
+    }
 }
