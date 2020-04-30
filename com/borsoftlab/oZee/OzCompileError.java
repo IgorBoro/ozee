@@ -12,17 +12,17 @@ public class OzCompileError {
         for( int i = 1; i < text.loc.lexemePos; i++ )
             System.out.print(' ');
         System.out.println("^");
-        System.out.println("[Line " + nLine + "] Error: " + msg);
+        System.out.println("Error in line " + nLine + ": " + msg);
         System.out.println();
         System.exit(0);        
     }
 
     static void expected( final OzText text, final String msg) {
-        message(text, "Expected " + msg);
+        message(text, "expected " + msg);
      }
      
     static void warning(final String msg) {
         System.out.println();
-        System.out.println("Warning: " + msg);
+        System.out.println("warning: " + msg);
     }
 }
