@@ -92,7 +92,7 @@ public class OzParser{
     private void assign(OzSymbols.Symbol symbol) {
         expression();
         emit("push @" + symbol.name);
-        emit("save");
+        emit("assgn");
         //emitPullDir(symbol);
     }
     
