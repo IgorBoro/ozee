@@ -25,9 +25,7 @@ public class OzParser{
     }
 
     void stmtList(){
-        stmt();
-        match(OzScanner.lexSEMICOLON, "';'");
-        while( scanner.lookAheadLexeme != OzScanner.lexEOF){
+        while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
     //        System.out.print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  ");
     //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
             stmt();
