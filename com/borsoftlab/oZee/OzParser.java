@@ -35,7 +35,7 @@ public class OzParser{
 
     void stmt(){
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            declareVar();
+            declareVarStmt();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexNAME) {
             assignStmt(); // TO DO
@@ -45,7 +45,7 @@ public class OzParser{
         }
     }
 
-    private void declareVar() {
+    private void declareVarStmt() {
         match(OzScanner.lexVARTYPE, "type of variable");
         int type = varType();
         match(OzScanner.lexNAME, "name of variable");
