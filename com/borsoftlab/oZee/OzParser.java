@@ -67,9 +67,8 @@ public class OzParser{
 
     private void declareVar(int type) {
         OzSymbols.Symbol symbol = newVariable(type);
-        if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            assign(symbol);
-        }
+        match(OzScanner.lexASSIGN, "'='");
+        assign(symbol);
     }    
 
     private OzSymbols.Symbol newVariable(int type){
@@ -89,7 +88,7 @@ public class OzParser{
     }
 
     private void assign(OzSymbols.Symbol symbol) {
-        scanner.nextLexeme();
+        match(OzScanner.lexASSIGN, "=");
         expression();
         emit("push @" + symbol.name);
         emit("save");
