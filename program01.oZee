@@ -1,6 +1,7 @@
-int i d = 180; // comment
-int j=25;
-int k= 17;
+int id=180; // comment
+int j=id;
+byte l;
+int k= 17 + j;
 /*
  * comment
  */

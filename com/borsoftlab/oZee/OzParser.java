@@ -26,50 +26,45 @@ public class OzParser{
 
     void stmtList(){
         stmt();
-        while( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON){
-            scanner.nextLexeme();
+        match(OzScanner.lexSEMICOLON, "';'");
+        while( scanner.lookAheadLexeme != OzScanner.lexEOF){
     //        System.out.print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  ");
     //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
             stmt();
+            match(OzScanner.lexSEMICOLON, "';'");
         }
     }
 
     void stmt(){
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            declareVars();
+            declareVar();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexNAME) {
             assignStmt();
         }
         else {
-            expression();
+            expression(); // it will be not always
         }
     }
 
-    private void declareVars() {
+    private void declareVar() {
         int type = varType();
-        declareVarList(type);
+        OzSymbols.Symbol symbol = newVariable(type);
+        if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+            eatLexeme();
+            assign(symbol);
+        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+            // empty
+        } else {
+            OzCompileError.expected(scanner.text, "expession");
+        }
     }
 
     private int varType(){
         int type = scanner.symbol.varType;
-        scanner.nextLexeme();;
+        scanner.nextLexeme();
         return type;
     }
-
-    private void declareVarList(int type){
-        declareVar(type);
-        while( scanner.lookAheadLexeme == OzScanner.lexCOMMA ){
-            scanner.nextLexeme();
-            declareVar(type);
-        }
-    }
-
-    private void declareVar(int type) {
-        OzSymbols.Symbol symbol = newVariable(type);
-        match(OzScanner.lexASSIGN, "'='");
-        assign(symbol);
-    }    
 
     private OzSymbols.Symbol newVariable(int type){
         OzSymbols.Symbol symbol = variable();
@@ -87,13 +82,14 @@ public class OzParser{
         assign(variable());
     }
 
+    
     private void assign(OzSymbols.Symbol symbol) {
-        match(OzScanner.lexASSIGN, "=");
         expression();
         emit("push @" + symbol.name);
         emit("save");
         //emitPullDir(symbol);
     }
+    
 
     public void expression() {
         term();
@@ -212,6 +208,10 @@ public class OzParser{
                     emit("eval ");
 //                    emitPushDir(symbol);
                     break;
+                case OzScanner.lexEOF:
+                break ;   
+                default:
+                    OzCompileError.expected(scanner.text, "expression");    
             }
         }
         if( unaryMinus ) {
@@ -233,6 +233,10 @@ public class OzParser{
         mem[pc++] = OzVm.OPCODE_STOP;
         return mem;
     }
+
+    private void eatLexeme() {
+        scanner.nextLexeme();
+    }     
 
     private void match(final int lexeme, final String msg) {
         if( scanner.lookAheadLexeme == lexeme ){
