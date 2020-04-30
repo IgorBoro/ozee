@@ -1,6 +1,8 @@
 int i = 180; // comment
+int j=25;
+int k= 17;
 /*
  * comment
  */
 byte b = 45;
-float f = 0.523 * 12.3 - 41.6/32 * (32 + 76);
+float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + i;

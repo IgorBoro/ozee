@@ -25,11 +25,11 @@ public class OzVm{
     /*
      * Memory operations
      */
-    public static final byte OPCODE_PUSH  = (byte) 0x20;    //         -> C    |  C == M[PC+3], M[PC+2], M[PC+1], M[PC]
+    public static final byte OPCODE_PUSH  = (byte) 0x20;    //         -> c    |  c == M[PC+3], M[PC+2], M[PC+1], M[PC]
     public static final byte OPCODE_EVAL  = (byte) 0x21;    //       A -> M[A] | 
     public static final byte OPCODE_EVALB = (byte) 0x22;
     public static final byte OPCODE_EVALS = (byte) 0x23;
-    public static final byte OPCODE_SAVE  = (byte) 0x24;
+    public static final byte OPCODE_SAVE  = (byte) 0x24;    //    x, A ->      |   M[A+3], M[A+2], M[A+1], M[A] = x
     public static final byte OPCODE_SAVEB = (byte) 0x25;
     public static final byte OPCODE_SAVES = (byte) 0x26;
 

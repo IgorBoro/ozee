@@ -20,9 +20,7 @@ public class OzParser{
     public void compile(){
         pc = 0;
         scanner.nextLexeme();
-
         stmtList();
-
         System.out.println("\n" + scanner.text.loc.lexemeCount + " lexemes processed");
     }
 
@@ -93,6 +91,8 @@ public class OzParser{
     private void assign(OzSymbols.Symbol symbol) {
         scanner.nextLexeme();
         expression();
+        emit("push @" + symbol.name);
+        emit("save");
         //emitPullDir(symbol);
     }
 
@@ -116,12 +116,14 @@ public class OzParser{
 
     private void sum() {
         term();
+        emit("add");
 //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
 //        emitArithmOpCode(MachineCode.SUMF, MachineCode.SUMI);
     }
 
     private void sub() {
         term();
+        emit("sub");
 //        emitArithmOpCode(MachineCode.SUBF, MachineCode.SUBI);
     }
 
@@ -146,11 +148,15 @@ public class OzParser{
 
     private void div() {
         factor();
+        emit("div");
+
 //        emitArithmOpCode(MachineCode.DIVF, MachineCode.DIVI);
     }
 
     private void mul() {
         factor();
+        emit("mul");
+
 //        emitArithmOpCode(MachineCode.MULF, MachineCode.MULI);
     }
 
@@ -169,6 +175,10 @@ public class OzParser{
                 case OzScanner.lexNUMBER:
                     scanner.nextLexeme();
                     typeStack.push(scanner.numberType);
+                    if( scanner.numberType == OzScanner.VARTYPE_INT)
+                        emit("push " + scanner.intNumber);
+                    else
+                        emit("push " + scanner.floatNumber);    
                     // emitPushImm(scanner.getNumberAsInt());
                     break;
                 /*    
@@ -199,6 +209,8 @@ public class OzParser{
                     }
                     */
                     typeStack.push(symbolType);
+                    emit("push @" + symbol.name);
+                    emit("eval ");
 //                    emitPushDir(symbol);
                     break;
             }
@@ -209,6 +221,10 @@ public class OzParser{
     }
 
 
+
+    private void emit(String cmd) {
+        System.out.println(cmd);
+    }
 
     public byte[] getExecMemModule() {
         final int value = 1234567890;

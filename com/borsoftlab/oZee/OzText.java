@@ -23,19 +23,18 @@ public class OzText {
             if(( lookAheadChar = file.read() ) == -1 )
                 lookAheadChar = '\0';
             else if( lookAheadChar == '\n' ) {
-               System.out.println();
+//               System.out.println();
                loc.line++;
                loc.pos = 0;
             } else if( lookAheadChar == '\r' )
                nextChar();
             else if( lookAheadChar != '\t' ) {
-               System.out.write(lookAheadChar);
-               System.out.flush();
+//               System.out.write(lookAheadChar);
                loc.pos++;
             } else {
-               do
-                  System.out.print(' ');
-               while( ++loc.pos % TABSIZE != 0 );
+//               do
+//                  System.out.print(' ');
+//               while( ++loc.pos % TABSIZE != 0 );
             }
          } catch (IOException e) {};     
     }

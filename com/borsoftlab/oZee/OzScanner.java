@@ -30,8 +30,8 @@ public class OzScanner{
     OzSymbols.Symbol symbol = null;
 
     int numberType = VARTYPE_UNDEF;
-    private int numberInt = 0;
-    private float numberFloat = 0;
+    public int intNumber = 0;
+    public float floatNumber = 0;
 
     public static final int IDENT_MAX_SIZE = 32;
     char[] identBuffer = new char[IDENT_MAX_SIZE];
@@ -148,21 +148,21 @@ public class OzScanner{
     }
 
     private void getNumber() {
-        numberInt = 0;
+        intNumber = 0;
         do {
-            numberInt = numberInt * 10 + (text.lookAheadChar - '0');
+            intNumber = intNumber * 10 + (text.lookAheadChar - '0');
             text.nextChar();
         } while( text.lookAheadChar != '\0' && Character.isDigit(text.lookAheadChar));
         if( text.lookAheadChar == '.' ){
             text.nextChar();
-            numberFloat = 0.0f;
+            floatNumber = 0.0f;
             float k = 10.0f;
             do {
-                numberFloat += (text.lookAheadChar - '0')/k;
+                floatNumber += (text.lookAheadChar - '0')/k;
                 k *= 10.0f;
                 text.nextChar();
             } while (text.lookAheadChar != '\0' && Character.isDigit(text.lookAheadChar));
-            numberFloat += numberInt;
+            floatNumber += intNumber;
             numberType = VARTYPE_FLOAT;
         }  else {
             numberType = VARTYPE_INT;
