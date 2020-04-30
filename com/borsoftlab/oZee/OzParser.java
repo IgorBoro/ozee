@@ -38,7 +38,7 @@ public class OzParser{
             declareVar();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexNAME) {
-            assignStmt();
+            assignStmt(); // TO DO
         }
         else {
             expression(); // it will be not always
@@ -46,7 +46,9 @@ public class OzParser{
     }
 
     private void declareVar() {
+        match(OzScanner.lexVARTYPE, "type of variable");
         int type = varType();
+        match(OzScanner.lexNAME, "name of variable");
         OzSymbols.Symbol symbol = newVariable(type);
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             eatLexeme();
@@ -54,13 +56,13 @@ public class OzParser{
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
             // empty
         } else {
-            OzCompileError.expected(scanner.text, "expession");
+            OzCompileError.expected(scanner.text, "'='");
         }
     }
 
     private int varType(){
         int type = scanner.symbol.varType;
-        scanner.nextLexeme();
+//        scanner.nextLexeme();
         return type;
     }
 
@@ -72,7 +74,6 @@ public class OzParser{
     }
 
     private OzSymbols.Symbol variable() {
-        match(OzScanner.lexNAME, "identifier");
         return scanner.symbol;
     }
 
@@ -220,7 +221,7 @@ public class OzParser{
 
 
     private void emit(String cmd) {
-        System.out.println(cmd);
+      //  System.out.println(cmd);
     }
 
     public byte[] getExecMemModule() {

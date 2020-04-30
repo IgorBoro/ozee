@@ -50,6 +50,7 @@ public class OzScanner{
 
     void nextLexeme(){
         skipSpaces();
+        text.loc.lexemeLine = text.loc.line;
         text.loc.lexemePos = text.loc.pos;
 
         if( Character.isLetter(text.lookAheadChar) ) {
@@ -142,6 +143,7 @@ public class OzScanner{
         if( text.lookAheadChar == '/'){
             text.nextChar();
         } else {
+            text.loc.lexemeLine = text.loc.line;
             text.loc.lexemePos = text.loc.pos;
             OzCompileError.message( text, "Unclosed comment!" );
         }
