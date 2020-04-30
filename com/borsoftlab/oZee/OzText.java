@@ -5,11 +5,13 @@ import java.io.InputStream;
 
 public class OzText {
 
-    static final int  TABSIZE = 4;    
+   static final int  TABSIZE = 4;    
+   InputStream file;
+   int lookAheadChar;
+   StringBuilder buffer = new StringBuilder();
+   boolean bufferCleanFlag = false;
 
-    InputStream file;
-    int lookAheadChar;
-    public Location loc = new Location();
+   public Location loc = new Location();
 
     public OzText(InputStream file){
         this.file = file;
@@ -19,29 +21,34 @@ public class OzText {
     }
 
 	public void nextChar() {
-        try {
-            if(( lookAheadChar = file.read() ) == -1 )
-                lookAheadChar = '\0';
-            else if( lookAheadChar == '\n' ) {
-               System.out.println();
-               loc.line++;
-               loc.pos = 0;
-            } else if( lookAheadChar == '\r' )
-               nextChar();
-            else if( lookAheadChar != '\t' ) {
-               System.out.write(lookAheadChar);
-               loc.pos++;
-            } else {
-               do
-                  System.out.print(' ');
-               while( ++loc.pos % TABSIZE != 0 );
-            }
-         } catch (IOException e) {};     
+      if( bufferCleanFlag ){
+         buffer.setLength(0);
+         bufferCleanFlag = false;
+      }
+      try {
+         if(( lookAheadChar = file.read() ) == -1 )
+            lookAheadChar = '\0';
+         else if( lookAheadChar == '\n' ) {
+            bufferCleanFlag = true;
+            loc.line++;
+            loc.pos = 0;
+         } else if( lookAheadChar == '\r' )
+            nextChar();
+         else if( lookAheadChar != '\t' ) {
+            buffer.append((char)lookAheadChar);
+            loc.pos++;
+         } else {
+            do
+               buffer.append(' ');
+            while( ++loc.pos % TABSIZE != 0 );
+         }
+      } catch (IOException e) {};     
     }
     
     class Location {
         int line;    // Номер строки           
         int pos;     // Номер символа в строке 
+        int lexemeLine;  // Позиция начала лексемы 
         int lexemePos;  // Позиция начала лексемы 
         int lexemeCount;
      }
