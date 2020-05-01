@@ -35,6 +35,8 @@ public class OzScanner{
 
     public static final int IDENT_MAX_SIZE = 32;
     char[] identBuffer = new char[IDENT_MAX_SIZE];
+    int lexemeCount;
+    Location lexemeLoc = new Location();
 
 
     public OzScanner(final OzText text){
@@ -46,12 +48,12 @@ public class OzScanner{
 
         this.text = text;
         text.nextChar(); // seed reading
+        lexemeCount = 0;
     }
 
     void nextLexeme(){
         skipSpaces();
-        text.loc.lexemeLine = text.loc.line;
-        text.loc.lexemePos = text.loc.pos;
+        lexemeLoc.copy(text.loc);
 
         if( Character.isLetter(text.lookAheadChar) ) {
             getName();
@@ -105,9 +107,9 @@ public class OzScanner{
                 lookAheadLexeme = lexEOF;
                 return;
             default:
-                OzCompileError.message(text, "Invalid character");
+                OzCompileError.message(this, "invalid character");
         }
-        text.loc.lexemeCount++;
+        lexemeCount++;
     }
 
     private void skipSpaces() {
@@ -143,9 +145,8 @@ public class OzScanner{
         if( text.lookAheadChar == '/'){
             text.nextChar();
         } else {
-            text.loc.lexemeLine = text.loc.line;
-            text.loc.lexemePos = text.loc.pos;
-            OzCompileError.message( text, "Unclosed comment!" );
+            lexemeLoc.copy(text.loc);
+            OzCompileError.message( this, "unclosed comment" );
         }
     }
 

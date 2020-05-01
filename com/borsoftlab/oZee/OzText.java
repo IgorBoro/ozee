@@ -17,7 +17,6 @@ public class OzText {
         this.file = file;
         loc.pos = 0;
         loc.line = 1;
-        loc.lexemeCount = 0;
     }
 
 	public void nextChar() {
@@ -44,13 +43,4 @@ public class OzText {
          }
       } catch (IOException e) {};     
     }
-    
-    class Location {
-        int line;    // Номер строки           
-        int pos;     // Номер символа в строке 
-        int lexemeLine;  // Позиция начала лексемы 
-        int lexemePos;  // Позиция начала лексемы 
-        int lexemeCount;
-     }
-     
 }

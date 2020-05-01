@@ -21,7 +21,7 @@ public class OzParser{
         pc = 0;
         scanner.nextLexeme();
         stmtList();
-        System.out.println("\n" + scanner.text.loc.lexemeCount + " lexemes processed");
+        System.out.println("\n" + scanner.lexemeCount + " lexemes processed");
     }
 
     void stmtList(){
@@ -49,54 +49,56 @@ public class OzParser{
         int type = varType();
         OzSymbols.Symbol symbol = newVariable(type);
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            eatLexeme();
-            assign(symbol);
+            assignExpression(symbol);
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
             // empty
         } else {
-            OzCompileError.expected(scanner.text, "'='");
+            OzCompileError.expected(scanner, "'='");
         }
     }
 
     private int varType(){
         int type = scanner.symbol.varType;
-        eatLexeme();
+        scanner.nextLexeme();;
         return type;
     }
 
     private OzSymbols.Symbol newVariable(int type){
-        OzSymbols.Symbol symbol = variable();
+        OzSymbols.Symbol symbol = scanner.symbol;
         symbol.setType(type);
+        match(OzScanner.lexNAME, "variable name");
         // allocateVariable(symbol);
         return symbol;
     }
 
     private OzSymbols.Symbol variable() {
+        OzSymbols.Symbol symbol = scanner.symbol;
+        if( symbol.varType == OzScanner.VARTYPE_UNDEF ){
+            OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined");
+        }
         match(OzScanner.lexNAME, "variable name");
-        return scanner.symbol;
+        return symbol;
     }
 
     public void assignStmt() {
         OzSymbols.Symbol symbol = variable();
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            eatLexeme();
-            assign(symbol);
+            assignExpression(symbol);
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
             // empty
         } else {
-            OzCompileError.expected(scanner.text, "'='");
+            OzCompileError.expected(scanner, "'='");
         }
     }
-
     
-    private void assign(OzSymbols.Symbol symbol) {
+    private void assignExpression(OzSymbols.Symbol symbol) {
+        match(OzScanner.lexASSIGN, "'='");
         expression();
         emit("push @" + symbol.name);
         emit("assgn");
         //emitPullDir(symbol);
     }
-    
-
+   
     public void expression() {
         term();
         while(true) {
@@ -146,7 +148,6 @@ public class OzParser{
         }
     }    
 
-
     private void div() {
         factor();
         emit("div");
@@ -193,9 +194,12 @@ public class OzParser{
                     break;
                 */    
                 case OzScanner.lexNAME:
+                    /*
                     scanner.nextLexeme();
                     OzSymbols.Symbol symbol = scanner.symbol;
                     int symbolType = symbol.varType;
+                    */
+                    OzSymbols.Symbol symbol = variable();
                     /*
                     switch (symbolType){
                         case OzScanner.VARTYPE_INT:
@@ -209,7 +213,7 @@ public class OzParser{
                         break;
                     }
                     */
-                    typeStack.push(symbolType);
+                    typeStack.push(symbol.varType);
                     emit("push @" + symbol.name);
                     emit("eval ");
 //                    emitPushDir(symbol);
@@ -217,15 +221,13 @@ public class OzParser{
                 case OzScanner.lexEOF:
                 break ;   
                 default:
-                    OzCompileError.expected(scanner.text, "expression");    
+                    OzCompileError.expected(scanner, "expression");    
             }
         }
         if( unaryMinus ) {
   //          emitNegOpCode(MachineCode.NEGF, MachineCode.NEGI4);
         }
     }
-
-
 
     private void emit(String cmd) {
         System.out.println(cmd);
@@ -240,15 +242,11 @@ public class OzParser{
         return mem;
     }
 
-    private void eatLexeme() {
-        scanner.nextLexeme();
-    }     
-
     private void match(final int lexeme, final String msg) {
         if( scanner.lookAheadLexeme == lexeme ){
             scanner.nextLexeme();
         } else {
-            OzCompileError.expected(scanner.text, msg);
+            OzCompileError.expected(scanner, msg);
         }
     }     
 }
