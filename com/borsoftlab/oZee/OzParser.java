@@ -59,7 +59,7 @@ public class OzParser{
 
     private int varType(){
         int type = scanner.symbol.varType;
-        scanner.nextLexeme();;
+        scanner.nextLexeme();
         return type;
     }
 

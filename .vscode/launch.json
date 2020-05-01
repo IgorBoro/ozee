@@ -6,16 +6,22 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - oZee",
+            "request": "launch",
+            "mainClass": "com.borsoftlab.oZee.oZee",
+            "projectName": "oZee_8eec8783"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch)",
             "request": "launch",
             "mainClass": ""
         },
-       
         {
             "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
             "mainClass": "${file}"
-        },
+        }
     ]
 }
