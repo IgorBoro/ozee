@@ -95,7 +95,7 @@ public class OzParser{
         match(OzScanner.lexASSIGN, "'='");
         expression();
         emit("push @" + symbol.name);
-        emit("assgn");
+        emit("assign");
         //emitPullDir(symbol);
     }
    
@@ -121,13 +121,13 @@ public class OzParser{
         term();
         emit("add");
 //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
-//        emitArithmOpCode(MachineCode.SUMF, MachineCode.SUMI);
+//        emitArithmeticOpCode(MachineCode.SUMF, MachineCode.SUMI);
     }
 
     private void sub() {
         term();
         emit("sub");
-//        emitArithmOpCode(MachineCode.SUBF, MachineCode.SUBI);
+//        emitArithmeticOpCode(MachineCode.SUBF, MachineCode.SUBI);
     }
 
     private void term(){
@@ -152,14 +152,14 @@ public class OzParser{
         factor();
         emit("div");
 
-//        emitArithmOpCode(MachineCode.DIVF, MachineCode.DIVI);
+//     ArithmeticOpCode(MachineCode.DIVF, MachineCode.DIVI);
     }
 
     private void mul() {
         factor();
         emit("mul");
 
-//        emitArithmOpCode(MachineCode.MULF, MachineCode.MULI);
+//        emitArithmeticOpCode(MachineCode.MULF, MachineCode.MULI);
     }
 
     private void factor() {
