@@ -152,7 +152,7 @@ public class OzParser{
         factor();
         emit("div");
 
-//     ArithmeticOpCode(MachineCode.DIVF, MachineCode.DIVI);
+//     emitArithmeticOpCode(MachineCode.DIVF, MachineCode.DIVI);
     }
 
     private void mul() {
