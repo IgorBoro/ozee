@@ -8,5 +8,6 @@
         "EVALS",
         "NEGF",
         "SUBF"
-    ]
+    ],
+    "maven.view": "flat"
 }
