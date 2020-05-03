@@ -1,5 +1,6 @@
-package com.borsoftlab.oZee;
+package app;
 
+import com.borsoftlab.ozee.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

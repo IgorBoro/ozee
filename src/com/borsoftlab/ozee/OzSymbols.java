@@ -1,4 +1,4 @@
-package com.borsoftlab.oZee;
+package com.borsoftlab.ozee;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.borsoftlab.oZee;
+package com.borsoftlab.ozee;
 
 import java.io.IOException;
 import java.io.InputStream;
