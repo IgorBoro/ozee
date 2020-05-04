@@ -1,4 +1,3 @@
-package app;
 
 import com.borsoftlab.ozee.*;
 import java.io.FileInputStream;

@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - oZee",
+            "request": "launch",
+            "mainClass": "main.java.oZee",
+            "projectName": "oZee"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - oZee",
+            "request": "launch",
+            "mainClass": "oZee",
+            "projectName": "oZee"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
             "mainClass": "${file}"
