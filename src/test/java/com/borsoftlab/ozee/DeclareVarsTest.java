@@ -44,6 +44,10 @@ public class DeclareVarsTest {
                         + "Error in line 1: expected ';'"
                         + "\n";
     
+    final static String program4 
+                        = "int i=5;";
+    final static String message4
+                        = "Ok";
 
     private final String programText;
     private final String messageText;
@@ -64,6 +68,7 @@ public class DeclareVarsTest {
             { program1, message1 },
             { program2, message2 }, 
             { program3, message3 }, 
+            { program4, message4 }, 
         });
     }
 
