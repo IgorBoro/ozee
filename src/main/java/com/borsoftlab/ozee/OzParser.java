@@ -43,8 +43,8 @@ public class OzParser{
             assignStmt(); // TO DO
         }
         else {
-            OzCompileError.message(scanner, "unexpected symbol");
-            //expression(); // it will be not always
+            //OzCompileError.message(scanner, "unexpected symbol");
+            expression(); // it will be not always
         } 
     }
 
