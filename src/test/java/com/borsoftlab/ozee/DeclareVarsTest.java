@@ -52,8 +52,6 @@ public class DeclareVarsTest {
     private final String programText;
     private final String messageText;
 
-    InputStream programStream;
-
     OzParser parser = new OzParser();
     OzScanner scanner = new OzScanner();
 
@@ -72,34 +70,31 @@ public class DeclareVarsTest {
         });
     }
 
-    @Before
-    public void setup() {
-        programStream = new ByteArrayInputStream(programText.getBytes());
-
-    }
 
     @Test
     public void test() {
         System.out.println("<-------------------------->");
-        try {
-            final OzText text = new OzText(programStream);
-            scanner.resetText(text);
-            parser.compile(scanner);
-        } catch (final Exception e) {
-        } finally {
-            System.out.println(OzCompileError.messageString);
-        }
+        try {     
+            final InputStream programStream = new ByteArrayInputStream(programText.getBytes());
+            try {
+                final OzText text = new OzText(programStream);
+                scanner.resetText(text);
+                parser.compile(scanner);
+            } catch (final Exception e) {
+            } finally {
+                System.out.println(OzCompileError.messageString);
+                try {
+                    programStream.close();
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }            
         assertTrue(OzCompileError.messageString.toString().equals(messageText));
     }
-
-    @After
-    public void close() {
-        try {
-            programStream.close();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
 }
 
-}
+
     
