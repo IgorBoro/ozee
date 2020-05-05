@@ -22,6 +22,8 @@ public class OzParser{
         scanner.nextLexeme();
         stmtList();
         System.out.println("\n" + scanner.lexemeCount + " lexemes processed");
+        System.out.println('\n');
+        System.out.println(scanner.text.loc.line + " lines compiled");
     }
 
     void stmtList(){
@@ -41,8 +43,9 @@ public class OzParser{
             assignStmt(); // TO DO
         }
         else {
-            expression(); // it will be not always
-        }
+            OzCompileError.message(scanner, "unexpected symbol");
+            //expression(); // it will be not always
+        } 
     }
 
     private void declareVarStmt() {
