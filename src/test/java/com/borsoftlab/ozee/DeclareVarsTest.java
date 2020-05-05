@@ -1,28 +1,57 @@
 package com.borsoftlab.ozee;
 
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.After;
 import org.junit.Before;
 
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class DeclareVarsTest {
-    
-    String program = "int i";
+
+    final static String program = "int i";
+    final static String error = "\n\n"
+                       + "int i"
+                       + "\n"
+                       + "     ^"
+                       + "\n" 
+                       + "Error in line 1: expected '=' or ';'"
+                       + "\n";
+        
+
+    private String programText;
+    private String messageText;
+                       
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
 
     OzParser parser = new OzParser();
     OzScanner scanner = new OzScanner();
 
+    public DeclareVarsTest(final String program, final String message){
+        programText = program;
+        messageText = message;
+    }
+
+    @org.junit.runners.Parameterized.Parameters
+    public static Collection getParameters(){
+        return Arrays.asList( new Object[][]{
+            {program, error}
+        });
+    }                   
+
+
     @Before
     public void setup() {
-        programStream = new ByteArrayInputStream(program.getBytes());
+        programStream = new ByteArrayInputStream(programText.getBytes());
 
         parser = new OzParser();
         scanner = new OzScanner();
@@ -41,14 +70,6 @@ public class DeclareVarsTest {
         }
     }
 
-    final String error = "\n\n"
-                       + "int i"
-                       + "\n"
-                       + "     ^"
-                       + "\n" 
-                       + "Error in line 1: expected '=' or ';'"
-                       + "\n";
-
     @Test
     public void test2(){
         try {
@@ -59,7 +80,7 @@ public class DeclareVarsTest {
             // System.out.println(OzCompileError.errorString);
         } finally {
         }
-        assertTrue( OzCompileError.errorString.toString().equals(error) );
+        assertTrue( OzCompileError.errorString.toString().equals(messageText) );
     }
 
     @After
