@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class DeclareVarsTest {
 
     final static String program = "int i";
-    final static String error = "\n\n"
+    final static String message = "\n\n"
                        + "int i"
                        + "\n"
                        + "     ^"
@@ -43,7 +43,7 @@ public class DeclareVarsTest {
 
     @org.junit.runners.Parameterized.Parameters
     public static Collection getParameters() {
-        return Arrays.asList(new Object[][] { { program, error } });
+        return Arrays.asList(new Object[][] { { program, message } });
     }
 
     @Before
@@ -54,6 +54,7 @@ public class DeclareVarsTest {
         scanner = new OzScanner();
     }
 
+    /*
     @Test(expected = Exception.class)
     public void test() throws Exception {
         try {
@@ -66,9 +67,10 @@ public class DeclareVarsTest {
         } finally {
         }
     }
+    */
 
     @Test
-    public void test2() {
+    public void test() {
         try {
             final OzText text = new OzText(programStream);
             scanner.resetText(text);
@@ -77,7 +79,7 @@ public class DeclareVarsTest {
             // System.out.println(OzCompileError.errorString);
         } finally {
         }
-        assertTrue(OzCompileError.errorString.toString().equals(messageText));
+        assertTrue(OzCompileError.messageString.toString().equals(messageText));
     }
 
     @After

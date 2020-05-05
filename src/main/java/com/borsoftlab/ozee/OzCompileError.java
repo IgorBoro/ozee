@@ -2,11 +2,11 @@ package com.borsoftlab.ozee;
 
 public class OzCompileError {
     static boolean isError = false;
-    static StringBuilder errorString = new StringBuilder();
+    static StringBuilder messageString = new StringBuilder();
 
     static void reset(){
         isError = false;
-        errorString.setLength(0);
+        messageString.setLength(0);
     }
 
     static void message( final OzScanner scanner, final String msg ) throws Exception {
@@ -15,19 +15,19 @@ public class OzCompileError {
         while( text.lookAheadChar != '\n' && text.lookAheadChar != '\0' ) {
             text.nextChar();
         }
-        errorString.append("\n\n");
-        errorString.append(text.buffer);
-        errorString.append('\n');
+        messageString.append("\n\n");
+        messageString.append(text.buffer);
+        messageString.append('\n');
         for( int i = 1; i < scanner.lexemeLoc.pos; i++ )
-            errorString.append(' ');
-        errorString.append('^');
-        errorString.append('\n');
-        errorString.append("Error in line ");
-        errorString.append(scanner.lexemeLoc.line);
-        errorString.append(": ");
-        errorString.append(msg);
-        errorString.append('\n');
-        throw new Exception(errorString.toString());
+            messageString.append(' ');
+        messageString.append('^');
+        messageString.append('\n');
+        messageString.append("Error in line ");
+        messageString.append(scanner.lexemeLoc.line);
+        messageString.append(": ");
+        messageString.append(msg);
+        messageString.append('\n');
+        throw new Exception(messageString.toString());
     }
 
     static void expected( final OzScanner scanner, final String msg) throws Exception {
