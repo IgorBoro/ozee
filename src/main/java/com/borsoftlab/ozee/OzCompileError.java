@@ -7,10 +7,12 @@ public class OzCompileError {
     static void reset(){
         isError = false;
         messageString.setLength(0);
+        messageString.append("Ok");
     }
 
     static void message( final OzScanner scanner, final String msg ) throws Exception {
         final OzText text = scanner.text;
+        messageString.setLength(0);
         isError = true;
         while( text.lookAheadChar != '\n' && text.lookAheadChar != '\0' ) {
             text.nextChar();

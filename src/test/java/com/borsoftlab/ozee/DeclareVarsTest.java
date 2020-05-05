@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class DeclareVarsTest {
 
-    final static String program = "int i";
-    final static String message = "\n\n"
+    final static String program1 = "int i";
+    final static String message1 = "\n\n"
                        + "int i"
                        + "\n"
                        + "     ^"
@@ -28,10 +28,13 @@ public class DeclareVarsTest {
                        + "\n";
         
 
+    final static String program2 = "int i;";
+    final static String message2 = "Ok";
+                   
     private final String programText;
     private final String messageText;
 
-    InputStream programStream = new ByteArrayInputStream(program.getBytes());
+    InputStream programStream = new ByteArrayInputStream(program1.getBytes());
 
     OzParser parser = new OzParser();
     OzScanner scanner = new OzScanner();
@@ -42,32 +45,18 @@ public class DeclareVarsTest {
     }
 
     @org.junit.runners.Parameterized.Parameters
-    public static Collection getParameters() {
-        return Arrays.asList(new Object[][] { { program, message } });
+    public static Collection<Object[]> getParameters() {
+        return Arrays.asList(new Object[][] { 
+            { program1, message1 },
+            { program2, message2 } 
+        });
     }
 
     @Before
     public void setup() {
         programStream = new ByteArrayInputStream(programText.getBytes());
 
-        parser = new OzParser();
-        scanner = new OzScanner();
     }
-
-    /*
-    @Test(expected = Exception.class)
-    public void test() throws Exception {
-        try {
-            final OzText text = new OzText(programStream);
-            scanner.resetText(text);
-            parser.compile(scanner);
-        } catch (final Exception e) {
-            System.out.println(OzCompileError.errorString);
-            throw e;
-        } finally {
-        }
-    }
-    */
 
     @Test
     public void test() {
@@ -76,8 +65,8 @@ public class DeclareVarsTest {
             scanner.resetText(text);
             parser.compile(scanner);
         } catch (final Exception e) {
-            // System.out.println(OzCompileError.errorString);
         } finally {
+            System.out.println(OzCompileError.messageString);
         }
         assertTrue(OzCompileError.messageString.toString().equals(messageText));
     }
