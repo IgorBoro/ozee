@@ -1,24 +1,29 @@
 package com.borsoftlab.ozee;
 
 public class OzCompileError {
-    
-    static void message( final OzScanner scanner, final String msg ){
-        OzText text = scanner.text;
+    static StringBuilder errorString = new StringBuilder();
+
+    static void message( final OzScanner scanner, final String msg ) throws Exception {
+        final OzText text = scanner.text;
         while( text.lookAheadChar != '\n' && text.lookAheadChar != '\0' ) {
             text.nextChar();
         }
-        if( text.lookAheadChar == '\0' )
-            System.out.println();
-        System.out.println(text.buffer.toString());    
-            for( int i = 1; i < scanner.lexemeLoc.pos; i++ )
-            System.out.print(' ');
-        System.out.println("^");
-        System.out.println("Error in line " + scanner.lexemeLoc.line + ": " + msg);
-        System.out.println();
-        System.exit(0);        
+        errorString.append("\n\n");
+        errorString.append(text.buffer);
+        errorString.append('\n');
+        for( int i = 1; i < scanner.text.lexemeLoc.pos; i++ )
+            errorString.append(' ');
+        errorString.append('^');
+        errorString.append('\n');
+        errorString.append("Error in line ");
+        errorString.append(scanner.lexemeLoc.line);
+        errorString.append(": ");
+        errorString.append(msg);
+        errorString.append('\n');
+        throw new Exception(errorString.toString());
     }
 
-    static void expected( final OzScanner scanner, final String msg) {
+    static void expected( final OzScanner scanner, final String msg) throws Exception {
         message(scanner, "expected " + msg);
      }
      

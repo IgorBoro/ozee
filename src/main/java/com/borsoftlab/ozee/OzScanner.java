@@ -51,7 +51,7 @@ public class OzScanner{
         lexemeCount = 0;
     }
 
-    void nextLexeme(){
+    void nextLexeme() throws Exception {
         skipSpaces();
         lexemeLoc.copy(text.loc);
 
@@ -124,7 +124,7 @@ public class OzScanner{
         }
     }
 
-    private void skipBlockComment() {
+    private void skipBlockComment() throws Exception {
         text.nextChar();
         do{
             while(text.lookAheadChar != '*' && text.lookAheadChar != 0 ) {

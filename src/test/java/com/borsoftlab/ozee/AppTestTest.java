@@ -6,11 +6,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Before;    
+import org.junit.After;
+import org.junit.Before;
     
 public class AppTestTest {
     
-    String program = "in";
+    String program = "int i";
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
 
     OzParser parser;
@@ -26,7 +27,6 @@ public class AppTestTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }        
-
     }
         
     @Test
@@ -36,12 +36,17 @@ public class AppTestTest {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                programStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
+
+    @After
+    public void close(){
+        try {
+            programStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+}
+
 }
     

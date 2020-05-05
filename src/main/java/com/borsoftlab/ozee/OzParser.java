@@ -17,7 +17,7 @@ public class OzParser{
         this.scanner = scanner;
     }
     
-    public void compile(){
+    public void compile() throws Exception {
         pc = 0;
         scanner.nextLexeme();
         stmtList();
@@ -26,7 +26,7 @@ public class OzParser{
         System.out.println(scanner.text.loc.line + " lines compiled");
     }
 
-    void stmtList(){
+    void stmtList() throws Exception {
         while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
     //        System.out.print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  ");
     //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
@@ -35,7 +35,7 @@ public class OzParser{
         }
     }
 
-    void stmt(){
+    void stmt() throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             declareVarStmt();
         }
@@ -48,7 +48,7 @@ public class OzParser{
         } 
     }
 
-    private void declareVarStmt() {
+    private void declareVarStmt() throws Exception {
         int type = varType();
         OzSymbols.Symbol symbol = newVariable(type);
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
@@ -56,17 +56,17 @@ public class OzParser{
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
             // empty
         } else {
-            OzCompileError.expected(scanner, "'='");
+            OzCompileError.expected(scanner, "'=' or ';'");
         }
     }
 
-    private int varType(){
+    private int varType() throws Exception {
         int type = scanner.symbol.varType;
         scanner.nextLexeme();
         return type;
     }
 
-    private OzSymbols.Symbol newVariable(int type){
+    private OzSymbols.Symbol newVariable(int type) throws Exception {
         OzSymbols.Symbol symbol = scanner.symbol;
         symbol.setType(type);
         match(OzScanner.lexNAME, "variable name");
@@ -74,7 +74,7 @@ public class OzParser{
         return symbol;
     }
 
-    private OzSymbols.Symbol variable() {
+    private OzSymbols.Symbol variable() throws Exception {
         OzSymbols.Symbol symbol = scanner.symbol;
         if( symbol.varType == OzScanner.VARTYPE_UNDEF ){
             OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined");
@@ -83,7 +83,7 @@ public class OzParser{
         return symbol;
     }
 
-    public void assignStmt() {
+    public void assignStmt() throws Exception {
         OzSymbols.Symbol symbol = variable();
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             assignExpression(symbol);
@@ -94,7 +94,7 @@ public class OzParser{
         }
     }
     
-    private void assignExpression(OzSymbols.Symbol symbol) {
+    private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexASSIGN, "'='");
         expression();
         emit("push @" + symbol.name);
@@ -102,7 +102,7 @@ public class OzParser{
         //emitPullDir(symbol);
     }
    
-    public void expression() {
+    public void expression() throws Exception {
         term();
         while(true) {
             switch( scanner.lookAheadLexeme ){
@@ -120,20 +120,20 @@ public class OzParser{
         }
     }
 
-    private void sum() {
+    private void sum() throws Exception {
         term();
         emit("add");
 //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
 //        emitArithmeticOpCode(MachineCode.SUMF, MachineCode.SUMI);
     }
 
-    private void sub() {
+    private void sub() throws Exception {
         term();
         emit("sub");
 //        emitArithmeticOpCode(MachineCode.SUBF, MachineCode.SUBI);
     }
 
-    private void term(){
+    private void term() throws Exception {
         factor();
         while(true) {
             switch( scanner.lookAheadLexeme ){
@@ -151,21 +151,21 @@ public class OzParser{
         }
     }    
 
-    private void div() {
+    private void div() throws Exception {
         factor();
         emit("div");
 
 //     emitArithmeticOpCode(MachineCode.DIVF, MachineCode.DIVI);
     }
 
-    private void mul() {
+    private void mul() throws Exception {
         factor();
         emit("mul");
 
 //        emitArithmeticOpCode(MachineCode.MULF, MachineCode.MULI);
     }
 
-    private void factor() {
+    private void factor() throws Exception {
         boolean unaryMinus = false;
         if( scanner.lookAheadLexeme == OzScanner.lexMINUS){
             scanner.nextLexeme();;
@@ -245,7 +245,7 @@ public class OzParser{
         return mem;
     }
 
-    private void match(final int lexeme, final String msg) {
+    private void match(final int lexeme, final String msg) throws Exception {
         if( scanner.lookAheadLexeme == lexeme ){
             scanner.nextLexeme();
         } else {
