@@ -11,18 +11,18 @@ import org.junit.Before;
     
 public class AppTestTest {
     
-    String program = "int i;";
+    String program = "int i";
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
 
     final OzParser parser = new OzParser();
-    OzScanner scanner;
+    final OzScanner scanner = new OzScanner();
 
     @Before
     public void setup() {
 
         try {
             final OzText text = new OzText(programStream);
-            scanner = new OzScanner(text);
+            scanner.resetText(text);
         
         } catch (Throwable e) {
             e.printStackTrace();
@@ -34,7 +34,8 @@ public class AppTestTest {
         try {
             parser.compile(scanner);
         } catch (Exception e) {
-            e.printStackTrace();
+      //      e.printStackTrace();
+            System.out.println(OzCompileError.errorString);
             assert(false);
         } finally {
         }
@@ -46,7 +47,8 @@ public class AppTestTest {
         try {
             parser.compile(scanner);
         } catch (Exception e) {
-            e.printStackTrace();
+    //        e.printStackTrace();
+            System.out.println(OzCompileError.errorString);
             assert(false);
         } finally {
         }

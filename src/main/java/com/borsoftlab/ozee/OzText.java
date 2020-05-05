@@ -13,13 +13,13 @@ public class OzText {
 
    public Location loc = new Location();
 
-    public OzText(InputStream file){
-        this.file = file;
-        loc.pos = 0;
-        loc.line = 1;
-    }
+   public OzText(InputStream file){
+      this.file = file;
+      loc.pos = 0;
+      loc.line = 1;
+   }
 
-	public void nextChar() {
+   public void nextChar() {
       if( bufferCleanFlag ){
          buffer.setLength(0);
          bufferCleanFlag = false;

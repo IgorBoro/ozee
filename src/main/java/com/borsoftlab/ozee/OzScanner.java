@@ -1,6 +1,6 @@
 package com.borsoftlab.ozee;
 
-public class OzScanner{
+public class OzScanner {
 
     public static final int lexUNDEF       = -1;
     public static final int lexEOF         =  0;
@@ -39,13 +39,24 @@ public class OzScanner{
     Location lexemeLoc = new Location();
 
 
-    public OzScanner(final OzText text){
+    public OzScanner(){
+        initSymbolTable();
+    }
 
+
+    public OzScanner(final OzText text) {
+        initSymbolTable();
+        resetText(text);
+    }
+
+    private void initSymbolTable() {
         symbolTable.install( "int",   lexVARTYPE, VARTYPE_INT   );
         symbolTable.install( "short", lexVARTYPE, VARTYPE_SHORT );
         symbolTable.install( "byte",  lexVARTYPE, VARTYPE_BYTE  );
         symbolTable.install( "float", lexVARTYPE, VARTYPE_FLOAT );
+    }
 
+    public void resetText(final OzText text) {
         this.text = text;
         text.nextChar(); // seed reading
         lexemeCount = 0;

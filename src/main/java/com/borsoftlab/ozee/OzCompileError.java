@@ -5,6 +5,7 @@ public class OzCompileError {
 
     static void message( final OzScanner scanner, final String msg ) throws Exception {
         final OzText text = scanner.text;
+        errorString.setLength(0);
         while( text.lookAheadChar != '\n' && text.lookAheadChar != '\0' ) {
             text.nextChar();
         }
@@ -21,7 +22,6 @@ public class OzCompileError {
         errorString.append(msg);
         errorString.append('\n');
         throw new Exception(errorString.toString());
-     //   System.exit(0);        
     }
 
     static void expected( final OzScanner scanner, final String msg) throws Exception {
