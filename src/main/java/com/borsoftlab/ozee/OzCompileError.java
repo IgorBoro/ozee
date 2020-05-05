@@ -11,7 +11,7 @@ public class OzCompileError {
         errorString.append("\n\n");
         errorString.append(text.buffer);
         errorString.append('\n');
-        for( int i = 1; i < scanner.text.lexemeLoc.pos; i++ )
+        for( int i = 1; i < scanner.lexemeLoc.pos; i++ )
             errorString.append(' ');
         errorString.append('^');
         errorString.append('\n');
@@ -21,6 +21,7 @@ public class OzCompileError {
         errorString.append(msg);
         errorString.append('\n');
         throw new Exception(errorString.toString());
+     //   System.exit(0);        
     }
 
     static void expected( final OzScanner scanner, final String msg) throws Exception {
