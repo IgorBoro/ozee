@@ -11,7 +11,7 @@ import org.junit.Before;
     
 public class AppTestTest {
     
-    String program = "int i";
+    String program = "int i;";
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
 
     OzParser parser;
@@ -35,8 +35,22 @@ public class AppTestTest {
             parser.compile();
         } catch (Exception e) {
             e.printStackTrace();
+            assert(false);
         } finally {
         }
+        assert(true);
+    }
+
+    @Test
+    public void test2() {
+        try {
+            parser.compile();
+        } catch (Exception e) {
+            e.printStackTrace();
+            assert(false);
+        } finally {
+        }
+        assert(true);
     }
 
     @After

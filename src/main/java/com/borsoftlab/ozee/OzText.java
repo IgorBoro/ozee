@@ -25,9 +25,10 @@ public class OzText {
          bufferCleanFlag = false;
       }
       try {
-         if(( lookAheadChar = file.read() ) == -1 )
+         if(( lookAheadChar = file.read() ) == -1 ) {
             lookAheadChar = '\0';
-         else if( lookAheadChar == '\n' ) {
+            loc.pos++;
+         } else if( lookAheadChar == '\n' ) {
             bufferCleanFlag = true;
             loc.line++;
             loc.pos = 0;
