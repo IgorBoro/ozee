@@ -17,7 +17,6 @@ public class OzCompileError {
         while( text.lookAheadChar != '\n' && text.lookAheadChar != '\0' ) {
             text.nextChar();
         }
-        messageString.append("\n\n");
         messageString.append(text.buffer);
         messageString.append('\n');
         for( int i = 1; i < scanner.lexemeLoc.pos; i++ )
