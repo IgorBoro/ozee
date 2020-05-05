@@ -18,6 +18,7 @@ public class OzParser{
    
 	public void compile(final OzScanner scanner) throws Exception {
         this.scanner = scanner;
+        OzCompileError.reset();
         pc = 0;
         scanner.nextLexeme();
         stmtList();

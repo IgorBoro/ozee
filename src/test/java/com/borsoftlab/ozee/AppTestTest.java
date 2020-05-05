@@ -34,7 +34,7 @@ public class AppTestTest {
         try {
             parser.compile(scanner);
         } catch (Exception e) {
-      //      e.printStackTrace();
+        //    e.printStackTrace();
             System.out.println(OzCompileError.errorString);
             assert(false);
         } finally {
@@ -47,7 +47,7 @@ public class AppTestTest {
         try {
             parser.compile(scanner);
         } catch (Exception e) {
-    //        e.printStackTrace();
+        //    e.printStackTrace();
             System.out.println(OzCompileError.errorString);
             assert(false);
         } finally {

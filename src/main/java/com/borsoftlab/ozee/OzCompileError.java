@@ -1,11 +1,17 @@
 package com.borsoftlab.ozee;
 
 public class OzCompileError {
+    static boolean isError = false;
     static StringBuilder errorString = new StringBuilder();
+
+    static void reset(){
+        isError = false;
+        errorString.setLength(0);
+    }
 
     static void message( final OzScanner scanner, final String msg ) throws Exception {
         final OzText text = scanner.text;
-        errorString.setLength(0);
+        isError = true;
         while( text.lookAheadChar != '\n' && text.lookAheadChar != '\0' ) {
             text.nextChar();
         }
