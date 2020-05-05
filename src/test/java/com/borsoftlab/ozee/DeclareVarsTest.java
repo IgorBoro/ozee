@@ -2,57 +2,65 @@ package com.borsoftlab.ozee;
 
 import org.junit.Test;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.After;
 import org.junit.Before;
-    
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+
 public class DeclareVarsTest {
     
     String program = "int i";
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
 
-    final OzParser parser = new OzParser();
-    final OzScanner scanner = new OzScanner();
+    OzParser parser = new OzParser();
+    OzScanner scanner = new OzScanner();
 
     @Before
     public void setup() {
+        programStream = new ByteArrayInputStream(program.getBytes());
 
+        parser = new OzParser();
+        scanner = new OzScanner();
+    }
+        
+    @Test(expected = Exception.class)
+    public void test() throws Exception{
         try {
-            final OzText text = new OzText(programStream);
+            OzText text = new OzText(programStream);
             scanner.resetText(text);
-        
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }        
-    }
-        
-    @Test
-    public void test() {
-        try {
             parser.compile(scanner);
         } catch (Exception e) {
-        //    e.printStackTrace();
             System.out.println(OzCompileError.errorString);
-            assert(false);
+            throw e;
         } finally {
         }
-        assert(true);
     }
 
+    final String error = "\n\n"
+                       + "int i"
+                       + "\n"
+                       + "     ^"
+                       + "\n" 
+                       + "Error in line 1: expected '=' or ';'"
+                       + "\n";
+
     @Test
-    public void test2() {
+    public void test2(){
         try {
+            OzText text = new OzText(programStream);
+            scanner.resetText(text);
             parser.compile(scanner);
         } catch (Exception e) {
-        //    e.printStackTrace();
-            System.out.println(OzCompileError.errorString);
-            assert(false);
+            // System.out.println(OzCompileError.errorString);
         } finally {
         }
-        assert(true);
+        assertTrue( OzCompileError.errorString.toString().equals(error) );
     }
 
     @After
