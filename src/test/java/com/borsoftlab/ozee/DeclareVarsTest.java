@@ -28,26 +28,23 @@ public class DeclareVarsTest {
                        + "\n";
         
 
-    private String programText;
-    private String messageText;
-                       
+    private final String programText;
+    private final String messageText;
+
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
 
     OzParser parser = new OzParser();
     OzScanner scanner = new OzScanner();
 
-    public DeclareVarsTest(final String program, final String message){
+    public DeclareVarsTest(final String program, final String message) {
         programText = program;
         messageText = message;
     }
 
     @org.junit.runners.Parameterized.Parameters
-    public static Collection getParameters(){
-        return Arrays.asList( new Object[][]{
-            {program, error}
-        });
-    }                   
-
+    public static Collection getParameters() {
+        return Arrays.asList(new Object[][] { { program, error } });
+    }
 
     @Before
     public void setup() {
@@ -56,14 +53,14 @@ public class DeclareVarsTest {
         parser = new OzParser();
         scanner = new OzScanner();
     }
-        
+
     @Test(expected = Exception.class)
-    public void test() throws Exception{
+    public void test() throws Exception {
         try {
-            OzText text = new OzText(programStream);
+            final OzText text = new OzText(programStream);
             scanner.resetText(text);
             parser.compile(scanner);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.out.println(OzCompileError.errorString);
             throw e;
         } finally {
@@ -71,23 +68,23 @@ public class DeclareVarsTest {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         try {
-            OzText text = new OzText(programStream);
+            final OzText text = new OzText(programStream);
             scanner.resetText(text);
             parser.compile(scanner);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // System.out.println(OzCompileError.errorString);
         } finally {
         }
-        assertTrue( OzCompileError.errorString.toString().equals(messageText) );
+        assertTrue(OzCompileError.errorString.toString().equals(messageText));
     }
 
     @After
-    public void close(){
+    public void close() {
         try {
             programStream.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 }
