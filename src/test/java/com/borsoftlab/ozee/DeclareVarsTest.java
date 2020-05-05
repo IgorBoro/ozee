@@ -9,7 +9,7 @@ import java.io.InputStream;
 import org.junit.After;
 import org.junit.Before;
     
-public class AppTestTest {
+public class DeclareVarsTest {
     
     String program = "int i";
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
