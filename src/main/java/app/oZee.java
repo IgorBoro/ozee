@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class oZee {
+
     public static void main(final String[] args) {
         System.out.println("\n...oZee compiler...\n");
 
         final InputStream f;
+        final OzParser parser = new OzParser();
 
         try {
         /*
@@ -21,8 +23,7 @@ public class oZee {
             try {
                 final OzText text = new OzText(f);
                 final OzScanner scanner = new OzScanner(text);
-                final OzParser parser = new OzParser(scanner);
-                parser.compile();
+                parser.compile(scanner);
                 System.out.println('\n');
                 System.out.println(text.loc.line + " lines compiled");
                 final OzVm vm = new OzVm();

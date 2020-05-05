@@ -14,15 +14,15 @@ public class AppTestTest {
     String program = "int i;";
     InputStream programStream = new ByteArrayInputStream(program.getBytes());
 
-    OzParser parser;
+    final OzParser parser = new OzParser();
+    OzScanner scanner;
 
     @Before
-    public void setup(){
+    public void setup() {
 
         try {
             final OzText text = new OzText(programStream);
-            final OzScanner scanner = new OzScanner(text);
-            parser = new OzParser(scanner);
+            scanner = new OzScanner(text);
         
         } catch (Throwable e) {
             e.printStackTrace();
@@ -32,7 +32,7 @@ public class AppTestTest {
     @Test
     public void test() {
         try {
-            parser.compile();
+            parser.compile(scanner);
         } catch (Exception e) {
             e.printStackTrace();
             assert(false);
@@ -44,7 +44,7 @@ public class AppTestTest {
     @Test
     public void test2() {
         try {
-            parser.compile();
+            parser.compile(scanner);
         } catch (Exception e) {
             e.printStackTrace();
             assert(false);

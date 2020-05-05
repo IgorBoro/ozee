@@ -13,11 +13,11 @@ public class OzParser{
     private IntStack typeStack = new IntStack( 32 );
 
 
-    public OzParser(final OzScanner scanner){
-        this.scanner = scanner;
+    public OzParser(){
     }
-    
-    public void compile() throws Exception {
+   
+	public void compile(final OzScanner scanner) throws Exception {
+        this.scanner = scanner;
         pc = 0;
         scanner.nextLexeme();
         stmtList();
