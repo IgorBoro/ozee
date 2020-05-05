@@ -70,7 +70,7 @@ public class DeclareVarsTest {
 
     @Test
     public void test() {
-        System.out.println("<-------------------------->");
+        System.out.println("::------------------------------------------::");
         try {     
             final InputStream programStream = new ByteArrayInputStream(programText.getBytes());
             try {
