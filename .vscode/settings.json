@@ -9,5 +9,6 @@
         "NEGF",
         "SUBF"
     ],
-    "maven.view": "flat"
+    "maven.view": "flat",
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
