@@ -84,8 +84,8 @@ public class DeclareVarsTest {
         messageText = message;
     }
 
-    @org.junit.runners.Parameterized.Parameters(name = " program{index} ")
-    public static Collection<Object[]> getParameters() {
+    @Parameterized.Parameters(name = "{index} : ")
+    public static Iterable<Object[]> getParameters() {
         return Arrays.asList(new Object[][] { 
             { program0, message0 },
             { program1, message1 }, 
