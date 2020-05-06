@@ -1,20 +1,26 @@
 package com.borsoftlab.ozee;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(Parameterized.class)
+@DisplayName("Test class")
 public class DeclareVarsTest {
 
     static String program0
@@ -73,33 +79,16 @@ public class DeclareVarsTest {
     final static String message4
                         = "Ok";
 
-    private final String programText;
-    private final String messageText;
-
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
-    public DeclareVarsTest(final String program, final String message) {
-        programText = program;
-        messageText = message;
-    }
-
-    @Parameterized.Parameters(name = "{index} : ")
-    public static Iterable<Object[]> getParameters() {
-        return Arrays.asList(new Object[][] { 
-            { program0, message0 },
-            { program1, message1 }, 
-            { program2, message2 }, 
-            { program3, message3 }, 
-            { program4, message4 }, 
-        });
-    }
-
-    @Test
-    public void test() {
+    @DisplayName("Test method")
+    @ParameterizedTest(name = "{index} -> {0}")
+    @ArgumentsSource(CustomArgumentProvider.class)
+    public void test(String program, String message) {
         System.out.println("::------------------------------------------::");
         try {     
-            final InputStream programStream = new ByteArrayInputStream(programText.getBytes());
+            final InputStream programStream = new ByteArrayInputStream(program.getBytes());
             try {
                 final OzText text = new OzText(programStream);
                 scanner.resetText(text);
@@ -116,11 +105,22 @@ public class DeclareVarsTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        String actual = OzCompileError.messageString.toString();
-//        assertEquals(messageText, actual);
-        boolean b = actual.equals(messageText);
-        assertTrue( b );
+        assertEquals(message, OzCompileError.messageString.toString());
     }
+
+    static class CustomArgumentProvider implements ArgumentsProvider{
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+            return Stream.of(
+                Arguments.of( program0, message0 ),
+                Arguments.of( program1, message1 ), 
+                Arguments.of( program2, message2 ), 
+                Arguments.of( program3, message3 ), 
+                Arguments.of( program4, message4 ) 
+            );
+        }
+    }
+
 }
 
 

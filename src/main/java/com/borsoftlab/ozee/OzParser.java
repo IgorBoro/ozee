@@ -224,7 +224,7 @@ public class OzParser{
                 case OzScanner.lexEOF:
                 break ;   
                 default:
-                    OzCompileError.expected(scanner, "expression");    
+                    OzCompileError.message(scanner, "unexpected symbol");    
             }
         }
         if( unaryMinus ) {
