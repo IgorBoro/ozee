@@ -68,7 +68,7 @@ public class OzParser{
 
     private OzSymbols.Symbol newVariable(int type) throws Exception {
         OzSymbols.Symbol symbol = scanner.symbol;
-        // symbol.setType(type);
+        symbol.setType(type);
         match(OzScanner.lexNAME, "variable name");
         // allocateVariable(symbol);
         return symbol;

@@ -195,7 +195,7 @@ public class OzScanner {
         String ident = String.valueOf(identBuffer, 0, i);
         symbol = symbolTable.lookup(ident);
         if(symbol == null){
-            symbol = symbolTable.install(ident, lexNAME, varType);
+            symbol = symbolTable.install(ident, lexNAME, VAR_TYPE_UNDEF);
         } else {
             if( symbol.lexeme == OzScanner.lexVAR_TYPE ){
                 varType = symbol.varType;
