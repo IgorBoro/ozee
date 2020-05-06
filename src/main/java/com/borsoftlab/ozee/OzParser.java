@@ -62,7 +62,7 @@ public class OzParser{
 
     private int varType() throws Exception {
         int type = scanner.symbol.varType;
-        scanner.nextLexeme();
+        match(OzScanner.lexVARTYPE, "var type");
         return type;
     }
 
@@ -107,20 +107,19 @@ public class OzParser{
         while(true) {
             switch( scanner.lookAheadLexeme ){
                 case OzScanner.lexPLUS:
-                    scanner.nextLexeme();
                     sum();
                     break;
                 case OzScanner.lexMINUS:
-                    scanner.nextLexeme();
                     sub();
                     break;
                 default:
-                    return;
+                   return;
             }
         }
     }
 
     private void sum() throws Exception {
+        match(OzScanner.lexPLUS, "'+'");
         term();
         emit("add");
 //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
@@ -128,6 +127,7 @@ public class OzParser{
     }
 
     private void sub() throws Exception {
+        match(OzScanner.lexMINUS, "'-'");
         term();
         emit("sub");
 //        emitArithmeticOpCode(MachineCode.SUBF, MachineCode.SUBI);
