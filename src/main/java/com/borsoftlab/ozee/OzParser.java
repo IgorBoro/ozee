@@ -36,7 +36,7 @@ public class OzParser{
     }
 
     void stmt() throws Exception {
-        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+        if( scanner.lookAheadLexeme == OzScanner.lexVAR_TYPE) {
             declareVarStmt();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexNAME) {
@@ -61,14 +61,14 @@ public class OzParser{
     }
 
     private int varType() throws Exception {
-        int type = scanner.symbol.varType;
-        match(OzScanner.lexVARTYPE, "var type");
+        match(OzScanner.lexVAR_TYPE, "var type definition");
+        int type = scanner.varType;
         return type;
     }
 
     private OzSymbols.Symbol newVariable(int type) throws Exception {
         OzSymbols.Symbol symbol = scanner.symbol;
-        symbol.setType(type);
+        // symbol.setType(type);
         match(OzScanner.lexNAME, "variable name");
         // allocateVariable(symbol);
         return symbol;
@@ -76,7 +76,7 @@ public class OzParser{
 
     private OzSymbols.Symbol variable() throws Exception {
         OzSymbols.Symbol symbol = scanner.symbol;
-        if( symbol.varType == OzScanner.VARTYPE_UNDEF ){
+        if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined");
         }
         match(OzScanner.lexNAME, "variable name");
@@ -179,8 +179,8 @@ public class OzParser{
             switch(scanner.lookAheadLexeme){
                 case OzScanner.lexNUMBER:
                     scanner.nextLexeme();
-                    typeStack.push(scanner.numberType);
-                    if( scanner.numberType == OzScanner.VARTYPE_INT)
+                    typeStack.push(scanner.varType);
+                    if( scanner.varType == OzScanner.VAR_TYPE_INT)
                         emit("push " + scanner.intNumber);
                     else
                         emit("push " + scanner.floatNumber);    

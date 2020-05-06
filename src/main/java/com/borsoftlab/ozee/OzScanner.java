@@ -15,13 +15,13 @@ public class OzScanner {
     public static final int lexASSIGN      =  9;
     public static final int lexCOMMA       = 10; 
     public static final int lexSEMICOLON   = 11;
-    public static final int lexVARTYPE     = 12;
+    public static final int lexVAR_TYPE     = 12;
 
-    public static final int VARTYPE_UNDEF  = 0;
-    public static final int VARTYPE_INT      = 1;
-    public static final int VARTYPE_SHORT    = 2;
-    public static final int VARTYPE_BYTE     = 3;
-    public static final int VARTYPE_FLOAT    = 4;
+    public static final int VAR_TYPE_UNDEF  = 0;
+    public static final int VAR_TYPE_INT      = 1;
+    public static final int VAR_TYPE_SHORT    = 2;
+    public static final int VAR_TYPE_BYTE     = 3;
+    public static final int VAR_TYPE_FLOAT    = 4;
 
     public int lookAheadLexeme;
     public OzText text;
@@ -29,7 +29,7 @@ public class OzScanner {
     OzSymbols symbolTable = new OzSymbols();
     OzSymbols.Symbol symbol = null;
 
-    int numberType = VARTYPE_UNDEF;
+    int varType = VAR_TYPE_UNDEF;
     public int intNumber = 0;
     public float floatNumber = 0;
 
@@ -50,10 +50,10 @@ public class OzScanner {
     }
 
     private void initSymbolTable() {
-        symbolTable.install( "int",   lexVARTYPE, VARTYPE_INT   );
-        symbolTable.install( "short", lexVARTYPE, VARTYPE_SHORT );
-        symbolTable.install( "byte",  lexVARTYPE, VARTYPE_BYTE  );
-        symbolTable.install( "float", lexVARTYPE, VARTYPE_FLOAT );
+        symbolTable.install( "int",   lexVAR_TYPE, VAR_TYPE_INT   );
+        symbolTable.install( "short", lexVAR_TYPE, VAR_TYPE_SHORT );
+        symbolTable.install( "byte",  lexVAR_TYPE, VAR_TYPE_BYTE  );
+        symbolTable.install( "float", lexVAR_TYPE, VAR_TYPE_FLOAT );
     }
 
     public void resetText(final OzText text) {
@@ -177,9 +177,9 @@ public class OzScanner {
                 text.nextChar();
             } while (text.lookAheadChar != '\0' && Character.isDigit(text.lookAheadChar));
             floatNumber += intNumber;
-            numberType = VARTYPE_FLOAT;
+            varType = VAR_TYPE_FLOAT;
         }  else {
-            numberType = VARTYPE_INT;
+            varType = VAR_TYPE_INT;
         }
         lookAheadLexeme =  lexNUMBER;
     }
@@ -195,7 +195,11 @@ public class OzScanner {
         String ident = String.valueOf(identBuffer, 0, i);
         symbol = symbolTable.lookup(ident);
         if(symbol == null){
-            symbol = symbolTable.install(ident, lexNAME, VARTYPE_UNDEF);
+            symbol = symbolTable.install(ident, lexNAME, varType);
+        } else {
+            if( symbol.lexeme == OzScanner.lexVAR_TYPE ){
+                varType = symbol.varType;
+            }
         }
         lookAheadLexeme = symbol.lexeme;
     }

@@ -37,15 +37,15 @@ public class OzSymbols {
         }
         public static int sizeOfType(int type){
             switch( type ){
-                case OzScanner.VARTYPE_UNDEF:
+                case OzScanner.VAR_TYPE_UNDEF:
                     return 0;
-                case OzScanner.VARTYPE_INT:
+                case OzScanner.VAR_TYPE_INT:
                     return 4;
-                case OzScanner.VARTYPE_SHORT:
+                case OzScanner.VAR_TYPE_SHORT:
                     return 2;
-                case OzScanner.VARTYPE_BYTE:
+                case OzScanner.VAR_TYPE_BYTE:
                     return 1;
-                case OzScanner.VARTYPE_FLOAT:
+                case OzScanner.VAR_TYPE_FLOAT:
                     return 4;
                 default:
                     return 0;
