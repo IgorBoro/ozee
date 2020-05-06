@@ -130,7 +130,7 @@ public class OzScanner {
     }
 
     private void skipLineComment() {
-        while( text.lookAheadChar != '\n'){
+        while( text.lookAheadChar != '\n' && text.lookAheadChar != 0){
             text.nextChar();
         }
     }
