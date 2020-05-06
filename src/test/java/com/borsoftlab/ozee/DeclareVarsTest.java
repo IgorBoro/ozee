@@ -46,6 +46,21 @@ public class DeclareVarsTest {
     final static String message4
                         = "Ok";
 
+    final static String program5 
+                        = "int id = 180; // comment"
+                        + "int j = id;"
+                        + "byte l;"
+                        + "int t12;"
+                        + "float g;"
+                        + "int k= 17 + j + t12;"
+                        + "/*"
+                        + " * comment"
+                        + " */"
+                        + "byte b = 45;"
+                        + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
+    final static String message5
+                        = "Ok";
+
     private final String programText;
     private final String messageText;
 
