@@ -49,7 +49,7 @@ public class DeclareVarsTest {
     private final String programText;
     private final String messageText;
 
-    OzParser parser = new OzParser();
+    OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
     public DeclareVarsTest(final String program, final String message) {
