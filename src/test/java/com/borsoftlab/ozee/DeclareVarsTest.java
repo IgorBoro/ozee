@@ -15,9 +15,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Parameterized.class)
 public class DeclareVarsTest {
 
-    final static String program1
+    final static String program0
                         = "int i";
-    final static String message1 
+    final static String message0 
                         = "int i"
                         + "\n"
                         + "     ^"
@@ -26,14 +26,14 @@ public class DeclareVarsTest {
                         + "\n";
         
 
-    final static String program2 
+    final static String program1 
                         = "int i;";
-    final static String message2
+    final static String message1
                         = "Ok";
 
-    final static String program3
+    final static String program2
                         = "int i=";
-    final static String message3
+    final static String message2
                         = "int i="
                         + "\n"
                         + "      ^"
@@ -41,12 +41,12 @@ public class DeclareVarsTest {
                         + "Error in line 1: expected ';'"
                         + "\n";
     
-    final static String program4 
+    final static String program3 
                         = "int i=5;";
-    final static String message4
+    final static String message3
                         = "Ok";
 
-    final static String program5 
+    final static String program4 
                         = "int id = 180; // comment"
                         + "\n"
                         + "int j = id;"
@@ -68,7 +68,7 @@ public class DeclareVarsTest {
                         + "byte b = 45;"
                         + "\n"
                         + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
-    final static String message5
+    final static String message4
                         = "Ok";
 
     private final String programText;
@@ -82,14 +82,14 @@ public class DeclareVarsTest {
         messageText = message;
     }
 
-    @org.junit.runners.Parameterized.Parameters(name = "{index} :: \"{0}\" -> \"{1}\"")
+    @org.junit.runners.Parameterized.Parameters(name = " program{index} ")
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] { 
-            { program1, message1 },
+            { program0, message0 },
+            { program1, message1 }, 
             { program2, message2 }, 
             { program3, message3 }, 
             { program4, message4 }, 
-            { program5, message5 }, 
         });
     }
 
