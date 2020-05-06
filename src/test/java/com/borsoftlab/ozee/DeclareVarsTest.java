@@ -57,7 +57,8 @@ public class DeclareVarsTest {
         messageText = message;
     }
 
-    @org.junit.runners.Parameterized.Parameters
+
+    @org.junit.runners.Parameterized.Parameters(name = "{index} :: \"{0}\" -> \"{1}\"")
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] { 
             { program1, message1 },
