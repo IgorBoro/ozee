@@ -11,13 +11,15 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class DeclareVarsTest {
 
-    final static String program0
+    static String program0
                         = "int i";
-    final static String message0 
+    static String message0 
                         = "int i"
                         + "\n"
                         + "     ^"
@@ -93,7 +95,6 @@ public class DeclareVarsTest {
         });
     }
 
-
     @Test
     public void test() {
         System.out.println("::------------------------------------------::");
@@ -115,7 +116,10 @@ public class DeclareVarsTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        assertEquals(messageText, OzCompileError.messageString.toString());
+        String actual = OzCompileError.messageString.toString();
+//        assertEquals(messageText, actual);
+        boolean b = actual.equals(messageText);
+        assertTrue( b );
     }
 }
 
