@@ -42,13 +42,20 @@ public class DeclareVarsTest {
                         = "int i="  + '\n'
                         + "      ^" + '\n'
                         + "Error in line 1: unexpected EOF"   + '\n';
-    
-    final static String program3 
-                        = "int i=5;";
+
+    final static String program3
+                        = "int i=;";
     final static String message3
+                        = "int i=;"  + '\n'
+                        + "      ^" + '\n'
+                        + "Error in line 1: unexpected symbol"   + '\n';
+                        
+    final static String program4 
+                        = "int i=5;";
+    final static String message4
                         = "Ok";
 
-    final static String program4 
+    final static String program5 
                         = "int id = 180; // comment"   + '\n'
                         + "int j = id;"                + '\n'
                         + "byte l;"                    + '\n'
@@ -60,7 +67,7 @@ public class DeclareVarsTest {
                         + " */"                        + '\n'
                         + "byte b = 45;"               + '\n'
                         + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
-    final static String message4
+    final static String message5
                         = "Ok";
 
     OzParser parser   = new OzParser();
@@ -96,11 +103,12 @@ public class DeclareVarsTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                //Arguments.of( program0, message0 ),
-                //Arguments.of( program1, message1 ), 
-                Arguments.of( program2, message2 ) 
-                //Arguments.of( program3, message3 ), 
-                //Arguments.of( program4, message4 ) 
+                Arguments.of( program0, message0 ),
+                Arguments.of( program1, message1 ), 
+                Arguments.of( program2, message2 ), 
+                Arguments.of( program3, message3 ), 
+                Arguments.of( program4, message4 ), 
+                Arguments.of( program5, message5 ) 
             );
         }
     }
