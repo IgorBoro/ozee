@@ -91,6 +91,36 @@ public class DeclareVarsTest {
                         + "      ^"  + '\n'
                         + "Error in line 1: expected '=' or ';'" + '\n';
 
+
+    final static String program10 
+                        = "float ;";
+    final static String message10
+                        = "float ;"  + '\n'
+                        + "      ^"  + '\n'
+                        + "Error in line 1: expected variable name" + '\n';
+
+    final static String program11 
+                        = "float +";
+    final static String message11
+                        = "float +"  + '\n'
+                        + "      ^"  + '\n'
+                        + "Error in line 1: expected variable name" + '\n';
+
+
+    static String program12
+                        = "int d=4r56;";
+    static String message12 
+                        = "int d=4r56;"  + '\n'
+                        + "       ^"  + '\n'
+                        + "Error in line 1: unexpected lexeme" + '\n';
+
+    static String program13
+                        = "int d=4 56;";
+    static String message13 
+                        = "int d=4 56;"  + '\n'
+                        + "        ^"  + '\n'
+                        + "Error in line 1: unexpected lexeme" + '\n';
+
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
@@ -130,7 +160,11 @@ public class DeclareVarsTest {
             Arguments.of( program6, message6 ),
             Arguments.of( program7, message7 ),
             Arguments.of( program8, message8 ),
-            Arguments.of( program9, message9 )
+            Arguments.of( program9, message9 ),
+            Arguments.of( program10, message10 ),
+            Arguments.of( program11, message11 ),
+            Arguments.of( program12, message12 ),
+            Arguments.of( program13, message13 )
         );
     }
 }
