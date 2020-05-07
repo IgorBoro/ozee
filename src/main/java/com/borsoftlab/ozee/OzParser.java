@@ -58,7 +58,7 @@ public class OzParser{
         } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
             OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
         } else {
-            OzCompileError.expected(scanner, "'=' or ';'", scanner.lexemeLoc);
+            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
         }
     }
 
@@ -80,7 +80,7 @@ public class OzParser{
         OzSymbols.Symbol symbol = scanner.symbol;
         if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined",
-            scanner.lexemeLoc);
+            scanner.loc);
         }
         match(OzScanner.lexNAME, "variable name");
         return symbol;
@@ -227,7 +227,7 @@ public class OzParser{
                 case OzScanner.lexEOF:
                 break ;   
                 default:
-                    OzCompileError.message(scanner, "unexpected lexeme", scanner.lexemeLoc);    
+                    OzCompileError.message(scanner, "unexpected lexeme", scanner.loc);    
             }
         }
         if( unaryMinus ) {
@@ -254,7 +254,7 @@ public class OzParser{
         } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
             OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
         } else {
-            OzCompileError.expected(scanner, msg, scanner.lexemeLoc);
+            OzCompileError.expected(scanner, msg, scanner.loc);
         }
     }     
 }

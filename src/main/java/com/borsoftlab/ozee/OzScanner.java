@@ -36,7 +36,7 @@ public class OzScanner {
     public static final int IDENT_MAX_SIZE = 32;
     char[] identBuffer = new char[IDENT_MAX_SIZE];
     int lexemeCount;
-    Location lexemeLoc = new Location();
+    Location loc = new Location();
 
 
     public OzScanner(){
@@ -64,7 +64,7 @@ public class OzScanner {
 
     void nextLexeme() throws Exception {
         skipSpaces();
-        lexemeLoc.copy(text.loc);
+        loc.copy(text.loc);
 
         if( Character.isLetter(text.lookAheadChar) ) {
             getName();
@@ -156,7 +156,7 @@ public class OzScanner {
         if( text.lookAheadChar == '/'){
             text.nextChar();
         } else {
-            lexemeLoc.copy(text.loc);
+            loc.copy(text.loc);
             OzCompileError.message( this, "unclosed comment", text.loc );
         }
     }
