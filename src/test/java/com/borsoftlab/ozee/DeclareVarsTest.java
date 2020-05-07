@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -94,7 +95,7 @@ public class DeclareVarsTest {
     OzScanner scanner = new OzScanner();
 
     @ParameterizedTest(name = "{index}")
-    @ArgumentsSource(CustomArgumentProvider.class)
+    @MethodSource("argumentProvider")
     public void test(String program, String message) {
         System.out.println("::------------------------------------------::");
         try {     
@@ -118,22 +119,19 @@ public class DeclareVarsTest {
         assertEquals(message, OzCompileError.messageString.toString());
     }
 
-    static class CustomArgumentProvider implements ArgumentsProvider{
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-            return Stream.of(
-                Arguments.of( program0, message0 ),
-                Arguments.of( program1, message1 ),
-                Arguments.of( program2, message2 ),
-                Arguments.of( program3, message3 ),
-                Arguments.of( program4, message4 ),
-                Arguments.of( program5, message5 ),
-                Arguments.of( program6, message6 ),
-                Arguments.of( program7, message7 ),
-                Arguments.of( program8, message8 ),
-                Arguments.of( program9, message9 )
-            );
-        }
+    private static Stream<Arguments> argumentProvider() {
+        return Stream.of(
+            Arguments.of( program0, message0 ),
+            Arguments.of( program1, message1 ),
+            Arguments.of( program2, message2 ),
+            Arguments.of( program3, message3 ),
+            Arguments.of( program4, message4 ),
+            Arguments.of( program5, message5 ),
+            Arguments.of( program6, message6 ),
+            Arguments.of( program7, message7 ),
+            Arguments.of( program8, message8 ),
+            Arguments.of( program9, message9 )
+        );
     }
 }
 
