@@ -56,7 +56,7 @@ public class OzParser{
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
             // empty
         } else {
-            OzCompileError.expected(scanner, "'=' or ';'");
+            OzCompileError.expected(scanner, "'=' or ';'", scanner.text.loc);
         }
     }
 
@@ -77,7 +77,8 @@ public class OzParser{
     private OzSymbols.Symbol variable() throws Exception {
         OzSymbols.Symbol symbol = scanner.symbol;
         if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
-            OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined");
+            OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined",
+            scanner.lexemeLoc);
         }
         match(OzScanner.lexNAME, "variable name");
         return symbol;
@@ -90,7 +91,7 @@ public class OzParser{
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
             // empty
         } else {
-            OzCompileError.expected(scanner, "'='");
+            OzCompileError.expected(scanner, "'='", scanner.text.loc);
         }
     }
     
@@ -168,7 +169,7 @@ public class OzParser{
     private void factor() throws Exception {
         boolean unaryMinus = false;
         if( scanner.lookAheadLexeme == OzScanner.lexMINUS){
-            scanner.nextLexeme();;
+            match(OzScanner.lexMINUS, "unexpected lexeme");
             unaryMinus = true;
         };
         if( scanner.lookAheadLexeme == OzScanner.lexLPAREN){
@@ -224,7 +225,7 @@ public class OzParser{
                 case OzScanner.lexEOF:
                 break ;   
                 default:
-                    OzCompileError.message(scanner, "unexpected symbol");    
+                    OzCompileError.message(scanner, "unexpected symbol", scanner.text.loc);    
             }
         }
         if( unaryMinus ) {
@@ -249,9 +250,9 @@ public class OzParser{
         if( scanner.lookAheadLexeme == lexeme ){
             scanner.nextLexeme();
         } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-            OzCompileError.message(scanner, "unexpected EOF");
+            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
         } else {
-            OzCompileError.expected(scanner, msg);
+            OzCompileError.expected(scanner, msg, scanner.lexemeLoc);
         }
     }     
 }

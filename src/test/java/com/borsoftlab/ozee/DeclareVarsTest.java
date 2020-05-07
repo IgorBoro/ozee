@@ -1,23 +1,17 @@
 package com.borsoftlab.ozee;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.stream.Stream;
 
 @DisplayName("Test class")
@@ -47,7 +41,7 @@ public class DeclareVarsTest {
                         = "int i=;";
     final static String message3
                         = "int i=;"  + '\n'
-                        + "      ^" + '\n'
+                        + "      ^"  + '\n'
                         + "Error in line 1: unexpected symbol"   + '\n';
                         
     final static String program4 
@@ -66,14 +60,26 @@ public class DeclareVarsTest {
                         + " * comment"                 + '\n'
                         + " */"                        + '\n'
                         + "byte b = 45;"               + '\n'
-                        + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
+//                        + "float f = 0.523 * 12.3 - 41. 6/32 * (32 + 76) + j;";
+                        + "float f = 12 + 41. 6/32 * (32 + 76) + j;";
     final static String message5
+                        = "Ok";
+
+    static String program6
+                        = "float ff=45. 6;";
+    static String message6 
+                        = "float ff=45. 6;"  + '\n'
+                        + "            ^"  + '\n'
+                        + "Error in line 1: unexpected symbol"   + '\n';
+
+    static String program7
+                        = "float ff=45.6;";
+    static String message7 
                         = "Ok";
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
-    @DisplayName("Test method")
     @ParameterizedTest(name = "{index}")
     @ArgumentsSource(CustomArgumentProvider.class)
     public void test(String program, String message) {
@@ -103,16 +109,17 @@ public class DeclareVarsTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                Arguments.of( program0, message0 ),
-                Arguments.of( program1, message1 ), 
-                Arguments.of( program2, message2 ), 
-                Arguments.of( program3, message3 ), 
-                Arguments.of( program4, message4 ), 
-                Arguments.of( program5, message5 ) 
+       //        Arguments.of( program0, message0 ),
+       //         Arguments.of( program1, message1 ),
+       //         Arguments.of( program2, message2 ),
+       //         Arguments.of( program3, message3 ),
+       //         Arguments.of( program4, message4 ),
+                Arguments.of( program5, message5 )
+       //         Arguments.of( program6, message6 ),
+       //         Arguments.of( program7, message7 )
             );
         }
     }
-
 }
 
 

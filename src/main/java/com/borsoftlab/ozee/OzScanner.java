@@ -118,7 +118,7 @@ public class OzScanner {
                 lookAheadLexeme = lexEOF;
                 return;
             default:
-                OzCompileError.message(this, "invalid character");
+                OzCompileError.message(this, "invalid character", text.loc);
         }
         lexemeCount++;
     }
@@ -157,7 +157,7 @@ public class OzScanner {
             text.nextChar();
         } else {
             lexemeLoc.copy(text.loc);
-            OzCompileError.message( this, "unclosed comment" );
+            OzCompileError.message( this, "unclosed comment", text.loc );
         }
     }
 
@@ -166,16 +166,20 @@ public class OzScanner {
         do {
             intNumber = intNumber * 10 + (text.lookAheadChar - '0');
             text.nextChar();
-        } while( text.lookAheadChar != '\0' && Character.isDigit(text.lookAheadChar));
+        } while( text.lookAheadChar != 0 && Character.isDigit(text.lookAheadChar));
         if( text.lookAheadChar == '.' ){
             text.nextChar();
+            if(!Character.isDigit(text.lookAheadChar)){
+                lookAheadLexeme =  lexUNDEF;
+                return;
+            }
             floatNumber = 0.0f;
             float k = 10.0f;
             do {
                 floatNumber += (text.lookAheadChar - '0')/k;
                 k *= 10.0f;
                 text.nextChar();
-            } while (text.lookAheadChar != '\0' && Character.isDigit(text.lookAheadChar));
+            } while (text.lookAheadChar != 0 && Character.isDigit(text.lookAheadChar));
             floatNumber += intNumber;
             varType = VAR_TYPE_FLOAT;
         }  else {
