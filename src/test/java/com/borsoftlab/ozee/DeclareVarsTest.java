@@ -26,12 +26,9 @@ public class DeclareVarsTest {
     static String program0
                         = "int i";
     static String message0 
-                        = "int i"
-                        + "\n"
-                        + "     ^"
-                        + "\n" 
-                        + "Error in line 1: expected '=' or ';'"
-                        + "\n";
+                        = "int i"   + '\n'
+                        + "     ^"  + '\n'
+                        + "Error in line 1: expected '=' or ';'" + '\n';
         
 
     final static String program1 
@@ -42,12 +39,9 @@ public class DeclareVarsTest {
     final static String program2
                         = "int i=";
     final static String message2
-                        = "int i="
-                        + "\n"
-                        + "      ^"
-                        + "\n" 
-                        + "Error in line 1: expected ';'"
-                        + "\n";
+                        = "int i="  + '\n'
+                        + "      ^" + '\n'
+                        + "Error in line 1: unexpected EOF"   + '\n';
     
     final static String program3 
                         = "int i=5;";
@@ -55,26 +49,16 @@ public class DeclareVarsTest {
                         = "Ok";
 
     final static String program4 
-                        = "int id = 180; // comment"
-                        + "\n"
-                        + "int j = id;"
-                        + "\n"
-                        + "byte l;"
-                        + "\n"
-                        + "int t12;"
-                        + "\n"
-                        + "float g;"
-                        + "\n"
-                        + "int k= 17 + j + t12;"
-                        + "\n"
-                        + "/*"
-                        + "\n"
-                        + " * comment"
-                        + "\n"
-                        + " */"
-                        + "\n"
-                        + "byte b = 45;"
-                        + "\n"
+                        = "int id = 180; // comment"   + '\n'
+                        + "int j = id;"                + '\n'
+                        + "byte l;"                    + '\n'
+                        + "int t12;"                   + '\n'
+                        + "float g;"                   + '\n'
+                        + "int k= 17 + j + t12;"       + '\n'
+                        + "/*"                         + '\n'
+                        + " * comment"                 + '\n'
+                        + " */"                        + '\n'
+                        + "byte b = 45;"               + '\n'
                         + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
     final static String message4
                         = "Ok";
@@ -83,7 +67,7 @@ public class DeclareVarsTest {
     OzScanner scanner = new OzScanner();
 
     @DisplayName("Test method")
-    @ParameterizedTest(name = "{index} -> {0}")
+    @ParameterizedTest(name = "{index}")
     @ArgumentsSource(CustomArgumentProvider.class)
     public void test(String program, String message) {
         System.out.println("::------------------------------------------::");
@@ -112,11 +96,11 @@ public class DeclareVarsTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                Arguments.of( program0, message0 ),
-                Arguments.of( program1, message1 ), 
-                Arguments.of( program2, message2 ), 
-                Arguments.of( program3, message3 ), 
-                Arguments.of( program4, message4 ) 
+                //Arguments.of( program0, message0 ),
+                //Arguments.of( program1, message1 ), 
+                Arguments.of( program2, message2 ) 
+                //Arguments.of( program3, message3 ), 
+                //Arguments.of( program4, message4 ) 
             );
         }
     }

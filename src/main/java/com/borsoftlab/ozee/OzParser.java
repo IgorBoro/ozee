@@ -248,6 +248,8 @@ public class OzParser{
     private void match(final int lexeme, final String msg) throws Exception {
         if( scanner.lookAheadLexeme == lexeme ){
             scanner.nextLexeme();
+        } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+            OzCompileError.message(scanner, "unexpected EOF");
         } else {
             OzCompileError.expected(scanner, msg);
         }
