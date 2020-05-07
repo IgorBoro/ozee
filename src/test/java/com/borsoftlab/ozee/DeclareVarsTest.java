@@ -69,7 +69,7 @@ public class DeclareVarsTest {
                         = "float ff=45. 6;";
     static String message6 
                         = "float ff=45. 6;"  + '\n'
-                        + "            ^"  + '\n'
+                        + "            ^"    + '\n'
                         + "Error in line 1: unexpected symbol"   + '\n';
 
     static String program7
@@ -88,7 +88,7 @@ public class DeclareVarsTest {
                         = "int i + ";
     static String message9 
                         = "int i + "   + '\n'
-                        + "      ^"  + '\n'
+                        + "      ^"    + '\n'
                         + "Error in line 1: expected '=' or ';'" + '\n';
 
 
@@ -111,14 +111,14 @@ public class DeclareVarsTest {
                         = "int d=4r56;";
     static String message12 
                         = "int d=4r56;"  + '\n'
-                        + "       ^"  + '\n'
+                        + "       ^"     + '\n'
                         + "Error in line 1: unexpected lexeme" + '\n';
 
     static String program13
                         = "int d=4 56;";
     static String message13 
                         = "int d=4 56;"  + '\n'
-                        + "        ^"  + '\n'
+                        + "        ^"    + '\n'
                         + "Error in line 1: unexpected lexeme" + '\n';
 
     OzParser parser   = new OzParser();
