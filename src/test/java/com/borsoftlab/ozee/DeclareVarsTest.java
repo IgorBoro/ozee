@@ -121,7 +121,7 @@ public class DeclareVarsTest {
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
-    @ParameterizedTest(name = "{index}")
+    @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
     public void test(String program, String message) {
         System.out.println("::------------------------------------------::");

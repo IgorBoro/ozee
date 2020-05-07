@@ -14,6 +14,14 @@
 		<junit.jupiter.version>5.6.2</junit.jupiter.version>
 	</properties>
 
+	<repositories>
+  		<repository>
+    		<id>jcenter</id>
+    		<name>bintray</name>
+    		<url>https://jcenter.bintray.com</url>
+  		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -29,11 +37,18 @@
 		</dependency>
 		<!-- Parameterized Tests -->
 		<dependency>
-		        <groupId>org.junit.jupiter</groupId>
-		        <artifactId>junit-jupiter-params</artifactId>
-		        <version>${junit.jupiter.version}</version>
-		        <scope>test</scope>
-	        </dependency>
+	        <groupId>org.junit.jupiter</groupId>
+	        <artifactId>junit-jupiter-params</artifactId>
+	        <version>${junit.jupiter.version}</version>
+	        <scope>test</scope>
+        </dependency>
+		<dependency>
+  			<groupId>org.testng</groupId>
+  			<artifactId>testng</artifactId>
+  			<version>6.10</version>
+  			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -42,10 +57,21 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 			</plugin>
-			<plugin>
+			<!--plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
-			</plugin>
+			</plugin-->
+
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-surefire-plugin</artifactId>
+        		<version>3.0.0-M4</version>
+        		<configuration>
+          			<suiteXmlFiles>
+            			<suiteXmlFile>testng.xml</suiteXmlFile>
+          			</suiteXmlFiles>
+        		</configuration>
+      		</plugin>	
 		</plugins>
 	</build>
 
