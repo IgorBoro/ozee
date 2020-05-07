@@ -31,14 +31,7 @@ public class OzParser{
     //        System.out.print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  ");
     //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
             stmt();
-            // TODO - надо облагородить код
-            if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-                OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
-            } else 
-            if( scanner.lookAheadLexeme != OzScanner.lexSEMICOLON ){
-                OzCompileError.message(scanner, "unexpected lexeme", scanner.loc);
-            }
-            match(OzScanner.lexSEMICOLON, "';'");
+            match(OzScanner.lexSEMICOLON);
         }
     }
 
@@ -266,4 +259,15 @@ public class OzParser{
             OzCompileError.expected(scanner, msg, scanner.loc);
         }
     }     
+
+    private void match(final int lexeme) throws Exception {
+        if( scanner.lookAheadLexeme == lexeme ){
+            scanner.nextLexeme();
+        } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+        } else {
+            OzCompileError.message(scanner, "unexpected lexeme", scanner.loc);
+        }
+    }     
+
 }
