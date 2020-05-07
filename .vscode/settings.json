@@ -10,5 +10,6 @@
         "SUBF"
     ],
     "maven.view": "flat",
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "cSpell.language": "en,ru"
 }
