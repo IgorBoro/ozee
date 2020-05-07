@@ -161,7 +161,7 @@ public class OzScanner {
         }
     }
 
-    private void getNumber() {
+    private void getNumber() throws Exception {
         intNumber = 0;
         do {
             intNumber = intNumber * 10 + (text.lookAheadChar - '0');
@@ -170,8 +170,7 @@ public class OzScanner {
         if( text.lookAheadChar == '.' ){
             text.nextChar();
             if(!Character.isDigit(text.lookAheadChar)){
-                lookAheadLexeme =  lexUNDEF;
-                return;
+                OzCompileError.message(this, "unexpected symbol", text.loc);
             }
             floatNumber = 0.0f;
             float k = 10.0f;

@@ -18,12 +18,11 @@ import java.util.stream.Stream;
 public class DeclareVarsTest {
 
     static String program0
-                        = "int i";
+                        = "int i ";
     static String message0 
-                        = "int i"   + '\n'
-                        + "     ^"  + '\n'
-                        + "Error in line 1: expected '=' or ';'" + '\n';
-        
+                        = "int i "   + '\n'
+                        + "      ^"  + '\n'
+                        + "Error in line 1: unexpected EOF" + '\n';
 
     final static String program1 
                         = "int i;";
@@ -42,7 +41,7 @@ public class DeclareVarsTest {
     final static String message3
                         = "int i=;"  + '\n'
                         + "      ^"  + '\n'
-                        + "Error in line 1: unexpected symbol"   + '\n';
+                        + "Error in line 1: unexpected lexeme"   + '\n';
                         
     final static String program4 
                         = "int i=5;";
@@ -60,8 +59,8 @@ public class DeclareVarsTest {
                         + " * comment"                 + '\n'
                         + " */"                        + '\n'
                         + "byte b = 45;"               + '\n'
-//                        + "float f = 0.523 * 12.3 - 41. 6/32 * (32 + 76) + j;";
-                        + "float f = 12 + 41. 6/32 * (32 + 76) + j;";
+                        + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
+//                        + "float f = 12 + 41. 6/32 * (32 + 76) + j;";
     final static String message5
                         = "Ok";
 
@@ -76,6 +75,20 @@ public class DeclareVarsTest {
                         = "float ff=45.6;";
     static String message7 
                         = "Ok";
+
+    final static String program8
+                        = "int i= ;";
+    final static String message8
+                        = "int i= ;"  + '\n'
+                        + "       ^"  + '\n'
+                        + "Error in line 1: unexpected lexeme"   + '\n';
+
+    static String program9
+                        = "int i + ";
+    static String message9 
+                        = "int i + "   + '\n'
+                        + "      ^"  + '\n'
+                        + "Error in line 1: expected '=' or ';'" + '\n';
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
@@ -109,14 +122,16 @@ public class DeclareVarsTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-       //        Arguments.of( program0, message0 ),
-       //         Arguments.of( program1, message1 ),
-       //         Arguments.of( program2, message2 ),
-       //         Arguments.of( program3, message3 ),
-       //         Arguments.of( program4, message4 ),
-                Arguments.of( program5, message5 )
-       //         Arguments.of( program6, message6 ),
-       //         Arguments.of( program7, message7 )
+                Arguments.of( program0, message0 ),
+                Arguments.of( program1, message1 ),
+                Arguments.of( program2, message2 ),
+                Arguments.of( program3, message3 ),
+                Arguments.of( program4, message4 ),
+                Arguments.of( program5, message5 ),
+                Arguments.of( program6, message6 ),
+                Arguments.of( program7, message7 ),
+                Arguments.of( program8, message8 ),
+                Arguments.of( program9, message9 )
             );
         }
     }
