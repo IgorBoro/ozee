@@ -35,6 +35,7 @@ public class OzSymbols {
             varType = type;
             sizeInBytes = sizeOfType(type);
         }
+        
         public static int sizeOfType(int type){
             switch( type ){
                 case OzScanner.VAR_TYPE_UNDEF:
@@ -51,6 +52,36 @@ public class OzSymbols {
                     return 0;
             }
         }
-    
+
     }    
+
+    public void dumpSymbolTable(){
+        System.out.println("; =========== SYMBOL TABLE DUMP BEGIN ===================");
+        for( Map.Entry<String, Symbol> entry : map.entrySet()){
+//            String key = entry.getKey();
+            Symbol sym = entry.getValue();
+            if( sym.lexeme == OzScanner.lexNAME){
+                switch(sym.varType){
+                    case OzScanner.VAR_TYPE_BYTE:
+                        System.out.print("byte");
+                        break;
+                    case OzScanner.VAR_TYPE_SHORT:
+                        System.out.print("short");
+                        break;
+                    case OzScanner.VAR_TYPE_INT:
+                        System.out.print("int");
+                        break;
+                    case OzScanner.VAR_TYPE_FLOAT:
+                        System.out.print("float");
+                        break;
+                }
+                System.out.print("\t");
+                System.out.print(sym.name);
+                System.out.print("\t\t");
+                System.out.println(sym.sizeInBytes);
+            }
+        }
+        System.out.println("; ============  SYMBOL TABLE DUMP END   =================");
+    }
+
 }
