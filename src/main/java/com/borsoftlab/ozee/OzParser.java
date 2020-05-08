@@ -43,7 +43,6 @@ public class OzParser{
             assignStmt(); // TO DO
         }
         else {
-            //OzCompileError.message(scanner, "unexpected symbol");
             expression(); // it will be not always
         } 
     }
@@ -92,6 +91,8 @@ public class OzParser{
             assignExpression(symbol);
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
             // empty
+        } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
         } else {
             OzCompileError.expected(scanner, "'='", scanner.text.loc);
         }
@@ -141,11 +142,9 @@ public class OzParser{
         while(true) {
             switch( scanner.lookAheadLexeme ){
                 case OzScanner.lexMUL:
-//                    scanner.nextLexeme();
                     mul();
                     break;
                 case OzScanner.lexDIV:
-//                    scanner.nextLexeme();
                     div();
                     break;
                 default:
