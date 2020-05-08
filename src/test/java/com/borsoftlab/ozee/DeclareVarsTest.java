@@ -120,6 +120,13 @@ public class DeclareVarsTest {
                         + "        ^"    + '\n'
                         + "Error in line 1: unexpected lexeme" + '\n';
 
+    final static String program14 
+                        = "int i_val=m_val;";
+    final static String message14
+                        = "int i_val=m_val;"    + '\n'
+                        + "          ^"         + '\n'
+                        + "Error in line 1: variable 'm_val' not defined" + '\n';
+
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
@@ -151,6 +158,7 @@ public class DeclareVarsTest {
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
+            /*
             Arguments.of( program0, message0 ),
             Arguments.of( program1, message1 ),
             Arguments.of( program2, message2 ),
@@ -164,7 +172,9 @@ public class DeclareVarsTest {
             Arguments.of( program10, message10 ),
             Arguments.of( program11, message11 ),
             Arguments.of( program12, message12 ),
-            Arguments.of( program13, message13 )
+            Arguments.of( program13, message13 ),
+            */
+            Arguments.of( program14, message14 )
         );
     }
 }

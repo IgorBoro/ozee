@@ -39,7 +39,7 @@ public class OzParser{
         if( scanner.lookAheadLexeme == OzScanner.lexVAR_TYPE) {
             declareVarStmt();
         }
-        else if( scanner.lookAheadLexeme == OzScanner.lexNAME) {
+        else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             assignStmt(); // TO DO
         }
         else {
@@ -48,8 +48,8 @@ public class OzParser{
     }
 
     private void declareVarStmt() throws Exception {
-        int type = varType();
-        OzSymbols.Symbol symbol = newVariable(type);
+        int varType = varType();
+        OzSymbols.Symbol symbol = newVariable(varType);
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             assignExpression(symbol);
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
@@ -63,24 +63,25 @@ public class OzParser{
 
     private int varType() throws Exception {
         match(OzScanner.lexVAR_TYPE, "var type definition");
-        int type = scanner.varType;
-        return type;
+        int varType = scanner.varType;
+        return varType;
     }
 
-    private OzSymbols.Symbol newVariable(int type) throws Exception {
-        match(OzScanner.lexNAME, "variable name");
+    private OzSymbols.Symbol newVariable(int varType) throws Exception {
+        match(OzScanner.lexVARNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
-        symbol.setType(type);
+        symbol.allocateVariable(varType);
         // allocateVariable(symbol);
         return symbol;
     }
 
     private OzSymbols.Symbol variable() throws Exception {
-        match(OzScanner.lexNAME, "variable name");
+        Location loc = new Location(scanner.loc);
+        match(OzScanner.lexVARNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
         if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined",
-            scanner.loc);
+            loc);
         }
         return symbol;
     }
@@ -200,7 +201,7 @@ public class OzParser{
                     builtin(builtinFunc);
                     break;
                 */    
-                case OzScanner.lexNAME:
+                case OzScanner.lexVARNAME:
                     /*
                     scanner.nextLexeme();
                     OzSymbols.Symbol symbol = scanner.symbol;

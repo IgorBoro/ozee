@@ -12,8 +12,8 @@ public class OzSymbols {
         return map.get(key);
     }
 
-    public Symbol install(String name, int token, int type){
-        Symbol symbol = new Symbol(name, token, type);
+    public Symbol install(String name, int lexeme, int nameType){
+        Symbol symbol = new Symbol(name, lexeme, nameType);
         map.put(name, symbol);
         return symbol;
     }
@@ -25,16 +25,18 @@ public class OzSymbols {
         int locAddr;
         int sizeInBytes;
 
-        public Symbol(String name, int lexeme, int type){
+        public Symbol(String name, int lexeme, int varType){
             this.name = name;
             this.lexeme = lexeme;
-            setType( type );
+            this.varType = varType;
         }
 
-        public void setType(int type) {
-            varType = type;
-            sizeInBytes = sizeOfType(type);
-            if( lexeme == OzScanner.lexNAME ){
+        public void allocateVariable(int varType) {
+            if( this.varType == OzScanner.VAR_TYPE_UNDEF){
+                this.varType = varType;
+            }
+            if( lexeme == OzScanner.lexVARNAME ){
+                sizeInBytes = sizeOfType(varType);
                 locAddr = curAddress;
                 curAddress += sizeInBytes;
             }
@@ -62,7 +64,7 @@ public class OzSymbols {
         System.out.println("; =========== SYMBOL TABLE DUMP BEGIN ===================");
         for( Map.Entry<String, Symbol> entry : map.entrySet()){
             Symbol sym = entry.getValue();
-            if( sym.lexeme == OzScanner.lexNAME){
+            if( sym.lexeme == OzScanner.lexVARNAME){
                 switch(sym.varType){
                     case OzScanner.VAR_TYPE_BYTE:
                         System.out.print("byte");

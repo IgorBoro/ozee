@@ -4,7 +4,7 @@ public class OzScanner {
 
     public static final int lexUNDEF       = -1;
     public static final int lexEOF         =  0;
-    public static final int lexNAME        =  1;
+    public static final int lexVARNAME     =  1;
     public static final int lexNUMBER      =  2;
     public static final int lexPLUS        =  3;
     public static final int lexMINUS       =  4;
@@ -66,7 +66,7 @@ public class OzScanner {
         skipSpaces();
         loc.copy(text.loc);
 
-        if( Character.isLetter(text.lookAheadChar) ) {
+        if( Character.isLetter(text.lookAheadChar) || text.lookAheadChar == '_' ) {
             getName();
         } else if( Character.isDigit(text.lookAheadChar) || text.lookAheadChar == '.' ) {
             getNumber();
@@ -194,11 +194,11 @@ public class OzScanner {
                 break;
             identBuffer[i++] = (char) text.lookAheadChar;
             text.nextChar();
-        }while (Character.isLetterOrDigit(text.lookAheadChar));
+        }while (Character.isLetterOrDigit(text.lookAheadChar) || text.lookAheadChar == '_');
         String ident = String.valueOf(identBuffer, 0, i);
         symbol = symbolTable.lookup(ident);
         if(symbol == null){
-            symbol = symbolTable.install(ident, lexNAME, VAR_TYPE_UNDEF);
+            symbol = symbolTable.install(ident, lexVARNAME, VAR_TYPE_UNDEF);
         } else {
             if( symbol.lexeme == OzScanner.lexVAR_TYPE ){
                 varType = symbol.varType;
