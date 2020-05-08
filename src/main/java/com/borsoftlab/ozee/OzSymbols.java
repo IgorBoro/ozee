@@ -38,9 +38,7 @@ public class OzSymbols {
                 locAddr = curAddress;
                 curAddress += sizeInBytes;
             }
-
         }
-
     }    
 
     public static int sizeOfType(int type){
@@ -63,7 +61,6 @@ public class OzSymbols {
     public void dumpSymbolTable(){
         System.out.println("; =========== SYMBOL TABLE DUMP BEGIN ===================");
         for( Map.Entry<String, Symbol> entry : map.entrySet()){
-//            String key = entry.getKey();
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexNAME){
                 switch(sym.varType){
@@ -90,5 +87,4 @@ public class OzSymbols {
         }
         System.out.println("; ============  SYMBOL TABLE DUMP END   =================");
     }
-
 }
