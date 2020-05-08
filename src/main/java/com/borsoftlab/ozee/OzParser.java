@@ -69,20 +69,20 @@ public class OzParser{
     }
 
     private OzSymbols.Symbol newVariable(int type) throws Exception {
+        match(OzScanner.lexNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
         symbol.setType(type);
-        match(OzScanner.lexNAME, "variable name");
         // allocateVariable(symbol);
         return symbol;
     }
 
     private OzSymbols.Symbol variable() throws Exception {
+        match(OzScanner.lexNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
         if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined",
             scanner.loc);
         }
-        match(OzScanner.lexNAME, "variable name");
         return symbol;
     }
 
