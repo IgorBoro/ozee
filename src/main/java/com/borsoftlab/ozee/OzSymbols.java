@@ -15,10 +15,6 @@ public class OzSymbols {
     public Symbol install(String name, int token, int type){
         Symbol symbol = new Symbol(name, token, type);
         map.put(name, symbol);
-        if( token == OzScanner.lexNAME ){
-        //   symbol.locAddr = curAddress;
-        //   curAddress += symbol.sizeInBytes;
-        }
         return symbol;
     }
 
