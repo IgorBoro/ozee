@@ -1,22 +1,16 @@
 package com.borsoftlab.ozee;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.Stream;
 
-@Nested
-@DisplayName("Test class")
-public class DeclareVarsTest {
+import org.testng.Assert;
+import org.testng.annotations.*;
 
+public class DeclareVarsTestNG {
+
+ 
     static String program0
                         = "int i ";
     static String message0 
@@ -120,11 +114,32 @@ public class DeclareVarsTest {
                         + "        ^"    + '\n'
                         + "Error in line 1: unexpected lexeme" + '\n';
 
+                        
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
-    @ParameterizedTest(name="{index}")
-    @MethodSource("argumentProvider")
+
+    @DataProvider(name = "test1")
+    public static Object[][] arguments() {
+       return new Object[][] {
+           {program0, message0},
+           {program1, message1},
+           {program2, message2},
+           {program3, message3},
+           {program4, message4},
+           {program5, message5},
+           {program6, message6},
+           {program7, message7},
+           {program8, message8},
+           {program9, message9},
+           {program10, message10},
+           {program11, message11},
+           {program12, message12},
+           {program13, message13},
+        };
+    }
+
+    @Test(dataProvider = "test1")
     public void test(String program, String message) {
         System.out.println("::------------------------------------------::");
         try {     
@@ -145,28 +160,7 @@ public class DeclareVarsTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        assertEquals(message, OzCompileError.messageString.toString());
+       Assert.assertEquals(message, OzCompileError.messageString.toString());
     }
 
-    private static Stream<Arguments> argumentProvider() {
-        return Stream.of(
-            Arguments.of( program0, message0 ),
-            Arguments.of( program1, message1 ),
-            Arguments.of( program2, message2 ),
-            Arguments.of( program3, message3 ),
-            Arguments.of( program4, message4 ),
-            Arguments.of( program5, message5 ),
-            Arguments.of( program6, message6 ),
-            Arguments.of( program7, message7 ),
-            Arguments.of( program8, message8 ),
-            Arguments.of( program9, message9 ),
-            Arguments.of( program10, message10 ),
-            Arguments.of( program11, message11 ),
-            Arguments.of( program12, message12 ),
-            Arguments.of( program13, message13 )
-        );
-    }
 }
-
-
-    
