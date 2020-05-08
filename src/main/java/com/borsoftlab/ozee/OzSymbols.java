@@ -6,7 +6,7 @@ import java.util.Map;
 public class OzSymbols {
 
     private Map<String, Symbol> map = new HashMap<>();
-
+    int curAddress = 0;
 
     public Symbol lookup(String key){
         return map.get(key);
@@ -15,10 +15,14 @@ public class OzSymbols {
     public Symbol install(String name, int token, int type){
         Symbol symbol = new Symbol(name, token, type);
         map.put(name, symbol);
+        if( token == OzScanner.lexNAME ){
+        //   symbol.locAddr = curAddress;
+        //   curAddress += symbol.sizeInBytes;
+        }
         return symbol;
     }
 
-    public static class Symbol{
+    public class Symbol{
         String name;
         int lexeme;
         int varType;
@@ -34,26 +38,31 @@ public class OzSymbols {
         public void setType(int type) {
             varType = type;
             sizeInBytes = sizeOfType(type);
-        }
-        
-        public static int sizeOfType(int type){
-            switch( type ){
-                case OzScanner.VAR_TYPE_UNDEF:
-                    return 0;
-                case OzScanner.VAR_TYPE_INT:
-                    return 4;
-                case OzScanner.VAR_TYPE_SHORT:
-                    return 2;
-                case OzScanner.VAR_TYPE_BYTE:
-                    return 1;
-                case OzScanner.VAR_TYPE_FLOAT:
-                    return 4;
-                default:
-                    return 0;
+            if( lexeme == OzScanner.lexNAME ){
+                locAddr = curAddress;
+                curAddress += sizeInBytes;
             }
+
         }
 
     }    
+
+    public static int sizeOfType(int type){
+        switch( type ){
+            case OzScanner.VAR_TYPE_UNDEF:
+                return 0;
+            case OzScanner.VAR_TYPE_INT:
+                return 4;
+            case OzScanner.VAR_TYPE_SHORT:
+                return 2;
+            case OzScanner.VAR_TYPE_BYTE:
+                return 1;
+            case OzScanner.VAR_TYPE_FLOAT:
+                return 4;
+            default:
+                return 0;
+        }
+    }
 
     public void dumpSymbolTable(){
         System.out.println("; =========== SYMBOL TABLE DUMP BEGIN ===================");
@@ -78,7 +87,9 @@ public class OzSymbols {
                 System.out.print("\t");
                 System.out.print(sym.name);
                 System.out.print("\t\t");
-                System.out.println(sym.sizeInBytes);
+                System.out.print(sym.sizeInBytes);
+                System.out.print("\t");
+                System.out.println(sym.locAddr);
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP END   =================");
