@@ -36,7 +36,7 @@ public class OzParser{
     }
 
     void stmt() throws Exception {
-        if( scanner.lookAheadLexeme == OzScanner.lexVAR_TYPE) {
+        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             declareVarStmt();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
@@ -62,7 +62,7 @@ public class OzParser{
     }
 
     private int varType() throws Exception {
-        match(OzScanner.lexVAR_TYPE, "var type definition");
+        match(OzScanner.lexVARTYPE, "var type definition");
         int varType = scanner.varType;
         return varType;
     }

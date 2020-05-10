@@ -15,7 +15,7 @@ public class OzScanner {
     public static final int lexASSIGN      =  9;
     public static final int lexCOMMA       = 10; 
     public static final int lexSEMICOLON   = 11;
-    public static final int lexVAR_TYPE     = 12;
+    public static final int lexVARTYPE     = 12;
 
     public static final int VAR_TYPE_UNDEF  = 0;
     public static final int VAR_TYPE_INT      = 1;
@@ -50,10 +50,10 @@ public class OzScanner {
     }
 
     private void initSymbolTable() {
-        symbolTable.install( "int",   lexVAR_TYPE, VAR_TYPE_INT   );
-        symbolTable.install( "short", lexVAR_TYPE, VAR_TYPE_SHORT );
-        symbolTable.install( "byte",  lexVAR_TYPE, VAR_TYPE_BYTE  );
-        symbolTable.install( "float", lexVAR_TYPE, VAR_TYPE_FLOAT );
+        symbolTable.install( "int",   lexVARTYPE, VAR_TYPE_INT   );
+        symbolTable.install( "short", lexVARTYPE, VAR_TYPE_SHORT );
+        symbolTable.install( "byte",  lexVARTYPE, VAR_TYPE_BYTE  );
+        symbolTable.install( "float", lexVARTYPE, VAR_TYPE_FLOAT );
     }
 
     public void resetText(final OzText text) {
@@ -200,7 +200,7 @@ public class OzScanner {
         if(symbol == null){
             symbol = symbolTable.install(ident, lexVARNAME, VAR_TYPE_UNDEF);
         } else {
-            if( symbol.lexeme == OzScanner.lexVAR_TYPE ){
+            if( symbol.lexeme == OzScanner.lexVARTYPE ){
                 varType = symbol.varType;
             }
         }
