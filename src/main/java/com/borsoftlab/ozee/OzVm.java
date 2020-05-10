@@ -25,13 +25,13 @@ public class OzVm{
     /*
      * Memory operations
      */
-    public static final byte OPCODE_PUSH   = (byte) 0x20;    //         -> c    |  c == M[PC+3], M[PC+2], M[PC+1], M[PC]
-    public static final byte OPCODE_EVAL   = (byte) 0x21;    //       A -> M[A] | 
-    public static final byte OPCODE_EVALB  = (byte) 0x22;
-    public static final byte OPCODE_EVALS  = (byte) 0x23;
-    public static final byte OPCODE_ASSGN  = (byte) 0x24;    //    x, A ->      |   M[A+3], M[A+2], M[A+1], M[A] = x
-    public static final byte OPCODE_ASSGNB = (byte) 0x25;
-    public static final byte OPCODE_ASSGNS = (byte) 0x26;
+    public static final byte OPCODE_PUSH    = (byte) 0x20;    //         -> c    |  c == M[PC+3], M[PC+2], M[PC+1], M[PC]
+    public static final byte OPCODE_EVAL    = (byte) 0x21;    //       A -> M[A] | 
+    public static final byte OPCODE_EVALB   = (byte) 0x22;
+    public static final byte OPCODE_EVALS   = (byte) 0x23;
+    public static final byte OPCODE_ASSIGN  = (byte) 0x24;    //    x, A ->      |   M[A+3], M[A+2], M[A+1], M[A] = x
+    public static final byte OPCODE_ASSIGNB = (byte) 0x25;
+    public static final byte OPCODE_ASSIGNS = (byte) 0x26;
 
 
     /*
@@ -96,7 +96,7 @@ public class OzVm{
                 System.arraycopy(memory, sp, memory, valueAddr, 4);
                 //                    stack[sp] = memory[stack[sp]];
                 break;
-                case OPCODE_ASSGN: // expensive operation
+                case OPCODE_ASSIGN: // expensive operation
 //                    OzUtils.storeIntValueToMemory(memory, stack[sp - 2], stack[sp - 1]);
 //                    --sp;
                 break;
