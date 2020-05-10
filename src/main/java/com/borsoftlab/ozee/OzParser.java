@@ -233,6 +233,8 @@ public class OzParser{
             }
         }
         if( unaryMinus ) {
+            emit("neg");
+
   //          emitNegOpCode(MachineCode.NEGF, MachineCode.NEGI4);
         }
     }
