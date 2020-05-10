@@ -8,9 +8,9 @@ public class OzParser{
     int pc = 0;
 
     /*
-    * Type maintenance stack
+    * Type support stack
     */
-    private IntStack typeStack = new IntStack( 32 );
+    private IntStack tsStack = new IntStack( 64 );
 
 
     public OzParser(){
@@ -184,7 +184,7 @@ public class OzParser{
             switch(scanner.lookAheadLexeme){
                 case OzScanner.lexNUMBER:
                     scanner.nextLexeme();
-                    typeStack.push(scanner.varType);
+                    tsStack.push(scanner.varType);
                     if( scanner.varType == OzScanner.VAR_TYPE_INT)
                         emit("push " + scanner.intNumber);
                     else
@@ -221,7 +221,7 @@ public class OzParser{
                         break;
                     }
                     */
-                    typeStack.push(symbol.varType);
+                    tsStack.push(symbol.varType);
                     emit("push @" + symbol.name);
                     emit("eval ");
 //                    emitPushDir(symbol);
