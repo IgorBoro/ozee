@@ -10,51 +10,61 @@ public class OzVm{
      * Arithmetic operations
      */
 
-    public static final byte OPCODE_INC  = (byte) 0x10;
-    public static final byte OPCODE_DEC  = (byte) 0x11;
-    public static final byte OPCODE_ADD  = (byte) 0x12;
-    public static final byte OPCODE_ADDF = (byte) 0x13;
-    public static final byte OPCODE_SUB  = (byte) 0x14;
-    public static final byte OPCODE_SUBF = (byte) 0x15;
-    public static final byte OPCODE_DIV  = (byte) 0x16;
-    public static final byte OPCODE_DIVF = (byte) 0x17;
-    public static final byte OPCODE_MOD  = (byte) 0x18;
-    public static final byte OPCODE_NEG  = (byte) 0x19;
-    public static final byte OPCODE_NEGF = (byte) 0x1A;
-    public static final byte OPCODE_CMP  = (byte) 0x1B;
+    public static final byte OPCODE_INC  = (byte) 0x01;
+    public static final byte OPCODE_DEC  = (byte) 0x02;
+    public static final byte OPCODE_ADD  = (byte) 0x03;
+    public static final byte OPCODE_ADDF = (byte) 0x04;
+    public static final byte OPCODE_SUB  = (byte) 0x05;
+    public static final byte OPCODE_SUBF = (byte) 0x06;
+    public static final byte OPCODE_MUL  = (byte) 0x07;
+    public static final byte OPCODE_MULF = (byte) 0x08;
+    public static final byte OPCODE_DIV  = (byte) 0x09;
+    public static final byte OPCODE_DIVF = (byte) 0x0A;
+    public static final byte OPCODE_MOD  = (byte) 0x0B;
+    public static final byte OPCODE_NEG  = (byte) 0x0C;
+    public static final byte OPCODE_NEGF = (byte) 0x0D;
+    public static final byte OPCODE_CMP  = (byte) 0x0E;
 
     /*
      * Memory operations
      */
-    public static final byte OPCODE_PUSH    = (byte) 0x20;    //         -> c    |  c == M[PC+3], M[PC+2], M[PC+1], M[PC]
-    public static final byte OPCODE_EVAL    = (byte) 0x21;    //       A -> M[A] | 
-    public static final byte OPCODE_EVALB   = (byte) 0x22;
-    public static final byte OPCODE_EVALS   = (byte) 0x23;
-    public static final byte OPCODE_ASSIGN  = (byte) 0x24;    //    x, A ->      |   M[A+3], M[A+2], M[A+1], M[A] = x
-    public static final byte OPCODE_ASSIGNB = (byte) 0x25;
-    public static final byte OPCODE_ASSIGNS = (byte) 0x26;
+    public static final byte OPCODE_PUSH  = (byte) 0x10;    //         -> c    |  c == M[PC+3], M[PC+2], M[PC+1], M[PC]
+    public static final byte OPCODE_EVAL  = (byte) 0x11;    //       A -> M[A] | 
+    public static final byte OPCODE_EVALB = (byte) 0x12;
+    public static final byte OPCODE_EVALS = (byte) 0x13;
+    public static final byte OPCODE_ASGN  = (byte) 0x14;    //    x, A ->      |   M[A+3], M[A+2], M[A+1], M[A] = x
+    public static final byte OPCODE_ASGNB = (byte) 0x15;
+    public static final byte OPCODE_ASGNS = (byte) 0x16;
 
+
+    /*
+     *
+     */
+    public static final byte OPCODE_PUSHFP = (byte) 0x17;
+    public static final byte OPCODE_POPFP  = (byte) 0x18;
+    public static final byte OPCODE_PUSHPC = (byte) 0x19;
+    public static final byte OPCODE_POPPC  = (byte) 0x1A;
 
     /*
      * Stack operations
      */
-    public static final byte OPCODE_DUP   = (byte) 0x30;
-    public static final byte OPCODE_DROP  = (byte) 0x31;
-    public static final byte OPCODE_SWAP  = (byte) 0x32;
-    public static final byte OPCODE_OVER  = (byte) 0x33;
+    public static final byte OPCODE_DUP   = (byte) 0x20;
+    public static final byte OPCODE_DROP  = (byte) 0x21;
+    public static final byte OPCODE_SWAP  = (byte) 0x22;
+    public static final byte OPCODE_OVER  = (byte) 0x23;
 
 
     /*
      * Flow control commands
      */
-    public static final byte OPCODE_JUMP = (byte) 0x40;
-    public static final byte OPCODE_IFEQ = (byte) 0x41;
-    public static final byte OPCODE_IFNE = (byte) 0x42;
-    public static final byte OPCODE_IFLE = (byte) 0x43;
-    public static final byte OPCODE_IFGE = (byte) 0x44;
-    public static final byte OPCODE_IFGT = (byte) 0x45;
-    public static final byte OPCODE_CALL = (byte) 0x46;
-    public static final byte OPCODE_RET  = (byte) 0x47;
+    public static final byte OPCODE_JUMP = (byte) 0x30;
+    public static final byte OPCODE_IFEQ = (byte) 0x31;
+    public static final byte OPCODE_IFNE = (byte) 0x32;
+    public static final byte OPCODE_IFLE = (byte) 0x33;
+    public static final byte OPCODE_IFGE = (byte) 0x34;
+    public static final byte OPCODE_IFGT = (byte) 0x35;
+    public static final byte OPCODE_CALL = (byte) 0x36;
+    public static final byte OPCODE_RET  = (byte) 0x37;
 
     private static final int DEF_MEMORY_SIZE = 1024;
 
@@ -97,7 +107,7 @@ public class OzVm{
                 System.arraycopy(memory, sp, memory, valueAddr, 4);
                 //                    stack[sp] = memory[stack[sp]];
                 break;
-                case OPCODE_ASSIGN: // expensive operation
+                case OPCODE_ASGN: // expensive operation
 //                    OzUtils.storeIntValueToMemory(memory, stack[sp - 2], stack[sp - 1]);
 //                    --sp;
                 break;
