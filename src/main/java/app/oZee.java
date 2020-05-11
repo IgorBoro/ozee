@@ -20,13 +20,12 @@ public class oZee {
         }
 
         InputStream file = null;
-        final OzParser parser = new OzParser();
-
         try {
       
             file = new FileInputStream(args[0]);
             final OzText text = new OzText(file);
             final OzScanner scanner = new OzScanner(text);
+            final OzParser parser = new OzParser();
             parser.compile(scanner);
             System.out.println();
             System.out.println(scanner.lexemeCount + " lexemes processed");
