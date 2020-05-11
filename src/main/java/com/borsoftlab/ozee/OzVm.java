@@ -122,7 +122,7 @@ public class OzVm{
         }
         long execTime = System.currentTimeMillis() - startMillis;
         System.out.println("oZee virtual machine stopped");
-        System.out.print("Execution time: " + execTime + " ms");
+        System.out.println("Execution time: " + execTime + " ms");
 
     }
 }

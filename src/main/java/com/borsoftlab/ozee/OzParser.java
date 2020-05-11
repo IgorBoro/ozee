@@ -102,8 +102,10 @@ public class OzParser{
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexASSIGN, "'='");
         expression();
-        emit("push @" + symbol.name);
-        emit("assign");
+//          emit("push @" + symbol.name);
+//          emit("assign");
+        emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
+        emitOpcode(OzVm.OPCODE_ASGN);
         //emitPullDir(symbol);
     }
    
@@ -126,7 +128,11 @@ public class OzParser{
     private void sum() throws Exception {
         match(OzScanner.lexPLUS, "'+'");
         term();
-        emit("add");
+  
+        emitOpcode(OzVm.OPCODE_ADD);
+//        emit("add");
+
+
 //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
 //        emitArithmeticOpCode(MachineCode.SUMF, MachineCode.SUMI);
     }
@@ -134,7 +140,10 @@ public class OzParser{
     private void sub() throws Exception {
         match(OzScanner.lexMINUS, "'-'");
         term();
-        emit("sub");
+        
+        emitOpcode(OzVm.OPCODE_SUB);
+
+//        emit("sub");
 //        emitArithmeticOpCode(MachineCode.SUBF, MachineCode.SUBI);
     }
 
@@ -157,7 +166,9 @@ public class OzParser{
     private void div() throws Exception {
         match(OzScanner.lexDIV, "'/'");
         factor();
-        emit("div");
+        emitOpcode(OzVm.OPCODE_DIV);
+
+//        emit("div");
 
 //     emitArithmeticOpCode(MachineCode.DIVF, MachineCode.DIVI);
     }
@@ -165,7 +176,9 @@ public class OzParser{
     private void mul() throws Exception {
         match(OzScanner.lexMUL, "'*'");
         factor();
-        emit("mul");
+        emitOpcode(OzVm.OPCODE_MUL);
+
+//        emit("mul");
 
 //        emitArithmeticOpCode(MachineCode.MULF, MachineCode.MULI);
     }
@@ -185,11 +198,17 @@ public class OzParser{
                 case OzScanner.lexNUMBER:
                     scanner.nextLexeme();
                     tsStack.push(scanner.varType);
-                    if( scanner.varType == OzScanner.VAR_TYPE_INT)
-                        emit("push " + scanner.intNumber);
-                    else
-                        emit("push " + scanner.floatNumber);    
+                    if( scanner.varType == OzScanner.VAR_TYPE_INT) {
+                        emitOpcode(OzVm.OPCODE_PUSH, Integer.toString(scanner.intNumber));
+
+                     //   emit("push " + scanner.intNumber);
+                    }
+                    else {
+                        emitOpcode(OzVm.OPCODE_PUSH, Float.toString(scanner.floatNumber));
+
+//                        emit("push " + scanner.floatNumber);    
                     // emitPushImm(scanner.getNumberAsInt());
+                    }
                     break;
                 /*    
                 case Scanner.TOKEN_BUILTIN:
@@ -222,8 +241,12 @@ public class OzParser{
                     }
                     */
                     tsStack.push(symbol.varType);
-                    emit("push @" + symbol.name);
-                    emit("eval ");
+                    emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
+
+//                    emit("push @" + symbol.name);
+                    emitOpcode(OzVm.OPCODE_EVAL);
+
+//                    emit("eval ");
 //                    emitPushDir(symbol);
                     break;
                 case OzScanner.lexEOF:
@@ -233,15 +256,24 @@ public class OzParser{
             }
         }
         if( unaryMinus ) {
-            emit("neg");
+            emitOpcode(OzVm.OPCODE_NEG);
+
+//            emit("neg");
 
   //          emitNegOpCode(MachineCode.NEGF, MachineCode.NEGI4);
         }
     }
 
-    private void emit(String cmd) {
-        System.out.println(cmd);
+    private void emitOpcode(int opcode) {
+        String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
+        System.out.println(mnemonic);
     }
+
+    private void emitOpcode(int opcode, final String arg) {
+        String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
+        System.out.println(mnemonic + " " + arg);
+    }
+
 
     public byte[] getExecMemModule() {
         final int value = 1234567890;

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class OzAsm {
 
-    static Map<Integer, OzAsmCmd> map = new HashMap<>();
+    private Map<Integer, OzAsmCmd> map = new HashMap<>();
     private static OzAsm  instance = null;
 
 
@@ -13,7 +13,7 @@ public class OzAsm {
         installOpcodes();
     }
 
-    public OzAsm getInstance(){
+    public static OzAsm getInstance(){
         if( instance == null ){
             instance = new OzAsm();
         }
@@ -64,13 +64,18 @@ public class OzAsm {
         install(OzVm.OPCODE_CALL, "CALL");
         install(OzVm.OPCODE_RET,  "RET");
 
-
-
     }
 
-    static void install(final int opcode, final String mnemonic){
+    void install(final int opcode, final String mnemonic){
         OzAsmCmd asmCmd = new OzAsmCmd(opcode, mnemonic);
         map.put(opcode, asmCmd);
+    }
+
+    final String getMnemonic(final int opcode){
+        OzAsmCmd cmd = map.get(opcode);
+        if( cmd == null )
+            return null;
+        return cmd.mnemonic;    
     }
 
     public static class OzAsmCmd {
