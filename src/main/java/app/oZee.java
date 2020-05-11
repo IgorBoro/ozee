@@ -28,8 +28,9 @@ public class oZee {
                 final OzText text = new OzText(f);
                 final OzScanner scanner = new OzScanner(text);
                 parser.compile(scanner);
-                System.out.println('\n');
-                System.out.println(text.loc.line + " lines compiled");
+                System.out.println();
+                System.out.println(scanner.lexemeCount + " lexemes processed");
+                System.out.println(scanner.text.loc.line + " lines compiled");
                 final OzVm vm = new OzVm();
                 byte[] program = parser.getExecMemModule();
                 vm.loadProgram(program);

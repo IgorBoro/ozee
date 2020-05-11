@@ -35,7 +35,7 @@ public class OzScanner {
 
     public static final int IDENT_MAX_SIZE = 32;
     char[] identBuffer = new char[IDENT_MAX_SIZE];
-    int lexemeCount;
+    public int lexemeCount;
     Location loc = new Location();
 
 

@@ -22,8 +22,6 @@ public class OzParser{
         pc = 0;
         scanner.nextLexeme();
         stmtList();
-        System.out.println(scanner.lexemeCount + " lexemes processed");
-        System.out.println(scanner.text.loc.line + " lines compiled");
     }
 
     void stmtList() throws Exception {
