@@ -5,6 +5,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/*
+ * mvn exec:java -Dexec.mainClass="app.oZee" -Dexec.args="program01.oZee"
+ */
+
 public class oZee {
 
     public static void main(final String[] args) {
@@ -14,12 +18,12 @@ public class oZee {
         final OzParser parser = new OzParser();
 
         try {
-        /*
-         * if (args.length == 0) f = System.in; else { f = new FileInputStream(args[0]);
-         * }
-         */
-
-            f = new FileInputStream("program01.oZee");
+        
+            if (args.length == 0){
+                System.out.println("\nexecute oZee <file>\n");
+                System.exit(1);
+            }
+            f = new FileInputStream(args[0]);
             try {
                 final OzText text = new OzText(f);
                 final OzScanner scanner = new OzScanner(text);
@@ -40,7 +44,7 @@ public class oZee {
                 }
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            System.out.println("Error! Can't open file: '" + args[0] + "'");
         }
     }    
 }
