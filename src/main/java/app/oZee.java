@@ -14,38 +14,37 @@ public class oZee {
     public static void main(final String[] args) {
         System.out.println("\n...oZee compiler...\n");
 
-        final InputStream f;
+        if (args.length == 0){
+            System.out.println("\nexecute oZee <file>\n");
+            System.exit(1);
+        }
+
+        InputStream file = null;
         final OzParser parser = new OzParser();
 
         try {
-        
-            if (args.length == 0){
-                System.out.println("\nexecute oZee <file>\n");
-                System.exit(1);
-            }
-            f = new FileInputStream(args[0]);
-            try {
-                final OzText text = new OzText(f);
-                final OzScanner scanner = new OzScanner(text);
-                parser.compile(scanner);
-                System.out.println();
-                System.out.println(scanner.lexemeCount + " lexemes processed");
-                System.out.println(scanner.text.loc.line + " lines compiled");
-                final OzVm vm = new OzVm();
-                byte[] program = parser.getExecMemModule();
-                vm.loadProgram(program);
-                vm.execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
+      
+            file = new FileInputStream(args[0]);
+            final OzText text = new OzText(file);
+            final OzScanner scanner = new OzScanner(text);
+            parser.compile(scanner);
+            System.out.println();
+            System.out.println(scanner.lexemeCount + " lexemes processed");
+            System.out.println(scanner.text.loc.line + " lines compiled");
+            final OzVm vm = new OzVm();
+            byte[] program = parser.getExecMemModule();
+            vm.loadProgram(program);
+            vm.execute();
+        } catch (Throwable e) {
+            System.out.println("Error! Can't open file: '" + args[0] + "'");
+        } finally {
+            if( file != null ) {
                 try {
-                    f.close();
+                    file.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        } catch (Throwable e) {
-            System.out.println("Error! Can't open file: '" + args[0] + "'");
         }
     }    
 }
