@@ -35,7 +35,7 @@ public class OzParser {
         mem[pc++] = OzVm.OPCODE_STOP;
 
 
-        emitList(OzVm.OPCODE_STOP);
+        emitListing(OzVm.OPCODE_STOP);
     }
 
     void stmtList() throws Exception {
@@ -280,22 +280,22 @@ public class OzParser {
     }
 
     private void emit(byte opcode){
-        emitList(opcode);
+        emitListing(opcode);
         emitMem(opcode);
     }
 
     private void emit(byte opcode, final int arg){
-        emitList(opcode, arg);
+        emitListing(opcode, arg);
         emitMem(opcode, arg);
     }
 
     private void emit(byte opcode, final float arg){
-        emitList(opcode, arg);
+        emitListing(opcode, arg);
         emitMem(opcode, arg);
     }
 
     private void emit(byte opcode, final Symbol sym){
-        emitList(opcode, sym);
+        emitListing(opcode, sym);
         emitMem(opcode, sym);
     }
 
@@ -309,7 +309,7 @@ public class OzParser {
         System.out.print(String.format("0x%04X: 0x%02X", pc, opcode));
     }
 
-    private void emitList(byte opcode) {
+    private void emitListing(byte opcode) {
         emitMnemonicList(opcode);
         System.out.println();
 
@@ -318,7 +318,7 @@ public class OzParser {
 
     }
 
-    private void emitList(byte opcode, final int arg) {
+    private void emitListing(byte opcode, final int arg) {
         emitMnemonicList(opcode);
         System.out.println(String.format(" %d", arg));
 
@@ -326,7 +326,7 @@ public class OzParser {
         System.out.println(String.format(" 0x%08X", arg));
     }
 
-    private void emitList(byte opcode, final float arg) {
+    private void emitListing(byte opcode, final float arg) {
         emitMnemonicList(opcode);
         System.out.println(String.format(Locale.US, " %f", arg));
 
@@ -335,7 +335,7 @@ public class OzParser {
         System.out.println(String.format(" 0x%08X",  i));
     }
 
-    private void emitList(byte opcode, final Symbol sym) {
+    private void emitListing(byte opcode, final Symbol sym) {
         emitMnemonicList(opcode);
         System.out.println(String.format(" %s", sym.name));
 
