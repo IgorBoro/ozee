@@ -62,7 +62,7 @@ public class OzSymbols {
                     default:
                         sType = "unknown";    
                 }
-                System.out.println(String.format("%-24s  %5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
+                System.out.println(String.format("%-24s %-5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY NAME END  =============");
@@ -96,7 +96,7 @@ public class OzSymbols {
                     default:
                         sType = "unknown";    
                 }
-                System.out.println(String.format("0x%08X  %-5s %d  %-24s", sym.allocAddress, sType, sym.sizeInBytes, sym.name));
+                System.out.println(String.format("0x%08X: %-24s %-5s %d", sym.allocAddress, sym.name, sType, sym.sizeInBytes));
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY ADDR END  =============");
