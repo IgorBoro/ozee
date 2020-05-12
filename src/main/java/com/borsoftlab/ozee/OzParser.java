@@ -83,7 +83,6 @@ public class OzParser {
         match(OzScanner.lexVARNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
         symbol.allocateVariable(varType);
-        // allocateVariable(symbol);
         return symbol;
     }
 
@@ -114,12 +113,8 @@ public class OzParser {
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexASSIGN, "'='");
         expression();
-//          emit("push @" + symbol.name);
-//          emit("assign");
         emit(OzVm.OPCODE_PUSH, symbol);
-        //emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
         emit(OzVm.OPCODE_ASGN);
-        //emitPullDir(symbol);
     }
    
     public void expression() throws Exception {
@@ -141,23 +136,13 @@ public class OzParser {
     private void sum() throws Exception {
         match(OzScanner.lexPLUS, "'+'");
         term();
-  
         emit(OzVm.OPCODE_ADD);
-//        emit("add");
-
-
-//        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
-//        emitArithmeticOpCode(MachineCode.SUMF, MachineCode.SUMI);
     }
 
     private void sub() throws Exception {
         match(OzScanner.lexMINUS, "'-'");
         term();
-        
         emit(OzVm.OPCODE_SUB);
-
-//        emit("sub");
-//        emitArithmeticOpCode(MachineCode.SUBF, MachineCode.SUBI);
     }
 
     private void term() throws Exception {
@@ -180,20 +165,12 @@ public class OzParser {
         match(OzScanner.lexDIV, "'/'");
         factor();
         emit(OzVm.OPCODE_DIV);
-
-//        emit("div");
-
-//     emitArithmeticOpCode(MachineCode.DIVF, MachineCode.DIVI);
     }
 
     private void mul() throws Exception {
         match(OzScanner.lexMUL, "'*'");
         factor();
         emit(OzVm.OPCODE_MUL);
-
-//        emit("mul");
-
-//        emitArithmeticOpCode(MachineCode.MULF, MachineCode.MULI);
     }
 
     private void factor() throws Exception {
@@ -213,15 +190,9 @@ public class OzParser {
                     tsStack.push(scanner.varType);
                     if( scanner.varType == OzScanner.VAR_TYPE_INT) {
                         emit(OzVm.OPCODE_PUSH, scanner.intNumber);
-//                        emitOpcode(OzVm.OPCODE_PUSH, Integer.toString(scanner.intNumber));
-
-                     //   emit("push " + scanner.intNumber);
                     }
                     else {
                         emit(OzVm.OPCODE_PUSH, scanner.floatNumber);
-
-//                        emit("push " + scanner.floatNumber);    
-                    // emitPushImm(scanner.getNumberAsInt());
                     }
                     break;
                 /*    
@@ -256,13 +227,7 @@ public class OzParser {
                     */
                     tsStack.push(symbol.varType);
                     emit(OzVm.OPCODE_PUSH, symbol);
-//                    emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
-
-//                    emit("push @" + symbol.name);
                     emit(OzVm.OPCODE_EVAL);
-
-//                    emit("eval ");
-//                    emitPushDir(symbol);
                     break;
                 case OzScanner.lexEOF:
                 break ;   
@@ -272,10 +237,6 @@ public class OzParser {
         }
         if( unaryMinus ) {
             emit(OzVm.OPCODE_NEG);
-
-//            emit("neg");
-
-  //          emitNegOpCode(MachineCode.NEGF, MachineCode.NEGI4);
         }
     }
 
@@ -298,7 +259,6 @@ public class OzParser {
         emitListing(opcode, sym);
         emitMem(opcode, sym);
     }
-
 
     private void emitMnemonicList(byte opcode){
         String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
