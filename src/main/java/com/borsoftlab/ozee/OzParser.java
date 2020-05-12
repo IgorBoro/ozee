@@ -22,6 +22,16 @@ public class OzParser{
         pc = 0;
         scanner.nextLexeme();
         stmtList();
+
+
+        final int value = 1234567890;
+        mem[pc++] = OzVm.OPCODE_PUSH;
+        OzUtils.storeIntToByteArray(mem, pc, value);
+        pc += 4;
+        mem[pc++] = OzVm.OPCODE_STOP;
+
+
+        emitOpcode(OzVm.OPCODE_STOP);
     }
 
     void stmtList() throws Exception {
@@ -102,7 +112,8 @@ public class OzParser{
         expression();
 //          emit("push @" + symbol.name);
 //          emit("assign");
-        emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
+        emitOpcode(OzVm.OPCODE_PUSH, symbol.locAddr);
+        //emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
         emitOpcode(OzVm.OPCODE_ASGN);
         //emitPullDir(symbol);
     }
@@ -197,12 +208,14 @@ public class OzParser{
                     scanner.nextLexeme();
                     tsStack.push(scanner.varType);
                     if( scanner.varType == OzScanner.VAR_TYPE_INT) {
-                        emitOpcode(OzVm.OPCODE_PUSH, Integer.toString(scanner.intNumber));
+                        emitOpcode(OzVm.OPCODE_PUSH, scanner.intNumber);
+//                        emitOpcode(OzVm.OPCODE_PUSH, Integer.toString(scanner.intNumber));
 
                      //   emit("push " + scanner.intNumber);
                     }
                     else {
-                        emitOpcode(OzVm.OPCODE_PUSH, Float.toString(scanner.floatNumber));
+                        emitOpcode(OzVm.OPCODE_PUSH, Float.floatToIntBits(scanner.floatNumber));
+//                        emitOpcode(OzVm.OPCODE_PUSH, Float.toString(scanner.floatNumber));
 
 //                        emit("push " + scanner.floatNumber);    
                     // emitPushImm(scanner.getNumberAsInt());
@@ -239,7 +252,8 @@ public class OzParser{
                     }
                     */
                     tsStack.push(symbol.varType);
-                    emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
+                    emitOpcode(OzVm.OPCODE_PUSH, symbol.locAddr);
+//                    emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
 
 //                    emit("push @" + symbol.name);
                     emitOpcode(OzVm.OPCODE_EVAL);
@@ -267,14 +281,21 @@ public class OzParser{
         System.out.println();
     }
 
-    private void emitOpcode(byte opcode, final String arg) {
+    private void emitOpcode(byte opcode, final int arg) {
         _emit(opcode);
-        System.out.println(" " + arg);
+        System.out.println(String.format(" 0x%08X", arg));
+        pc += 4;
     }
+
+//    private void emitOpcode(byte opcode, final String arg) {
+//        _emit(opcode);
+//        System.out.println(" " + arg);
+//        pc += 4;
+//    }
 
     private void _emit(byte opcode){
         String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
-        System.out.print(mnemonic);
+        System.out.print(String.format("0x%04X: %s", pc, mnemonic));
         mem[pc++] = opcode;
     }
 
