@@ -263,15 +263,20 @@ public class OzParser{
     }
 
     private void emitOpcode(int opcode) {
-        String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
-        System.out.println(mnemonic);
+        _emit(opcode);
+        System.out.println();
     }
 
     private void emitOpcode(int opcode, final String arg) {
-        String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
-        System.out.println(mnemonic + " " + arg);
+        _emit(opcode);
+        System.out.println(" " + arg);
     }
 
+    private void _emit(int opcode){
+        String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
+        System.out.print(mnemonic);
+        pc++;
+    }
 
     public byte[] getExecMemModule() {
         final int value = 1234567890;
