@@ -300,7 +300,7 @@ public class OzParser {
         System.out.println(String.format(" %s", sym.name));
 
         emitHexList(opcode);
-        System.out.println(String.format(" 0x%08X", sym.locAddr));
+        System.out.println(String.format(" 0x%08X", sym.allocAddress));
     }
 
     private void emitMem(byte opcode){
@@ -318,7 +318,7 @@ public class OzParser {
     }
 
     private void emitMem(byte opcode, final Symbol sym){
-        emitMem(opcode, sym.locAddr);
+        emitMem(opcode, sym.allocAddress);
     }
 
     public byte[] getExecMemModule() {

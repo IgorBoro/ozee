@@ -59,7 +59,7 @@ public class OzSymbols {
                 System.out.print("\t\t");
                 System.out.print(sym.sizeInBytes);
                 System.out.print("\t");
-                System.out.println(sym.locAddr);
+                System.out.println(String.format("0x%08X", sym.allocAddress));
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP END   =================");
@@ -69,7 +69,7 @@ public class OzSymbols {
         String name;
         int lexeme;
         int varType;
-        int locAddr;
+        int allocAddress;
         int sizeInBytes;
 
         public Symbol(String name, int lexeme, int varType){
@@ -84,7 +84,7 @@ public class OzSymbols {
             }
             if( lexeme == OzScanner.lexVARNAME ){
                 sizeInBytes = sizeOfType(varType);
-                locAddr = curAddress;
+                allocAddress = curAddress;
                 curAddress += sizeInBytes;
             }
         }
