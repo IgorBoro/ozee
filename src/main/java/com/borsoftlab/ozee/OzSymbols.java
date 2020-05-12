@@ -18,31 +18,6 @@ public class OzSymbols {
         return symbol;
     }
 
-    public class Symbol{
-        String name;
-        int lexeme;
-        int varType;
-        int locAddr;
-        int sizeInBytes;
-
-        public Symbol(String name, int lexeme, int varType){
-            this.name = name;
-            this.lexeme = lexeme;
-            this.varType = varType;
-        }
-
-        public void allocateVariable(int varType) {
-            if( this.varType == OzScanner.VAR_TYPE_UNDEF){
-                this.varType = varType;
-            }
-            if( lexeme == OzScanner.lexVARNAME ){
-                sizeInBytes = sizeOfType(varType);
-                locAddr = curAddress;
-                curAddress += sizeInBytes;
-            }
-        }
-    }    
-
     public static int sizeOfType(int type){
         switch( type ){
             case OzScanner.VAR_TYPE_UNDEF:
@@ -89,4 +64,30 @@ public class OzSymbols {
         }
         System.out.println("; ============  SYMBOL TABLE DUMP END   =================");
     }
+
+    public class Symbol{
+        String name;
+        int lexeme;
+        int varType;
+        int locAddr;
+        int sizeInBytes;
+
+        public Symbol(String name, int lexeme, int varType){
+            this.name = name;
+            this.lexeme = lexeme;
+            this.varType = varType;
+        }
+
+        public void allocateVariable(int varType) {
+            if( this.varType == OzScanner.VAR_TYPE_UNDEF){
+                this.varType = varType;
+            }
+            if( lexeme == OzScanner.lexVARNAME ){
+                sizeInBytes = sizeOfType(varType);
+                locAddr = curAddress;
+                curAddress += sizeInBytes;
+            }
+        }
+    }    
+
 }

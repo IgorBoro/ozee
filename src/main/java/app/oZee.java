@@ -34,6 +34,8 @@ public class oZee {
             final OzParser parser = new OzParser();
             parser.compile(scanner);
             System.out.println();
+            scanner.symbolTable.dumpSymbolTable();
+            System.out.println();
             System.out.println(scanner.lexemeCount + " lexemes processed");
             System.out.println(scanner.text.loc.line + " lines compiled");
             final OzVm vm = new OzVm();

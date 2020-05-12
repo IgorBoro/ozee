@@ -26,7 +26,7 @@ public class OzScanner {
     public int lookAheadLexeme;
     public OzText text;
 
-    OzSymbols symbolTable = new OzSymbols();
+    public OzSymbols symbolTable = new OzSymbols();
     OzSymbols.Symbol symbol = null;
 
     int varType = VAR_TYPE_UNDEF;
