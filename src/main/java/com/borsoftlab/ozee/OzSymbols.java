@@ -1,9 +1,10 @@
 package com.borsoftlab.ozee;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class OzSymbols {
 
@@ -38,11 +39,10 @@ public class OzSymbols {
     }
 
     public void dumpSymbolTableByName(){
-        System.out.println("; =========== SYMBOL TABLE DUMP BEGIN ===================");
-//        Stream<Map.Entry<String, Symbol>> sorted = map.entrySet().stream().sorted(Map.Entry.comparingByValue());
+        System.out.println("; ============= SYMBOL TABLE DUMP BY NAME BEGIN ============");
         
-        Map<String, Symbol> treeMap = new TreeMap<String, Symbol>(map);
-        for( Map.Entry<String, Symbol> entry : treeMap.entrySet()){
+        Map<String, Symbol> sortedMap = new TreeMap<String, Symbol>(map);
+        for( Map.Entry<String, Symbol> entry : sortedMap.entrySet()){
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType;
@@ -65,7 +65,41 @@ public class OzSymbols {
                 System.out.println(String.format("%-24s  %5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
             }
         }
-        System.out.println("; ============  SYMBOL TABLE DUMP END   =================");
+        System.out.println("; ============  SYMBOL TABLE DUMP BY NAME END  =============");
+    }
+
+    public void dumpSymbolTableByAddress(){
+        System.out.println("; ============= SYMBOL TABLE DUMP BY ADDR BEGIN ============");
+
+        final Map<String, Symbol> sortedMap = map.entrySet()
+                .stream()
+                .sorted((e1,e2) -> (e1.getValue().allocAddress - e2.getValue().allocAddress))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        for( Map.Entry<String, Symbol> entry : sortedMap.entrySet()){
+            Symbol sym = entry.getValue();
+            if( sym.lexeme == OzScanner.lexVARNAME){
+                String sType;
+                switch(sym.varType){
+                    case OzScanner.VAR_TYPE_BYTE:
+                        sType = "byte";
+                        break;
+                    case OzScanner.VAR_TYPE_SHORT:
+                        sType = "short";
+                        break;
+                    case OzScanner.VAR_TYPE_INT:
+                        sType = "int";
+                        break;
+                    case OzScanner.VAR_TYPE_FLOAT:
+                        sType = "float";
+                        break;
+                    default:
+                        sType = "unknown";    
+                }
+                System.out.println(String.format("0x%08X  %-5s %d  %-24s", sym.allocAddress, sType, sym.sizeInBytes, sym.name));
+            }
+        }
+        System.out.println("; ============  SYMBOL TABLE DUMP BY ADDR END  =============");
     }
 
     public class Symbol{

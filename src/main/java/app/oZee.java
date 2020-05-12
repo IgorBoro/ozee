@@ -35,6 +35,7 @@ public class oZee {
             parser.compile(scanner);
             System.out.println();
             scanner.symbolTable.dumpSymbolTableByName();
+            scanner.symbolTable.dumpSymbolTableByAddress();
             System.out.println();
             System.out.println(scanner.lexemeCount + " lexemes processed");
             System.out.println(scanner.text.loc.line + " lines compiled");
