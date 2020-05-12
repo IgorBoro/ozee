@@ -140,7 +140,7 @@ public class DeclareVarsTest {
                 final OzText text = new OzText(programStream);
                 scanner.resetText(text);
                 parser.compile(scanner);
-                scanner.symbolTable.dumpSymbolTable();
+                scanner.symbolTable.dumpSymbolTableByName();
             } catch (final Exception e) {
             } finally {
                 System.out.println(OzCompileError.messageString);

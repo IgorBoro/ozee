@@ -2,6 +2,8 @@ package com.borsoftlab.ozee;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Stream;
 
 public class OzSymbols {
 
@@ -35,31 +37,32 @@ public class OzSymbols {
         }
     }
 
-    public void dumpSymbolTable(){
+    public void dumpSymbolTableByName(){
         System.out.println("; =========== SYMBOL TABLE DUMP BEGIN ===================");
-        for( Map.Entry<String, Symbol> entry : map.entrySet()){
+//        Stream<Map.Entry<String, Symbol>> sorted = map.entrySet().stream().sorted(Map.Entry.comparingByValue());
+        
+        Map<String, Symbol> treeMap = new TreeMap<String, Symbol>(map);
+        for( Map.Entry<String, Symbol> entry : treeMap.entrySet()){
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
+                String sType;
                 switch(sym.varType){
                     case OzScanner.VAR_TYPE_BYTE:
-                        System.out.print("byte");
+                        sType = "byte";
                         break;
                     case OzScanner.VAR_TYPE_SHORT:
-                        System.out.print("short");
+                        sType = "short";
                         break;
                     case OzScanner.VAR_TYPE_INT:
-                        System.out.print("int");
+                        sType = "int";
                         break;
                     case OzScanner.VAR_TYPE_FLOAT:
-                        System.out.print("float");
+                        sType = "float";
                         break;
+                    default:
+                        sType = "unknown";    
                 }
-                System.out.print("\t");
-                System.out.print(sym.name);
-                System.out.print("\t\t");
-                System.out.print(sym.sizeInBytes);
-                System.out.print("\t");
-                System.out.println(String.format("0x%08X", sym.allocAddress));
+                System.out.println(String.format("%-24s  %5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP END   =================");
