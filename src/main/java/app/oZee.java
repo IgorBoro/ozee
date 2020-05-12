@@ -15,14 +15,18 @@ public class oZee {
         System.out.println("\n...oZee compiler...\n");
 
         if (args.length == 0){
-            System.out.println("\nexecute oZee <file>\n");
+            System.out.println("\nexecute: oZee <file>\n");
             System.exit(1);
         }
 
         InputStream file = null;
         try {
       
-            file = new FileInputStream(args[0]);
+            try{
+                file = new FileInputStream(args[0]);
+            } catch(Throwable e) {
+                System.out.println("Error! Can't open file: '" + args[0] + "'");
+            }
             final OzText text = new OzText(file);
             final OzScanner scanner = new OzScanner(text);
             final OzParser parser = new OzParser();
@@ -35,7 +39,7 @@ public class oZee {
             vm.loadProgram(program);
             vm.execute();
         } catch (Throwable e) {
-            System.out.println("Error! Can't open file: '" + args[0] + "'");
+            e.printStackTrace();
         } finally {
             if( file != null ) {
                 try {

@@ -4,7 +4,7 @@ public class OzParser{
 
     OzScanner scanner;
     int aheadLexeme = 0;
-    byte[] mem = new byte [12];
+    byte[] mem = new byte [128];
     int pc = 0;
 
     /*
@@ -262,20 +262,20 @@ public class OzParser{
         }
     }
 
-    private void emitOpcode(int opcode) {
+    private void emitOpcode(byte opcode) {
         _emit(opcode);
         System.out.println();
     }
 
-    private void emitOpcode(int opcode, final String arg) {
+    private void emitOpcode(byte opcode, final String arg) {
         _emit(opcode);
         System.out.println(" " + arg);
     }
 
-    private void _emit(int opcode){
+    private void _emit(byte opcode){
         String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
         System.out.print(mnemonic);
-        pc++;
+        mem[pc++] = opcode;
     }
 
     public byte[] getExecMemModule() {
