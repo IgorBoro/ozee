@@ -35,7 +35,7 @@ public class OzParser {
         mem[pc++] = OzVm.OPCODE_STOP;
 
 
-        emitOpcode(OzVm.OPCODE_STOP);
+        emitList(OzVm.OPCODE_STOP);
     }
 
     void stmtList() throws Exception {
@@ -116,9 +116,9 @@ public class OzParser {
         expression();
 //          emit("push @" + symbol.name);
 //          emit("assign");
-        emitOpcode(OzVm.OPCODE_PUSH, symbol);
+        emit(OzVm.OPCODE_PUSH, symbol);
         //emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
-        emitOpcode(OzVm.OPCODE_ASGN);
+        emit(OzVm.OPCODE_ASGN);
         //emitPullDir(symbol);
     }
    
@@ -142,7 +142,7 @@ public class OzParser {
         match(OzScanner.lexPLUS, "'+'");
         term();
   
-        emitOpcode(OzVm.OPCODE_ADD);
+        emit(OzVm.OPCODE_ADD);
 //        emit("add");
 
 
@@ -154,7 +154,7 @@ public class OzParser {
         match(OzScanner.lexMINUS, "'-'");
         term();
         
-        emitOpcode(OzVm.OPCODE_SUB);
+        emit(OzVm.OPCODE_SUB);
 
 //        emit("sub");
 //        emitArithmeticOpCode(MachineCode.SUBF, MachineCode.SUBI);
@@ -179,7 +179,7 @@ public class OzParser {
     private void div() throws Exception {
         match(OzScanner.lexDIV, "'/'");
         factor();
-        emitOpcode(OzVm.OPCODE_DIV);
+        emit(OzVm.OPCODE_DIV);
 
 //        emit("div");
 
@@ -189,7 +189,7 @@ public class OzParser {
     private void mul() throws Exception {
         match(OzScanner.lexMUL, "'*'");
         factor();
-        emitOpcode(OzVm.OPCODE_MUL);
+        emit(OzVm.OPCODE_MUL);
 
 //        emit("mul");
 
@@ -212,13 +212,13 @@ public class OzParser {
                     scanner.nextLexeme();
                     tsStack.push(scanner.varType);
                     if( scanner.varType == OzScanner.VAR_TYPE_INT) {
-                        emitOpcode(OzVm.OPCODE_PUSH, scanner.intNumber);
+                        emit(OzVm.OPCODE_PUSH, scanner.intNumber);
 //                        emitOpcode(OzVm.OPCODE_PUSH, Integer.toString(scanner.intNumber));
 
                      //   emit("push " + scanner.intNumber);
                     }
                     else {
-                        emitOpcode(OzVm.OPCODE_PUSH, scanner.floatNumber);
+                        emit(OzVm.OPCODE_PUSH, scanner.floatNumber);
 
 //                        emit("push " + scanner.floatNumber);    
                     // emitPushImm(scanner.getNumberAsInt());
@@ -255,11 +255,11 @@ public class OzParser {
                     }
                     */
                     tsStack.push(symbol.varType);
-                    emitOpcode(OzVm.OPCODE_PUSH, symbol);
+                    emit(OzVm.OPCODE_PUSH, symbol);
 //                    emitOpcode(OzVm.OPCODE_PUSH, symbol.name);
 
 //                    emit("push @" + symbol.name);
-                    emitOpcode(OzVm.OPCODE_EVAL);
+                    emit(OzVm.OPCODE_EVAL);
 
 //                    emit("eval ");
 //                    emitPushDir(symbol);
@@ -271,7 +271,7 @@ public class OzParser {
             }
         }
         if( unaryMinus ) {
-            emitOpcode(OzVm.OPCODE_NEG);
+            emit(OzVm.OPCODE_NEG);
 
 //            emit("neg");
 
@@ -279,59 +279,86 @@ public class OzParser {
         }
     }
 
-    private void emitOpcode(byte opcode) {
-        emitMnemonic(opcode);
-        System.out.println();
-
-        emitHex(opcode);
-        System.out.println();
-        pc += 1;
+    private void emit(byte opcode){
+        emitList(opcode);
+        emitMem(opcode);
     }
 
-    private void emitOpcode(byte opcode, final Symbol sym) {
-        emitMnemonic(opcode);
-        System.out.println(String.format(" %s", sym.name));
-
-        emitHex(opcode);
-        System.out.println(String.format(" 0x%08X", sym.locAddr));
-
-        pc += 4;
+    private void emit(byte opcode, final int arg){
+        emitList(opcode, arg);
+        emitMem(opcode, arg);
     }
 
-    private void emitOpcode(byte opcode, final float arg) {
-        emitMnemonic(opcode);
-        System.out.println(String.format(Locale.US, " %f", arg));
-
-        emitHex(opcode);
-        System.out.println(String.format(" 0x%08X", Float.floatToIntBits(arg)));
-
-        pc += 4;
+    private void emit(byte opcode, final float arg){
+        emitList(opcode, arg);
+        emitMem(opcode, arg);
     }
 
-    private void emitOpcode(byte opcode, final int arg) {
-        emitMnemonic(opcode);
-        System.out.println(String.format(" %d", arg));
-
-        emitHex(opcode);
-        System.out.println(String.format(" 0x%08X", arg));
-
-
-        pc += 4;
+    private void emit(byte opcode, final Symbol sym){
+        emitList(opcode, sym);
+        emitMem(opcode, sym);
     }
 
-//    private void emitOpcode(byte opcode, final String arg) {
-//        _emit(opcode);
-//        System.out.println(" " + arg);
-//        pc += 4;
-//    }
 
-    private void emitMnemonic(byte opcode){
+    private void emitMnemonicList(byte opcode){
         String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
         System.out.print(String.format("        %s", mnemonic));
     }
 
-    private void emitHex(byte opcode){
+    private void emitHexList(byte opcode){
         System.out.print(String.format("0x%04X: 0x%02X", pc, opcode));
+    }
+
+    private void emitList(byte opcode) {
+        emitMnemonicList(opcode);
+        System.out.println();
+
+        emitHexList(opcode);
+        System.out.println();
+
+    }
+
+    private void emitList(byte opcode, final int arg) {
+        emitMnemonicList(opcode);
+        System.out.println(String.format(" %d", arg));
+
+        emitHexList(opcode);
+        System.out.println(String.format(" 0x%08X", arg));
+    }
+
+    private void emitList(byte opcode, final float arg) {
+        emitMnemonicList(opcode);
+        System.out.println(String.format(Locale.US, " %f", arg));
+
+        int i = Float.floatToIntBits(arg);
+        emitHexList(opcode);
+        System.out.println(String.format(" 0x%08X",  i));
+    }
+
+    private void emitList(byte opcode, final Symbol sym) {
+        emitMnemonicList(opcode);
+        System.out.println(String.format(" %s", sym.name));
+
+        emitHexList(opcode);
+        System.out.println(String.format(" 0x%08X", sym.locAddr));
+    }
+
+    private void emitMem(byte opcode){
+        mem[pc++] = opcode;
+    }
+
+    private void emitMem(byte opcode, int arg){
+        mem[pc++] = opcode;
+        OzUtils.storeIntToByteArray(mem, pc, arg);
+        pc += 4;
+    }
+
+    private void emitMem(byte opcode, float arg){
+        emitMem(opcode, Float.floatToIntBits(arg));
+    }
+
+    private void emitMem(byte opcode, final Symbol sym){
+        emitMem(opcode, sym.locAddr);
     }
 
     public byte[] getExecMemModule() {
