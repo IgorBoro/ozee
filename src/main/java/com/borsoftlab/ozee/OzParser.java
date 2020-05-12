@@ -1,5 +1,7 @@
 package com.borsoftlab.ozee;
 
+import java.util.Locale;
+
 import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 public class OzParser {
@@ -298,7 +300,7 @@ public class OzParser {
 
     private void emitOpcode(byte opcode, final float arg) {
         emitMnemonic(opcode);
-        System.out.println(String.format(" %f", arg));
+        System.out.println(String.format(Locale.US, " %f", arg));
 
         emitHex(opcode);
         System.out.println(String.format(" 0x%08X", Float.floatToIntBits(arg)));
