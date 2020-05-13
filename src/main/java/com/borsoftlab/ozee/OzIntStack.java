@@ -1,6 +1,6 @@
 package com.borsoftlab.ozee;
 
-public class IntStack {
+public class OzIntStack {
 
     public static final int NO_ERROR       = 0;
     public static final int STACK_IS_FULL  = 1;
@@ -13,7 +13,7 @@ public class IntStack {
 
     private int error;
 
-    public IntStack(final int capacity){
+    public OzIntStack(final int capacity){
         this.capacity = capacity;
         this.array = new int [this.capacity];
         reset();
@@ -52,7 +52,7 @@ public class IntStack {
         return stackPtr;
     }
 
-    public IntStack push(final int data){
+    public OzIntStack push(final int data){
         if( isFull() ){
             setError(STACK_IS_FULL);
             return this;

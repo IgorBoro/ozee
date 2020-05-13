@@ -14,7 +14,7 @@ public class OzParser {
     /*
     * Type support stack
     */
-    private IntStack tsStack = new IntStack( 64 );
+    private OzIntStack tsStack = new OzIntStack( 64 );
 
 
     public OzParser(){
