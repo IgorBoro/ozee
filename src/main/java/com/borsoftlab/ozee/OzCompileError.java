@@ -10,12 +10,12 @@ public class OzCompileError {
         messageString.append("Ok");
     }
 
-    static void message( final OzScanner scanner, final String msg, final Location loc )
+    static void message( final OzScanner scanner, final String msg, final OzLocation loc )
         throws Exception {
         final OzText text = scanner.text;
         messageString.setLength(0);
         isError = true;
-        Location l = new Location(loc);
+        OzLocation l = new OzLocation(loc);
         while( text.lookAheadChar != '\n' && text.lookAheadChar != '\0' ) {
             text.nextChar();
         }
@@ -33,7 +33,7 @@ public class OzCompileError {
         throw new Exception(messageString.toString());
     }
 
-    static void expected( final OzScanner scanner, final String msg, final Location loc )
+    static void expected( final OzScanner scanner, final String msg, final OzLocation loc )
     throws Exception {
         message(scanner, "expected " + msg, loc);
      }

@@ -11,7 +11,7 @@ public class OzText {
    StringBuilder buffer = new StringBuilder();
    boolean bufferCleanFlag = false;
 
-   public Location loc = new Location();
+   public OzLocation loc = new OzLocation();
 
    public OzText(InputStream file){
       this.file = file;

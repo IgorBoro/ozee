@@ -87,7 +87,7 @@ public class OzParser {
     }
 
     private OzSymbols.Symbol variable() throws Exception {
-        Location loc = new Location(scanner.loc);
+        OzLocation loc = new OzLocation(scanner.loc);
         match(OzScanner.lexVARNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
         if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
