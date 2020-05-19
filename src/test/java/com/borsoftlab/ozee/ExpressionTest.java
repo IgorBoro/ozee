@@ -25,6 +25,14 @@ public class ExpressionTest {
                         = "Ok";
 
 
+    final static String program1 
+                        = "int i = 1 + 2    3 + 4;";
+    final static String message1
+                        = "int i = 1 + 2    3 + 4;"   + "\n"
+                        + "                 ^"        + "\n"
+                        + "Error in line 1: unexpected lexeme" + "\n";
+
+
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
@@ -56,7 +64,8 @@ public class ExpressionTest {
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-            Arguments.of( program0, message0 )
+            Arguments.of( program0, message0 ),
+            Arguments.of( program1, message1 )
         );
     }
 }
