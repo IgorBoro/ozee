@@ -180,7 +180,7 @@ public class OzParser {
             unaryMinus = true;
         };
         if( scanner.lookAheadLexeme == OzScanner.lexLPAREN){
-            scanner.nextLexeme();
+            match(OzScanner.lexLPAREN, "(");
             expression();
             match(OzScanner.lexRPAREN, ")");
         } else {
