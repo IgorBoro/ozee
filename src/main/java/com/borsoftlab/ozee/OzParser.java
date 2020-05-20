@@ -190,9 +190,11 @@ public class OzParser {
                     tsStack.push(scanner.varType);
                     if( scanner.varType == OzScanner.VAR_TYPE_INT) {
                         emit(OzVm.OPCODE_PUSH, scanner.intNumber);
+                        tsStack.push(OzScanner.VAR_TYPE_INT);
                     }
                     else {
                         emit(OzVm.OPCODE_PUSH, scanner.floatNumber);
+                        tsStack.push(OzScanner.VAR_TYPE_FLOAT);
                     }
                     break;
                 /*    
@@ -225,9 +227,9 @@ public class OzParser {
                         break;
                     }
                     */
-                    tsStack.push(symbol.varType);
                     emit(OzVm.OPCODE_PUSH, symbol);
                     emit(OzVm.OPCODE_EVAL);
+                    tsStack.push(symbol.varType);
                     break;
                 case OzScanner.lexEOF:
                 break ;   
