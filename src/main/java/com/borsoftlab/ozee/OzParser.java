@@ -99,15 +99,7 @@ public class OzParser {
 
     public void assignStmt() throws Exception {
         OzSymbols.Symbol symbol = variable();
-        if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            assignExpression(symbol);
-        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
-            // empty
-        } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
-        } else {
-            OzCompileError.expected(scanner, "'='", scanner.text.loc);
-        }
+        assignExpression(symbol);
     }
     
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
