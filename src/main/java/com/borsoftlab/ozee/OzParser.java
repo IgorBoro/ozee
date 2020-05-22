@@ -189,36 +189,8 @@ public class OzParser {
                         tsStack.push(OzScanner.VAR_TYPE_FLOAT);
                     }
                     break;
-                /*    
-                case Scanner.TOKEN_BUILTIN:
-                    match(Scanner.TOKEN_BUILTIN);
-                    int builtinFunc = scanner.getSymbol().getType();
-                    match(Scanner.TOKEN_LPAREN);
-                    expression();
-                    match(Scanner.TOKEN_RPAREN);
-                    builtin(builtinFunc);
-                    break;
-                */    
                 case OzScanner.lexVARNAME:
-                    /*
-                    scanner.nextLexeme();
-                    OzSymbols.Symbol symbol = scanner.symbol;
-                    int symbolType = symbol.varType;
-                    */
                     OzSymbols.Symbol symbol = variable();
-                    /*
-                    switch (symbolType){
-                        case OzScanner.VARTYPE_INT:
-                        case OzScanner.VARTYPE_SHORT:
-                        case OzScanner.VARTYPE_BYTE:
-                        case OzScanner.VARTYPE_FLOAT:
-                        case Scanner.DATA_TYPE_INT2:
-                        case Scanner.DATA_TYPE_UINT1:
-                        case Scanner.DATA_TYPE_UINT2:
-                        symbolType = Scanner.DATA_TYPE_INT4;
-                        break;
-                    }
-                    */
                     emit(OzVm.OPCODE_PUSH, symbol);
                     emit(OzVm.OPCODE_EVAL);
                     tsStack.push(symbol.varType);
