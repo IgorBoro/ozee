@@ -22,6 +22,7 @@ public class OzAsm {
 
     private void installOpcodes(){
         install(OzVm.OPCODE_STOP, "STOP");
+
         install(OzVm.OPCODE_INC,  "INC");
         install(OzVm.OPCODE_DEC,  "DEC");
         install(OzVm.OPCODE_ADD,  "ADD");
@@ -36,6 +37,8 @@ public class OzAsm {
         install(OzVm.OPCODE_NEG,  "NEG");
         install(OzVm.OPCODE_NEGF, "NEGF");
         install(OzVm.OPCODE_CMP,  "CMP");
+        install(OzVm.OPCODE_INT,  "INT");
+        install(OzVm.OPCODE_FLT,  "FLT");
 
         install(OzVm.OPCODE_PUSH,  "PUSH");
         install(OzVm.OPCODE_EVAL,  "EVAL");

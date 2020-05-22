@@ -49,7 +49,7 @@ public class OzParser {
 
     void stmt() throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            declareVarStmt();
+            declareVarAndAssignStmt();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             assignStmt(); // TO DO
@@ -59,9 +59,10 @@ public class OzParser {
         } 
     }
 
-    private void declareVarStmt() throws Exception {
+    private void declareVarAndAssignStmt() throws Exception {
         int varType = varType();
         OzSymbols.Symbol symbol = newVariable(varType);
+        match(OzScanner.lexVARNAME, "variable name");
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             assignExpression(symbol);
         } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
@@ -80,7 +81,6 @@ public class OzParser {
     }
 
     private OzSymbols.Symbol newVariable(int varType) throws Exception {
-        match(OzScanner.lexVARNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
         symbol.allocateVariable(varType);
         return symbol;
@@ -88,7 +88,6 @@ public class OzParser {
 
     private OzSymbols.Symbol variable() throws Exception {
         OzLocation loc = new OzLocation(scanner.loc);
-        match(OzScanner.lexVARNAME, "variable name");
         OzSymbols.Symbol symbol = scanner.symbol;
         if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined",
@@ -99,16 +98,24 @@ public class OzParser {
 
     public void assignStmt() throws Exception {
         OzSymbols.Symbol symbol = variable();
+        match(OzScanner.lexVARNAME, "variable name");
         assignExpression(symbol);
     }
     
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexASSIGN, "'='");
         expression();
+        assign(symbol);
+    }
+
+    private void assign(OzSymbols.Symbol symbol){
+        int srcType = tsStack.pop();
+        int dstType = symbol.varType;
+        genCodeConvertTopStackType(srcType, dstType);
         emit(OzVm.OPCODE_PUSH, symbol);
         emit(OzVm.OPCODE_ASGN);
     }
-   
+
     public void expression() throws Exception {
         term();
         while(true) {
@@ -178,19 +185,19 @@ public class OzParser {
         } else {
             switch(scanner.lookAheadLexeme){
                 case OzScanner.lexNUMBER:
-                    scanner.nextLexeme();
-                    tsStack.push(scanner.varType);
+                    match(OzScanner.lexNUMBER, "number");
+                   // scanner.nextLexeme();
                     if( scanner.varType == OzScanner.VAR_TYPE_INT) {
                         emit(OzVm.OPCODE_PUSH, scanner.intNumber);
-                        tsStack.push(OzScanner.VAR_TYPE_INT);
                     }
                     else {
                         emit(OzVm.OPCODE_PUSH, scanner.floatNumber);
-                        tsStack.push(OzScanner.VAR_TYPE_FLOAT);
                     }
+                    tsStack.push(scanner.varType);
                     break;
                 case OzScanner.lexVARNAME:
                     OzSymbols.Symbol symbol = variable();
+                    match(OzScanner.lexVARNAME, "variable name");                    
                     emit(OzVm.OPCODE_PUSH, symbol);
                     emit(OzVm.OPCODE_EVAL);
                     tsStack.push(symbol.varType);
@@ -315,5 +322,26 @@ public class OzParser {
             OzCompileError.message(scanner, "unexpected lexeme", scanner.loc);
         }
     }     
+    
+    private void genCodeConvertTopStackType(int srcType, int dstType){
+        if( srcType != dstType ){
+            if(
+                (srcType == OzScanner.VAR_TYPE_INT ||
+                srcType == OzScanner.VAR_TYPE_SHORT ||
+                srcType == OzScanner.VAR_TYPE_BYTE ) &&
+                dstType == OzScanner.VAR_TYPE_FLOAT
+                ) {
+                    emit(OzVm.OPCODE_FLT);
 
+            } else if ((dstType == OzScanner.VAR_TYPE_INT ||
+                dstType == OzScanner.VAR_TYPE_SHORT ||
+                dstType == OzScanner.VAR_TYPE_BYTE ) &&
+                srcType == OzScanner.VAR_TYPE_FLOAT ) {
+                    emit(OzVm.OPCODE_INT);
+
+            } else {
+
+            }
+        }
+    }
 }

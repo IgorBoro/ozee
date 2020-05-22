@@ -32,6 +32,19 @@ public class ExpressionTest {
                         + "                 ^"        + "\n"
                         + "Error in line 1: unexpected lexeme" + "\n";
 
+    final static String program2 
+                        = "int i = 1.2;"  + "\n"
+                        + "float f = 3;";
+    final static String message2
+                        = "Ok";
+
+    final static String program3 
+                        = "ubyte w;";
+    final static String message3
+                        = "ubyte w;" + "\n"
+                        + "^"        + "\n"
+                        + "Error in line 1: variable 'ubyte' not defined" + "\n";
+
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
@@ -65,7 +78,9 @@ public class ExpressionTest {
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
             Arguments.of( program0, message0 ),
-            Arguments.of( program1, message1 )
+            Arguments.of( program1, message1 ),
+            Arguments.of( program2, message2 ),
+            Arguments.of( program3, message3 )
         );
     }
 }

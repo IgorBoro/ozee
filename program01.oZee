@@ -1,6 +1,11 @@
 int id = 180; // comment
 int j = id;
 byte l;
+ubyte u;
+short s;
+char c;
+unsigned char kk;
+unsigned short ss;
 int t12;
 float g;
 int k= 17 + j + t12;
