@@ -81,19 +81,16 @@ public class OzParser {
     }
 
     private OzSymbols.Symbol newVariable(int varType) throws Exception {
-        OzSymbols.Symbol symbol = scanner.symbol;
-        symbol.allocateVariable(varType);
-        return symbol;
+        scanner.symbol.allocateVariable(varType);
+        return scanner.symbol;
     }
 
     private OzSymbols.Symbol variable() throws Exception {
-        OzLocation loc = new OzLocation(scanner.loc);
-        OzSymbols.Symbol symbol = scanner.symbol;
-        if( symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
-            OzCompileError.message(scanner, "variable '" + symbol.name + "' not defined",
-            loc);
+        if( scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
+            OzCompileError.message(scanner, "variable '" + scanner.symbol.name + "' not defined",
+            scanner.loc);
         }
-        return symbol;
+        return scanner.symbol;
     }
 
     public void assignStmt() throws Exception {
@@ -109,9 +106,7 @@ public class OzParser {
     }
 
     private void assign(OzSymbols.Symbol symbol){
-        int srcType = tsStack.pop();
-        int dstType = symbol.varType;
-        genCodeConvertTopStackType(srcType, dstType);
+        genCodeConvertTopStackType(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         emit(OzVm.OPCODE_ASGN);
     }
