@@ -186,7 +186,6 @@ public class OzParser {
             switch(scanner.lookAheadLexeme){
                 case OzScanner.lexNUMBER:
                     match(OzScanner.lexNUMBER, "number");
-                   // scanner.nextLexeme();
                     if( scanner.varType == OzScanner.VAR_TYPE_INT) {
                         emit(OzVm.OPCODE_PUSH, scanner.intNumber);
                     }
