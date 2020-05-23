@@ -18,10 +18,12 @@ public class OzScanner {
     public static final int lexVARTYPE     = 12;
 
     public static final int VAR_TYPE_UNDEF  = 0;
-    public static final int VAR_TYPE_INT      = 1;
-    public static final int VAR_TYPE_SHORT    = 2;
-    public static final int VAR_TYPE_BYTE     = 3;
-    public static final int VAR_TYPE_FLOAT    = 4;
+    public static final int VAR_TYPE_INT    = 1;
+    public static final int VAR_TYPE_SHORT  = 2;
+    public static final int VAR_TYPE_USHORT = 3;
+    public static final int VAR_TYPE_BYTE   = 4;
+    public static final int VAR_TYPE_UBYTE  = 5;
+    public static final int VAR_TYPE_FLOAT  = 6;
 
     public int lookAheadLexeme;
     public OzText text;
@@ -50,10 +52,12 @@ public class OzScanner {
     }
 
     private void initSymbolTable() {
-        symbolTable.install( "int",   lexVARTYPE, VAR_TYPE_INT   );
-        symbolTable.install( "short", lexVARTYPE, VAR_TYPE_SHORT );
-        symbolTable.install( "byte",  lexVARTYPE, VAR_TYPE_BYTE  );
-        symbolTable.install( "float", lexVARTYPE, VAR_TYPE_FLOAT );
+        symbolTable.install( "int",    lexVARTYPE, VAR_TYPE_INT    );
+        symbolTable.install( "short",  lexVARTYPE, VAR_TYPE_SHORT  );
+        symbolTable.install( "ushort", lexVARTYPE, VAR_TYPE_USHORT );
+        symbolTable.install( "byte",   lexVARTYPE, VAR_TYPE_BYTE   );
+        symbolTable.install( "ubyte",  lexVARTYPE, VAR_TYPE_UBYTE  );
+        symbolTable.install( "float",  lexVARTYPE, VAR_TYPE_FLOAT  );
     }
 
     public void resetText(final OzText text) {

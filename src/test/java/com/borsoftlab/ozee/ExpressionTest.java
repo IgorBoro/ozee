@@ -20,7 +20,9 @@ public class ExpressionTest {
     final static String program0 
                         = "float g = 187 * 10.0;"    + '\n'
                         + "float p = 7.7;"           + '\n'
-                        + "float f = 0.523 * 12.3 + g - 41.6/32 * (p + 76);";
+                        + "float f = 0.523 * 12.3 + g - 41.6/32 * (p + 76);" + "\n"
+                        + "byte b1 = 5;" + "\n"
+                        + "byte b2 = 5 + b1;";
     final static String message0
                         = "Ok";
 
@@ -39,11 +41,11 @@ public class ExpressionTest {
                         = "Ok";
 
     final static String program3 
-                        = "ubyte w;";
+                        = "sbyte w;";
     final static String message3
-                        = "ubyte w;" + "\n"
+                        = "sbyte w;" + "\n"
                         + "^"        + "\n"
-                        + "Error in line 1: variable 'ubyte' not defined" + "\n";
+                        + "Error in line 1: variable 'sbyte' not defined" + "\n";
 
 
     OzParser parser   = new OzParser();

@@ -29,7 +29,11 @@ public class OzSymbols {
                 return 4;
             case OzScanner.VAR_TYPE_SHORT:
                 return 2;
+            case OzScanner.VAR_TYPE_USHORT:
+                return 2;
             case OzScanner.VAR_TYPE_BYTE:
+                return 1;
+            case OzScanner.VAR_TYPE_UBYTE:
                 return 1;
             case OzScanner.VAR_TYPE_FLOAT:
                 return 4;
@@ -50,8 +54,14 @@ public class OzSymbols {
                     case OzScanner.VAR_TYPE_BYTE:
                         sType = "byte";
                         break;
+                    case OzScanner.VAR_TYPE_UBYTE:
+                        sType = "ubyte";
+                        break;
                     case OzScanner.VAR_TYPE_SHORT:
                         sType = "short";
+                        break;
+                    case OzScanner.VAR_TYPE_USHORT:
+                        sType = "ushort";
                         break;
                     case OzScanner.VAR_TYPE_INT:
                         sType = "int";
@@ -84,8 +94,14 @@ public class OzSymbols {
                     case OzScanner.VAR_TYPE_BYTE:
                         sType = "byte";
                         break;
+                    case OzScanner.VAR_TYPE_UBYTE:
+                        sType = "ubyte";
+                        break;
                     case OzScanner.VAR_TYPE_SHORT:
                         sType = "short";
+                        break;
+                    case OzScanner.VAR_TYPE_USHORT:
+                        sType = "ushort";
                         break;
                     case OzScanner.VAR_TYPE_INT:
                         sType = "int";
