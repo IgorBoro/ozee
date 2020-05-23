@@ -24,8 +24,12 @@ public class OzVm{
     public static final byte OPCODE_NEG  = (byte) 0x0C;
     public static final byte OPCODE_NEGF = (byte) 0x0D;
     public static final byte OPCODE_CMP  = (byte) 0x0E;
-    public static final byte OPCODE_INT  = (byte) 0x10;
-    public static final byte OPCODE_FLT  = (byte) 0x11;
+    public static final byte OPCODE_INT  = (byte) 0x0F;
+    public static final byte OPCODE_FLT  = (byte) 0x10;
+    public static final byte OPCODE_LSL  = (byte) 0x11;
+    public static final byte OPCODE_LSR  = (byte) 0x12;
+    public static final byte OPCODE_ASL  =  OPCODE_LSL;
+    public static final byte OPCODE_ASR  = (byte) 0x13;
 
     /*
      * Memory operations
