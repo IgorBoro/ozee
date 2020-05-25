@@ -87,7 +87,7 @@ public class OzParser {
 
     private OzSymbols.Symbol variable() throws Exception {
         if( scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
-            OzCompileError.message(scanner, "variable '" + scanner.symbol.name + "' not defined",
+            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined",
             scanner.loc);
         }
         return scanner.symbol;

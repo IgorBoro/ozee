@@ -125,7 +125,7 @@ public class DeclareVarsTest {
     final static String message14
                         = "int i_val=m_val;"    + '\n'
                         + "          ^"         + '\n'
-                        + "Error in line 1: variable 'm_val' not defined" + '\n';
+                        + "Error in line 1: name 'm_val' not defined" + '\n';
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();

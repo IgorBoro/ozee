@@ -45,7 +45,7 @@ public class ExpressionTest {
     final static String message3
                         = "sbyte w;" + "\n"
                         + "^"        + "\n"
-                        + "Error in line 1: variable 'sbyte' not defined" + "\n";
+                        + "Error in line 1: name 'sbyte' not defined" + "\n";
 
 
     OzParser parser   = new OzParser();
