@@ -2,7 +2,9 @@ package com.borsoftlab.ozee;
 
 public class OzVm{
 
-    // opcode
+    /*
+     * oZee Instruction Set Architecture (opcodes)
+     */
 
     public static final byte OPCODE_STOP  = (byte) 0x00;
 
