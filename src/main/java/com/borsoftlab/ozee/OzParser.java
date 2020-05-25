@@ -174,7 +174,8 @@ public class OzParser {
                     OzSymbols.Symbol symbol = variable();
                     match(OzScanner.lexVARNAME, "variable name");                    
                     emit(OzVm.OPCODE_PUSH, symbol);
-                    if( symbol.varType == OzScanner.VAR_TYPE_BYTE || symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
+                    if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||
+                        symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);
                         if( symbol.varType == OzScanner.VAR_TYPE_BYTE ){
                             emit( OzVm.OPCODE_PUSH, 24 );
@@ -182,7 +183,10 @@ public class OzParser {
                             emit( OzVm.OPCODE_PUSH, 24 );
                             emit( OzVm.OPCODE_ASR );
                         }
-                    } else if( symbol.varType == OzScanner.VAR_TYPE_SHORT || symbol.varType == OzScanner.VAR_TYPE_USHORT) {
+                    } else
+                    if(
+                        symbol.varType == OzScanner.VAR_TYPE_SHORT ||
+                        symbol.varType == OzScanner.VAR_TYPE_USHORT) {
                         emit(OzVm.OPCODE_EVALS);
                         if( symbol.varType == OzScanner.VAR_TYPE_SHORT ) {
                             emit( OzVm.OPCODE_PUSH, 16 );
