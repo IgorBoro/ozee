@@ -323,7 +323,8 @@ public class OzParser {
 
     private void emitListing(byte opcode, final int arg) {
         emitMnemonicListing(opcode);
-        System.out.println(String.format(" %d", arg));
+        System.out.print(String.format(" %d", arg));
+        System.out.println();
 
         emitHexListing(opcode);
         System.out.println(String.format(" 0x%08X", arg));
@@ -331,7 +332,8 @@ public class OzParser {
 
     private void emitListing(byte opcode, final float arg) {
         emitMnemonicListing(opcode);
-        System.out.println(String.format(Locale.US, " %f", arg));
+        System.out.print(String.format(Locale.US, " %f", arg));
+        System.out.println();
 
         int i = Float.floatToIntBits(arg);
         emitHexListing(opcode);
@@ -340,7 +342,8 @@ public class OzParser {
 
     private void emitListing(byte opcode, final Symbol sym) {
         emitMnemonicListing(opcode);
-        System.out.println(String.format(" %s", sym.name));
+        System.out.print(String.format(" %s", sym.name));
+        System.out.println();
 
         emitHexListing(opcode);
         System.out.println(String.format(" 0x%08X", sym.allocAddress));
