@@ -213,10 +213,6 @@ public class OzParser {
         term();
         int resultType = genCodeConvertTypeBinOp();
         switch ( resultType ){
-            case OzScanner.VAR_TYPE_BYTE:
-            case OzScanner.VAR_TYPE_UBYTE:
-            case OzScanner.VAR_TYPE_SHORT:
-            case OzScanner.VAR_TYPE_USHORT:
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_ADD);
                 break;
@@ -233,10 +229,6 @@ public class OzParser {
         term();
         int resultType = genCodeConvertTypeBinOp();
         switch (resultType){
-            case OzScanner.VAR_TYPE_BYTE:
-            case OzScanner.VAR_TYPE_UBYTE:
-            case OzScanner.VAR_TYPE_SHORT:
-            case OzScanner.VAR_TYPE_USHORT:
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_SUB);
                 break;
@@ -253,10 +245,6 @@ public class OzParser {
         factor();
         int resultType = genCodeConvertTypeBinOp();
         switch ( resultType ){
-            case OzScanner.VAR_TYPE_BYTE:
-            case OzScanner.VAR_TYPE_UBYTE:
-            case OzScanner.VAR_TYPE_SHORT:
-            case OzScanner.VAR_TYPE_USHORT:
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_MUL);
                 break;
@@ -273,10 +261,6 @@ public class OzParser {
         factor();
         int resultType = genCodeConvertTypeBinOp();
         switch ( resultType ){
-            case OzScanner.VAR_TYPE_BYTE:
-            case OzScanner.VAR_TYPE_UBYTE:
-            case OzScanner.VAR_TYPE_SHORT:
-            case OzScanner.VAR_TYPE_USHORT:
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_DIV);
                 break;
