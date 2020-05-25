@@ -116,7 +116,7 @@ public class OzParser {
         while(true) {
             switch( scanner.lookAheadLexeme ){
                 case OzScanner.lexPLUS:
-                    sum();
+                    add();
                     break;
                 case OzScanner.lexMINUS:
                     sub();
@@ -125,18 +125,6 @@ public class OzParser {
                     return;
             }
         }
-    }
-
-    private void sum() throws Exception {
-        match(OzScanner.lexPLUS, "'+'");
-        term();
-        emit(OzVm.OPCODE_ADD);
-    }
-
-    private void sub() throws Exception {
-        match(OzScanner.lexMINUS, "'-'");
-        term();
-        emit(OzVm.OPCODE_SUB);
     }
 
     private void term() throws Exception {
@@ -154,18 +142,6 @@ public class OzParser {
             }
         }
     }    
-
-    private void div() throws Exception {
-        match(OzScanner.lexDIV, "'/'");
-        factor();
-        emit(OzVm.OPCODE_DIV);
-    }
-
-    private void mul() throws Exception {
-        match(OzScanner.lexMUL, "'*'");
-        factor();
-        emit(OzVm.OPCODE_MUL);
-    }
 
     private void factor() throws Exception {
         boolean unaryMinus = false;
@@ -223,6 +199,34 @@ public class OzParser {
         if( unaryMinus ) {
             emit(OzVm.OPCODE_NEG);
         }
+    }
+
+    private void add() throws Exception {
+        match(OzScanner.lexPLUS, "'+'");
+        term();
+        genCodeConvertTypeBinOp();
+        emit(OzVm.OPCODE_ADD);
+    }
+
+    private void sub() throws Exception {
+        match(OzScanner.lexMINUS, "'-'");
+        term();
+        genCodeConvertTypeBinOp();
+        emit(OzVm.OPCODE_SUB);
+    }
+
+    private void mul() throws Exception {
+        match(OzScanner.lexMUL, "'*'");
+        factor();
+        genCodeConvertTypeBinOp();
+        emit(OzVm.OPCODE_MUL);
+    }
+
+    private void div() throws Exception {
+        match(OzScanner.lexDIV, "'/'");
+        factor();
+        genCodeConvertTypeBinOp();
+        emit(OzVm.OPCODE_DIV);
     }
 
     private void emit(byte opcode){
@@ -356,4 +360,9 @@ public class OzParser {
             }
         }
     }
+
+    private void genCodeConvertTypeBinOp(){
+ 
+    }
+
 }
