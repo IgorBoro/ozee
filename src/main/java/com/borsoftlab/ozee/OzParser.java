@@ -204,29 +204,76 @@ public class OzParser {
     private void add() throws Exception {
         match(OzScanner.lexPLUS, "'+'");
         term();
-        genCodeConvertTypeBinOp();
-        emit(OzVm.OPCODE_ADD);
+        switch (genCodeConvertTypeBinOp()){
+            case OzScanner.VAR_TYPE_BYTE:
+            case OzScanner.VAR_TYPE_UBYTE:
+            case OzScanner.VAR_TYPE_SHORT:
+            case OzScanner.VAR_TYPE_USHORT:
+            case OzScanner.VAR_TYPE_INT:
+                emit(OzVm.OPCODE_ADD);
+                break;
+            case OzScanner.VAR_TYPE_FLOAT:    
+                emit(OzVm.OPCODE_ADDF);
+            break;
+            default:
+        }
     }
 
     private void sub() throws Exception {
         match(OzScanner.lexMINUS, "'-'");
         term();
         genCodeConvertTypeBinOp();
-        emit(OzVm.OPCODE_SUB);
+        switch (genCodeConvertTypeBinOp()){
+            case OzScanner.VAR_TYPE_BYTE:
+            case OzScanner.VAR_TYPE_UBYTE:
+            case OzScanner.VAR_TYPE_SHORT:
+            case OzScanner.VAR_TYPE_USHORT:
+            case OzScanner.VAR_TYPE_INT:
+                emit(OzVm.OPCODE_SUB);
+                break;
+            case OzScanner.VAR_TYPE_FLOAT:    
+                emit(OzVm.OPCODE_SUBF);
+            break;
+            default:
+        }
     }
 
     private void mul() throws Exception {
         match(OzScanner.lexMUL, "'*'");
         factor();
         genCodeConvertTypeBinOp();
-        emit(OzVm.OPCODE_MUL);
+        switch (genCodeConvertTypeBinOp()){
+            case OzScanner.VAR_TYPE_BYTE:
+            case OzScanner.VAR_TYPE_UBYTE:
+            case OzScanner.VAR_TYPE_SHORT:
+            case OzScanner.VAR_TYPE_USHORT:
+            case OzScanner.VAR_TYPE_INT:
+                emit(OzVm.OPCODE_MUL);
+                break;
+            case OzScanner.VAR_TYPE_FLOAT:    
+                emit(OzVm.OPCODE_MULF);
+            break;
+            default:
+        }
     }
 
     private void div() throws Exception {
         match(OzScanner.lexDIV, "'/'");
         factor();
         genCodeConvertTypeBinOp();
-        emit(OzVm.OPCODE_DIV);
+        switch (genCodeConvertTypeBinOp()){
+            case OzScanner.VAR_TYPE_BYTE:
+            case OzScanner.VAR_TYPE_UBYTE:
+            case OzScanner.VAR_TYPE_SHORT:
+            case OzScanner.VAR_TYPE_USHORT:
+            case OzScanner.VAR_TYPE_INT:
+                emit(OzVm.OPCODE_DIV);
+                break;
+            case OzScanner.VAR_TYPE_FLOAT:    
+                emit(OzVm.OPCODE_DIVF);
+            break;
+            default:
+        }
     }
 
     private void emit(byte opcode){
@@ -361,8 +408,12 @@ public class OzParser {
         }
     }
 
-    private void genCodeConvertTypeBinOp(){
+    private int genCodeConvertTypeBinOp(){
+        int topType    = tsStack.pop();
+        int subTopType = tsStack.pop();
+      //  if( )
  
+      return 0;
     }
 
 }
