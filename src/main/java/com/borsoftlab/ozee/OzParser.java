@@ -106,7 +106,7 @@ public class OzParser {
     }
 
     private void assign(OzSymbols.Symbol symbol){
-        genCodeConvertTopStackType(tsStack.pop(), symbol.varType);
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         emit(OzVm.OPCODE_ASGN);
     }
@@ -335,7 +335,7 @@ public class OzParser {
         }
     }     
     
-    private void genCodeConvertTopStackType(int srcType, int dstType){
+    private void genCodeConvertTypeAssign(int srcType, int dstType){
         if( srcType != dstType ){
             if(
                 (srcType == OzScanner.VAR_TYPE_INT ||

@@ -22,7 +22,7 @@ public class ExpressionTest {
                         + "float p = 7.7;"           + '\n'
                         + "float f = 0.523 * 12.3 + g - 41.6/32 * (p + 76);" + "\n"
                         + "byte b1 = 5;" + "\n"
-                        + "byte b2 = 5 + b1;";
+                        + "ushort s2 = 5 + b1;";
     final static String message0
                         = "Ok";
 
