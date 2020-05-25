@@ -52,7 +52,7 @@ public class OzParser {
             declareVarAndAssignStmt();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            assignStmt(); // TO DO
+            assignStmt(); // TODO
         }
         else {
             expression(); // it will be not always
@@ -178,10 +178,12 @@ public class OzParser {
                         symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);
                         if( symbol.varType == OzScanner.VAR_TYPE_BYTE ){
+                            emitCommentListing("signed bit extension for byte");
                             emit( OzVm.OPCODE_PUSH, 24 );
                             emit( OzVm.OPCODE_ASL );
                             emit( OzVm.OPCODE_PUSH, 24 );
                             emit( OzVm.OPCODE_ASR );
+                            emitCommentListing("-");
                         }
                     } else
                     if(
@@ -189,10 +191,12 @@ public class OzParser {
                         symbol.varType == OzScanner.VAR_TYPE_USHORT) {
                         emit(OzVm.OPCODE_EVALS);
                         if( symbol.varType == OzScanner.VAR_TYPE_SHORT ) {
+                            emitCommentListing("signed bit extension for short");
                             emit( OzVm.OPCODE_PUSH, 16 );
                             emit( OzVm.OPCODE_ASL );
                             emit( OzVm.OPCODE_PUSH, 16 );
                             emit( OzVm.OPCODE_ASR );
+                            emitCommentListing("-");
                         }
                     } else {
                         emit(OzVm.OPCODE_EVAL);
@@ -389,24 +393,21 @@ public class OzParser {
         }
     }     
     
-    private void genCodeConvertTypeAssign(int srcType, int dstType){
-        if( srcType != dstType ){
-            if(
-                (srcType == OzScanner.VAR_TYPE_INT ||
-                srcType == OzScanner.VAR_TYPE_SHORT ||
-                srcType == OzScanner.VAR_TYPE_BYTE ) &&
-                dstType == OzScanner.VAR_TYPE_FLOAT
-                ) {
-                    emit(OzVm.OPCODE_FLT);
-
-            } else if ((dstType == OzScanner.VAR_TYPE_INT ||
-                dstType == OzScanner.VAR_TYPE_SHORT ||
-                dstType == OzScanner.VAR_TYPE_BYTE ) &&
-                srcType == OzScanner.VAR_TYPE_FLOAT ) {
-                    emit(OzVm.OPCODE_INT);
-
+    private void genCodeConvertTypeAssign(int stackTopType, int varType){
+        if( stackTopType != varType ){
+            if( stackTopType == OzScanner.VAR_TYPE_INT && varType == OzScanner.VAR_TYPE_FLOAT ) {
+                emitCommentListing("convert stack operand for assign");
+                emit(OzVm.OPCODE_FLT);
+                emitCommentListing("-");
+            } else
+            if (( varType == OzScanner.VAR_TYPE_INT   ||
+                  varType == OzScanner.VAR_TYPE_SHORT ||
+                  varType == OzScanner.VAR_TYPE_BYTE ) &&
+                stackTopType == OzScanner.VAR_TYPE_FLOAT ) {
+                emitCommentListing("convert stack operand for assign");
+                emit(OzVm.OPCODE_INT);
+                emitCommentListing("-");
             } else {
-
             }
         }
     }
@@ -416,12 +417,16 @@ public class OzParser {
         int subTopType = tsStack.pop();
         if( topType != subTopType ){
             if( topType == OzScanner.VAR_TYPE_FLOAT ){
+                emitCommentListing("convert stack operand for binary operation");
                 emit(OzVm.OPCODE_SWAP);
                 emit(OzVm.OPCODE_FLT);
                 emit(OzVm.OPCODE_SWAP);
+                emitCommentListing("-");
                 return OzScanner.VAR_TYPE_FLOAT;
             } else if ( subTopType == OzScanner.VAR_TYPE_FLOAT ){
+                emitCommentListing("convert stack operand for binary operation");
                 emit(OzVm.OPCODE_FLT);
+                emitCommentListing("-");
                 return OzScanner.VAR_TYPE_FLOAT;
             }
         }
