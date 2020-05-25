@@ -157,13 +157,18 @@ public class OzParser {
             switch(scanner.lookAheadLexeme){
                 case OzScanner.lexNUMBER:
                     match(OzScanner.lexNUMBER, "number");
-                    if( scanner.varType == OzScanner.VAR_TYPE_INT) {
-                        emit(OzVm.OPCODE_PUSH, scanner.intNumber);
+                    switch(scanner.varType ){
+                        case OzScanner.VAR_TYPE_INT:
+                            emit(OzVm.OPCODE_PUSH, scanner.intNumber);
+                            tsStack.push(OzScanner.VAR_TYPE_INT);
+                            break;
+                        case OzScanner.VAR_TYPE_FLOAT:
+                            emit(OzVm.OPCODE_PUSH, scanner.floatNumber);
+                            tsStack.push(OzScanner.VAR_TYPE_FLOAT);
+                            break;
+                        default:
+                            break;    
                     }
-                    else {
-                        emit(OzVm.OPCODE_PUSH, scanner.floatNumber);
-                    }
-                    tsStack.push(scanner.varType);
                     break;
                 case OzScanner.lexVARNAME:
                     OzSymbols.Symbol symbol = variable();
@@ -188,7 +193,9 @@ public class OzParser {
                     } else {
                         emit(OzVm.OPCODE_EVAL);
                     }
-                    tsStack.push(symbol.varType);
+                    // теперь все стало VAR_TYPE_INT и далее, вплоть до присваивания будет
+                    // или VAR_TYPE_INT или VAR_TYPE_FLOAT
+                    tsStack.push(OzScanner.VAR_TYPE_INT);
                     break;
                 case OzScanner.lexEOF:
                 break ;   
