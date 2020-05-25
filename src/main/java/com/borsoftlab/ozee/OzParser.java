@@ -204,7 +204,8 @@ public class OzParser {
     private void add() throws Exception {
         match(OzScanner.lexPLUS, "'+'");
         term();
-        switch (genCodeConvertTypeBinOp()){
+        int resultType = genCodeConvertTypeBinOp();
+        switch ( resultType ){
             case OzScanner.VAR_TYPE_BYTE:
             case OzScanner.VAR_TYPE_UBYTE:
             case OzScanner.VAR_TYPE_SHORT:
@@ -217,13 +218,14 @@ public class OzParser {
             break;
             default:
         }
+        tsStack.push(resultType);
     }
 
     private void sub() throws Exception {
         match(OzScanner.lexMINUS, "'-'");
         term();
-        genCodeConvertTypeBinOp();
-        switch (genCodeConvertTypeBinOp()){
+        int resultType = genCodeConvertTypeBinOp();
+        switch (resultType){
             case OzScanner.VAR_TYPE_BYTE:
             case OzScanner.VAR_TYPE_UBYTE:
             case OzScanner.VAR_TYPE_SHORT:
@@ -236,13 +238,14 @@ public class OzParser {
             break;
             default:
         }
+        tsStack.push(resultType);
     }
 
     private void mul() throws Exception {
         match(OzScanner.lexMUL, "'*'");
         factor();
-        genCodeConvertTypeBinOp();
-        switch (genCodeConvertTypeBinOp()){
+        int resultType = genCodeConvertTypeBinOp();
+        switch ( resultType ){
             case OzScanner.VAR_TYPE_BYTE:
             case OzScanner.VAR_TYPE_UBYTE:
             case OzScanner.VAR_TYPE_SHORT:
@@ -255,13 +258,14 @@ public class OzParser {
             break;
             default:
         }
+        tsStack.push( resultType );
     }
 
     private void div() throws Exception {
         match(OzScanner.lexDIV, "'/'");
         factor();
-        genCodeConvertTypeBinOp();
-        switch (genCodeConvertTypeBinOp()){
+        int resultType = genCodeConvertTypeBinOp();
+        switch ( resultType ){
             case OzScanner.VAR_TYPE_BYTE:
             case OzScanner.VAR_TYPE_UBYTE:
             case OzScanner.VAR_TYPE_SHORT:
@@ -274,6 +278,7 @@ public class OzParser {
             break;
             default:
         }
+        tsStack.push( resultType );
     }
 
     private void emit(byte opcode){
@@ -311,7 +316,6 @@ public class OzParser {
 
         emitHexList(opcode);
         System.out.println();
-
     }
 
     private void emitListing(byte opcode, final int arg) {
@@ -411,9 +415,17 @@ public class OzParser {
     private int genCodeConvertTypeBinOp(){
         int topType    = tsStack.pop();
         int subTopType = tsStack.pop();
-      //  if( )
- 
-      return 0;
+        if( topType != subTopType ){
+            if( topType == OzScanner.VAR_TYPE_FLOAT ){
+                emit(OzVm.OPCODE_SWAP);
+                emit(OzVm.OPCODE_FLT);
+                emit(OzVm.OPCODE_SWAP);
+                return OzScanner.VAR_TYPE_FLOAT;
+            } else if ( subTopType == OzScanner.VAR_TYPE_FLOAT ){
+                emit(OzVm.OPCODE_FLT);
+                return OzScanner.VAR_TYPE_FLOAT;
+            }
+        }
+       return topType;
     }
-
 }
