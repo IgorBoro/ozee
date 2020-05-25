@@ -296,45 +296,49 @@ public class OzParser {
         emitMem(opcode, sym);
     }
 
-    private void emitMnemonicList(byte opcode){
+    private void emitCommentListing(final String comment){
+        System.out.println(String.format("; %s", comment));
+    }
+
+    private void emitMnemonicListing(byte opcode){
         String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
         System.out.print(String.format("        %s", mnemonic));
     }
 
-    private void emitHexList(byte opcode){
+    private void emitHexListing(byte opcode){
         System.out.print(String.format("0x%04X: 0x%02X", pc, opcode));
     }
 
     private void emitListing(byte opcode) {
-        emitMnemonicList(opcode);
+        emitMnemonicListing(opcode);
         System.out.println();
 
-        emitHexList(opcode);
+        emitHexListing(opcode);
         System.out.println();
     }
 
     private void emitListing(byte opcode, final int arg) {
-        emitMnemonicList(opcode);
+        emitMnemonicListing(opcode);
         System.out.println(String.format(" %d", arg));
 
-        emitHexList(opcode);
+        emitHexListing(opcode);
         System.out.println(String.format(" 0x%08X", arg));
     }
 
     private void emitListing(byte opcode, final float arg) {
-        emitMnemonicList(opcode);
+        emitMnemonicListing(opcode);
         System.out.println(String.format(Locale.US, " %f", arg));
 
         int i = Float.floatToIntBits(arg);
-        emitHexList(opcode);
+        emitHexListing(opcode);
         System.out.println(String.format(" 0x%08X",  i));
     }
 
     private void emitListing(byte opcode, final Symbol sym) {
-        emitMnemonicList(opcode);
+        emitMnemonicListing(opcode);
         System.out.println(String.format(" %s", sym.name));
 
-        emitHexList(opcode);
+        emitHexListing(opcode);
         System.out.println(String.format(" 0x%08X", sym.allocAddress));
     }
 
