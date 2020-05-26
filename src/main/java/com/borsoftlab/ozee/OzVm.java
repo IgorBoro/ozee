@@ -161,7 +161,7 @@ public class OzVm{
             int start = 16 * (from / 16);
             System.out.print(String.format("0x%08X:", start));
             for( int ptr = start; ptr < from; ptr ++ ){
-                System.out.print("    ");
+                System.out.print("     ");
             }
             System.out.print(String.format(" 0x%02X", ram[from]));
 
