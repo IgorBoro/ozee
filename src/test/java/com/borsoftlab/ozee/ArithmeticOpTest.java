@@ -11,7 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.stream.Stream;
+
+import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 @Nested
 @DisplayName("Test class")
@@ -58,7 +61,15 @@ public class ArithmeticOpTest {
                 final OzText text = new OzText(programStream);
                 scanner.resetText(text);
                 parser.compile(scanner);
+
+                final OzVm vm = new OzVm();
+                List<Byte> compiledProgram = parser.getProgramInListArray();
+                List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
+                byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
                 scanner.symbolTable.dumpSymbolTableByName();
+                vm.loadProgram(programImage);
+                vm.execute();
+                vm.printMemoryDump();
             } catch (final Exception e) {
             } finally {
                 System.out.println(OzCompileError.messageString);

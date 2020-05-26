@@ -28,16 +28,7 @@ public class OzParser {
         pc = 0;
         scanner.nextLexeme();
         stmtList();
-
-        final int value = 1234567890;
-        mem.add(OzVm.OPCODE_PUSH);
-        pc++;
-        OzUtils.storeIntToByteArray(mem, pc, value);
-        pc += 4;
-        mem.add(OzVm.OPCODE_STOP);
-        pc++;
-
-        emitListing(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_STOP);
     }
 
     void stmtList() throws Exception {

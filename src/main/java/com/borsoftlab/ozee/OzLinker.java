@@ -23,9 +23,10 @@ public class OzLinker {
 
                 // re-binding refs
                 for (Symbol symbol : symbols) {
+                        symbol.allocAddress += progSize;        
                         List<Integer> refList = symbol.refList;
                         for (Integer ref : refList) {
-                                OzUtils.storeIntToByteArray(image, ref, progSize + symbol.allocAddress);        
+                                OzUtils.storeIntToByteArray(image, ref, symbol.allocAddress);        
                         }
                 }
                 return image;

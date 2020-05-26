@@ -74,63 +74,96 @@ public class OzVm{
     public static final byte OPCODE_CALL = (byte) 0x46;
     public static final byte OPCODE_RET  = (byte) 0x47;
 
-    private static final int DEF_MEMORY_SIZE = 1024;
-
-    byte[] memory = new byte[128];  // little-endian
+    byte[] ram;  // little-endian
+    int addMemorySize = 64;
 
     public OzVm(){
-        memory = new byte[DEF_MEMORY_SIZE];
     }
 
-    public OzVm(final int memorySize){
-        memory = new byte[memorySize];
+    public OzVm(final int addMemorySize){
+        this.addMemorySize = addMemorySize;
     }
 
-	public void loadProgram(byte[] program) {
-        System.arraycopy(program, 0, memory, 0, program.length);
+	public void loadProgram(byte[] image) {
+        ram = new byte[image.length  + addMemorySize];
+        System.arraycopy(image, 0, ram, 0, image.length);
 	}
 
     public void execute() {
         int pc = 0;
-        int sp = memory.length - 5; // the stack is growing down, origin pos - little byte of free cell
+        int spOrigin = ram.length - 4;
+        int sp = spOrigin; // the stack is growing down, origin pos - little byte of free cell
         System.out.println("\noZee virtual machine started...");
 
         long startMillis = System.currentTimeMillis();
 
-        byte cmd = memory[pc];
+        byte cmd = ram[pc];
 
         while( cmd != OPCODE_STOP){
             ++pc;
+            int valueAddr, value, lvalue, rvalue;
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack
-                    System.arraycopy(memory, pc, memory, sp, 4);
+                    System.arraycopy(ram, pc, ram, sp, 4);
                     sp -= 4; // stack is growing
+                    System.out.print(OzAsm.getInstance().getMnemonic(cmd));
+                    System.out.println(
+                        String.format(" 0x%08X", OzUtils.fetchIntFromByteArray(ram, pc)));
                     pc += 4; // skip const in memory
-
-                    System.out.println(OzUtils.fetchIntFromByteArray(memory, sp + 4));
-                break;
+                    break;
                 case OPCODE_EVAL: // expensive operation
-                sp -= 4;
-                int valueAddr = OzUtils.fetchIntFromByteArray(memory, sp - 4);
-                System.arraycopy(memory, sp, memory, valueAddr, 4);
-                //                    stack[sp] = memory[stack[sp]];
-                break;
+                    sp += 4;
+                    valueAddr = OzUtils.fetchIntFromByteArray(ram, sp);
+                    System.arraycopy(ram, valueAddr, ram, sp, 4);
+                    sp -= 4;
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
                 case OPCODE_ASGN: // expensive operation
-//                    OzUtils.storeIntValueToMemory(memory, stack[sp - 2], stack[sp - 1]);
-//                    --sp;
-                break;
-                case OPCODE_DROP:
-//                    --sp;
-                break;
-                case OPCODE_JUMP:
-//                    pc = stack[--sp];
-                break;
+                    sp += 4;
+                    valueAddr = OzUtils.fetchIntFromByteArray(ram, sp);
+                    sp += 4;
+                    System.arraycopy(ram, sp, ram, valueAddr, 4);
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+                case OPCODE_ADD:
+                    sp += 4;
+                    lvalue = OzUtils.fetchIntFromByteArray(ram, sp);
+                    sp += 4;
+                    rvalue = OzUtils.fetchIntFromByteArray(ram, sp);
+                    value = lvalue + rvalue;
+                    OzUtils.storeIntToByteArray(ram, sp, value);
+                    sp -= 4;
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+            
             }
-            cmd = memory[pc];
+            System.out.print("[ ");
+            for( int ptr = sp + 4; ptr <= spOrigin; ptr += 4 ){
+                value = OzUtils.fetchIntFromByteArray(ram, ptr);
+                System.out.print(String.format("0x%08X ", value));
+            }
+            System.out.println("]");
+            cmd = ram[pc];
         }
         long execTime = System.currentTimeMillis() - startMillis;
         System.out.println("oZee virtual machine stopped");
         System.out.println("Execution time: " + execTime + " ms");
+    }
 
+    public void printMemoryDump(){
+        printMemoryDump(0, ram.length-1);
+    }
+
+    public void printMemoryDump(int from, int to){
+        for (int ptr = from; ptr <= to; ptr++){
+
+            if( ptr % 16 == 0){
+                System.out.println();                
+                System.out.print(String.format("0x%08X: 0x%02X", ptr, ram[ptr]));
+            } else {
+                System.out.print(String.format(" 0x%02X", ram[ptr]));
+            }
+        }
+        System.out.println();                
     }
 }
