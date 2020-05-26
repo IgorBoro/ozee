@@ -384,6 +384,14 @@ public class OzParser {
         return OzUtils.toByteArray(mem);
     }
 
+    public byte[] getProgImageInByteArray(){
+        return OzUtils.toByteArray(mem);
+    }
+
+    public List<Byte> getProgImageInListArray(){
+        return mem;
+    }
+
     private void match(final int lexeme, final String msg) throws Exception {
         if( scanner.lookAheadLexeme == lexeme ){
             scanner.nextLexeme();
