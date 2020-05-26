@@ -132,6 +132,21 @@ public class OzSymbols {
         System.out.println("; ============  SYMBOL TABLE DUMP BY ADDR END  =============");
     }
 
+    public List<Symbol> getTableOrderedByAddr(){
+        ArrayList<Symbol> list = new ArrayList<Symbol>();
+
+        final Map<String, Symbol> sortedMap = map.entrySet()
+                .stream()
+                .sorted((e1,e2) -> (e1.getValue().allocAddress - e2.getValue().allocAddress))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        for( Map.Entry<String, Symbol> e : sortedMap.entrySet()){
+            list.add(e.getValue());
+        }    
+
+        return list;
+    }
+
     public class Symbol{
         String name;
         int lexeme;
