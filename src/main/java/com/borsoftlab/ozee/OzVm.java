@@ -155,8 +155,19 @@ public class OzVm{
     }
 
     public void printMemoryDump(int from, int to){
-        for (int ptr = from; ptr <= to; ptr++){
+        if( from % 16 == 0){
+            System.out.print(String.format("0x%08X: 0x%02X", from, ram[from]));
+        } else {
+            int start = 16 * (from / 16);
+            System.out.print(String.format("0x%08X:", start));
+            for( int ptr = start; ptr < from; ptr ++ ){
+                System.out.print("    ");
+            }
+            System.out.print(String.format(" 0x%02X", ram[from]));
 
+        }
+        from++;
+        for (int ptr = from; ptr <= to; ptr++){
             if( ptr % 16 == 0){
                 System.out.println();                
                 System.out.print(String.format("0x%08X: 0x%02X", ptr, ram[ptr]));

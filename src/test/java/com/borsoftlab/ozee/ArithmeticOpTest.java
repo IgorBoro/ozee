@@ -69,7 +69,7 @@ public class ArithmeticOpTest {
                 scanner.symbolTable.dumpSymbolTableByName();
                 vm.loadProgram(programImage);
                 vm.execute();
-                vm.printMemoryDump();
+                vm.printMemoryDump(7, 70);
             } catch (final Exception e) {
             } finally {
                 System.out.println(OzCompileError.messageString);
