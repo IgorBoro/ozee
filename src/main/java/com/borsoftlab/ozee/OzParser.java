@@ -359,8 +359,7 @@ public class OzParser {
     }
 
     private void emitMem(byte opcode, int arg){
-        mem.add(opcode);
-        pc++;
+        emitMem(opcode);
         OzUtils.storeIntToByteArray(mem, pc, arg);
         pc += 4;
     }
