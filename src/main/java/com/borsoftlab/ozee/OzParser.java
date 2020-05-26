@@ -108,6 +108,7 @@ public class OzParser {
     private void assign(OzSymbols.Symbol symbol){
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
+        symbol.addRef(pc-4);
         emit(OzVm.OPCODE_ASGN);
     }
 
@@ -174,6 +175,7 @@ public class OzParser {
                     OzSymbols.Symbol symbol = variable();
                     match(OzScanner.lexVARNAME, "variable name");                    
                     emit(OzVm.OPCODE_PUSH, symbol);
+                    symbol.addRef(pc-4);
                     if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||
                         symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);

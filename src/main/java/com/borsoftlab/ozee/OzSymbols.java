@@ -1,7 +1,9 @@
 package com.borsoftlab.ozee;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -72,7 +74,13 @@ public class OzSymbols {
                     default:
                         sType = "unknown";    
                 }
-                System.out.println(String.format("%-24s %-5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
+                System.out.print(String.format("%-24s %-5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
+                System.out.print("\t");
+                for (Integer ref : sym.refList) {
+                    System.out.print(String.format("0x%08X", ref));
+                    System.out.print(" ");
+                }
+                System.out.println();
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY NAME END  =============");
@@ -112,7 +120,13 @@ public class OzSymbols {
                     default:
                         sType = "unknown";    
                 }
-                System.out.println(String.format("0x%08X: %-24s %-5s %d", sym.allocAddress, sym.name, sType, sym.sizeInBytes));
+                System.out.print(String.format("0x%08X: %-24s %-5s %d", sym.allocAddress, sym.name, sType, sym.sizeInBytes));
+                System.out.print("\t");
+                for (Integer ref : sym.refList) {
+                    System.out.print(String.format("0x%08X", ref));
+                    System.out.print(" ");
+                }
+                System.out.println();
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY ADDR END  =============");
@@ -124,6 +138,8 @@ public class OzSymbols {
         int varType;
         int allocAddress;
         int sizeInBytes;
+
+        List<Integer> refList = new ArrayList<>();
 
         public Symbol(String name, int lexeme, int varType){
             this.name = name;
@@ -141,6 +157,11 @@ public class OzSymbols {
                 curAddress += sizeInBytes;
             }
         }
+
+        public void addRef(int ref){
+            refList.add(ref);
+        }
+
     }    
 
 }
