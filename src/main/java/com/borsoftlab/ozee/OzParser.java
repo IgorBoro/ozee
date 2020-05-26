@@ -1,5 +1,7 @@
 package com.borsoftlab.ozee;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.borsoftlab.ozee.OzSymbols.Symbol;
@@ -8,7 +10,7 @@ public class OzParser {
 
     OzScanner scanner;
     int aheadLexeme = 0;
-    byte[] mem = new byte [128];
+    List<Byte> mem = new ArrayList<Byte>();
     int pc = 0;
 
     /*
@@ -27,13 +29,13 @@ public class OzParser {
         scanner.nextLexeme();
         stmtList();
 
-
         final int value = 1234567890;
-        mem[pc++] = OzVm.OPCODE_PUSH;
+        mem.add(OzVm.OPCODE_PUSH);
+        pc++;
         OzUtils.storeIntToByteArray(mem, pc, value);
         pc += 4;
-        mem[pc++] = OzVm.OPCODE_STOP;
-
+        mem.add(OzVm.OPCODE_STOP);
+        pc++;
 
         emitListing(OzVm.OPCODE_STOP);
     }
@@ -352,11 +354,13 @@ public class OzParser {
     }
 
     private void emitMem(byte opcode){
-        mem[pc++] = opcode;
+        mem.add(opcode);
+        pc++;
     }
 
     private void emitMem(byte opcode, int arg){
-        mem[pc++] = opcode;
+        mem.add(opcode);
+        pc++;
         OzUtils.storeIntToByteArray(mem, pc, arg);
         pc += 4;
     }
@@ -371,11 +375,14 @@ public class OzParser {
 
     public byte[] getExecMemModule() {
         final int value = 1234567890;
-        mem[pc++] = OzVm.OPCODE_PUSH;
+        mem.add(OzVm.OPCODE_PUSH);
+        pc++;
         OzUtils.storeIntToByteArray(mem, pc, value);
         pc += 4;
-        mem[pc++] = OzVm.OPCODE_STOP;
-        return mem;
+        mem.add( OzVm.OPCODE_STOP);
+        pc++;
+
+        return OzUtils.toByteArray(mem);
     }
 
     private void match(final int lexeme, final String msg) throws Exception {
