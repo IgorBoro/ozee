@@ -384,11 +384,11 @@ public class OzParser {
         return OzUtils.toByteArray(mem);
     }
 
-    public byte[] getProgImageInByteArray(){
+    public byte[] getProgramInByteArray(){
         return OzUtils.toByteArray(mem);
     }
 
-    public List<Byte> getProgImageInListArray(){
+    public List<Byte> getProgramInListArray(){
         return mem;
     }
 
