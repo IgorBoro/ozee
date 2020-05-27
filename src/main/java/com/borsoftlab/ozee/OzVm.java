@@ -127,6 +127,10 @@ public class OzVm{
                     OzUtils.storeIntToByteArray(ram, valueAddr, stack[--sp]);
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
+                case OPCODE_NEG:
+                    stack[sp - 1] = -stack[sp - 1];
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
                 case OPCODE_ADD:
                     rvalue = stack[--sp];
                     lvalue = stack[--sp];

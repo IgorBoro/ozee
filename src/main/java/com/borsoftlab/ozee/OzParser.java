@@ -33,8 +33,9 @@ public class OzParser {
 
     void stmtList() throws Exception {
         while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
-    //        System.out.print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  ");
-    //        System.out.printf("Maintenance type stack size is: %d\n", typeStack.size());
+            if( tsStack.size() != 0 ){
+                throw new Exception(String.format("Type stack size isn't wrong: %d", tsStack.size()));
+            }
             stmt();
             match(OzScanner.lexSEMICOLON);
         }
@@ -207,7 +208,14 @@ public class OzParser {
             }
         }
         if( unaryMinus ) {
-            emit(OzVm.OPCODE_NEG);
+            int type = tsStack.pop();
+            // имеем право проверять только на VAR_TYPE_INT или VAR_TYPE_FLOAT
+            if( type == OzScanner.VAR_TYPE_INT) {
+                emit(OzVm.OPCODE_NEG);
+            } else {
+                emit(OzVm.OPCODE_NEGF);
+            }
+            tsStack.push(type);
         }
     }
 
@@ -361,18 +369,6 @@ public class OzParser {
 
     private void emitMem(byte opcode, final Symbol sym){
         emitMem(opcode, sym.allocAddress);
-    }
-
-    public byte[] getExecMemModule() {
-        final int value = 1234567890;
-        mem.add(OzVm.OPCODE_PUSH);
-        pc++;
-        OzUtils.storeIntToByteArray(mem, pc, value);
-        pc += 4;
-        mem.add( OzVm.OPCODE_STOP);
-        pc++;
-
-        return OzUtils.toByteArray(mem);
     }
 
     public byte[] getProgramInByteArray(){

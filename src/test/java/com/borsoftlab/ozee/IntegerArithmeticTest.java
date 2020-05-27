@@ -52,6 +52,14 @@ public class IntegerArithmeticTest {
         = "int r =  7/2;";
     final static int expect6 = 3;
 
+    final static String program7
+        = "int r =  -32;";
+    final static int expect7 = -32;
+
+    final static String program8
+        = "int r =  -(9 + 15);";
+    final static int expect8 = -24;
+
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
@@ -102,7 +110,9 @@ public class IntegerArithmeticTest {
                 Arguments.of( program3, expect3 ),
                 Arguments.of( program4, expect4 ),
                 Arguments.of( program5, expect5 ),
-                Arguments.of( program6, expect6 )
+                Arguments.of( program6, expect6 ),
+                Arguments.of( program7, expect7 ),
+                Arguments.of( program8, expect8 )
                 );
     }
 }        
