@@ -32,6 +32,14 @@ public class IntegerArithmeticTest {
         + "int r = a - b;";
     final static int result1 = -2;
 
+    final static String program2 
+        = "int r = 1 + 2 + 3 + 4 + 5 + 6;";
+    final static int result2 = 21;
+
+    final static String program3 
+        = "int r =  3 * 25;";
+    final static int result3 = 75;
+
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
@@ -77,7 +85,9 @@ public class IntegerArithmeticTest {
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
                 Arguments.of( program0, result0 ),
-                Arguments.of( program1, result1 )
+                Arguments.of( program1, result1 ),
+                Arguments.of( program2, result2 ),
+                Arguments.of( program3, result3 )
                 );
     }
 }        

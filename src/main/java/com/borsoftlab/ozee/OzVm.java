@@ -96,7 +96,7 @@ public class OzVm{
         return ram;
     }
 
-    public void execute() {
+    public void execute() throws Exception {
         int pc = 0;
         stack = new int[stackSizeInWords];
         int sp = 0; // the stack is growing up
@@ -139,7 +139,8 @@ public class OzVm{
                     stack[sp++] = lvalue - rvalue;
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
-            
+                default:
+                    throw new Exception(String.format("OzVm Runtime error: Unknown opcode - 0x%08X", cmd));
             }
             System.out.print("[ ");
             for( int ptr = 0; ptr < sp; ptr++ ){
