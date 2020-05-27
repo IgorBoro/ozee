@@ -106,7 +106,7 @@ public class OzVm{
             pc++;
             int valueAddr, value, lvalue, rvalue;
             switch(cmd){
-                case OPCODE_PUSH:   // push const to stack
+                case OPCODE_PUSH:   // push const to stack - expensive operation
                     value = OzUtils.fetchIntFromByteArray(ram, pc);
                     stack[sp++] = value;
                     pc += 4; // skip const in memory
@@ -114,11 +114,11 @@ public class OzVm{
                     System.out.println(
                         String.format(" 0x%08X", value));
                     break;
-                case OPCODE_EVAL: // expensive operation
+                case OPCODE_EVAL: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchIntFromByteArray(ram, stack[sp - 1]);
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
-                case OPCODE_ASGN: // expensive operation
+                case OPCODE_ASGN: // get value from stack and store it to memory - expensive operation
                     valueAddr = stack[--sp];
                     OzUtils.storeIntToByteArray(ram, valueAddr, stack[--sp]);
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
@@ -127,6 +127,12 @@ public class OzVm{
                     lvalue = stack[--sp];
                     rvalue = stack[--sp];
                     stack[sp++] = lvalue + rvalue;
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+                case OPCODE_SUB:
+                    lvalue = stack[--sp];
+                    rvalue = stack[--sp];
+                    stack[sp++] = lvalue - rvalue;
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
             
