@@ -370,7 +370,7 @@ public class OzParser {
     }
 
     public byte[] getProgramImage(){
-        return mem.mem;
+        return mem.cut();
     }
 
     private void match(final int lexeme, final String msg) throws Exception {
@@ -446,6 +446,12 @@ public class OzParser {
                 mem = tmp;
             }
             mem[used++] = b;
+        }
+
+        byte[] cut(){
+            byte[] tmp = new byte[used];
+            System.arraycopy(mem, 0, tmp, 0, used);
+            return tmp;
         }
     }
 }
