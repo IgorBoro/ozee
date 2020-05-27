@@ -166,6 +166,7 @@ public class OzVm{
             System.out.println("] <- top");
             cmd = ram[pc];
         }
+        System.out.println(OzAsm.getInstance().getMnemonic(cmd));
         long execTime = System.currentTimeMillis() - startMillis;
         System.out.println("oZee virtual machine stopped");
         System.out.println("Execution time: " + execTime + " ms");
