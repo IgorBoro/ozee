@@ -92,6 +92,10 @@ public class OzVm{
         System.arraycopy(image, 0, ram, 0, image.length);
 	}
 
+    public byte[] getRam(){
+        return ram;
+    }
+
     public void execute() {
         int pc = 0;
         stack = new int[stackSizeInWords];
