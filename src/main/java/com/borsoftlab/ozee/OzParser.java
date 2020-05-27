@@ -46,7 +46,7 @@ public class OzParser {
             declareVarAndAssignStmt();
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            assignStmt(); // TODO
+            assignStmt();
         }
         else {
             expression(); // it will be not always
