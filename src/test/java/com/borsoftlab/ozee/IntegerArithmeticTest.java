@@ -24,28 +24,32 @@ public class IntegerArithmeticTest {
         = "int a = 4;" + '\n'
         + "int b = 5;" + '\n'
         + "int r = a + b;";
-    final static int result0 = 9;
+    final static int expect0 = 9;
 
     final static String program1 
         = "int a = 6;" + '\n'
         + "int b = 8;" + '\n'
         + "int r = a - b;";
-    final static int result1 = -2;
+    final static int expect1 = -2;
 
     final static String program2 
         = "int r = 1 + 2 + 3 + 4 + 5 + 6;";
-    final static int result2 = 21;
+    final static int expect2 = 21;
 
     final static String program3 
         = "int r =  3 * 25;";
-    final static int result3 = 75;
+    final static int expect3 = 75;
+
+    final static String program4 
+        = "int r =  3 * ( 5 + 7);";
+    final static int expect4 = 36;
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
-    public void test(String program, int result) {
+    public void test(String program, int expect) {
         int value = Integer.MIN_VALUE;
         System.out.println("::------------------------------------------::");
         try {     
@@ -62,7 +66,7 @@ public class IntegerArithmeticTest {
                 scanner.symbolTable.dumpSymbolTableByName();
                 vm.loadProgram(programImage);
                 vm.execute();
-                OzUtils.printMemoryDump(vm.getRam());
+                // OzUtils.printMemoryDump(vm.getRam());
                 int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
                 value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
                 System.out.println("r = " + value);
@@ -79,15 +83,16 @@ public class IntegerArithmeticTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        assertEquals(result, value);
+        assertEquals(expect, value);
     }
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-                Arguments.of( program0, result0 ),
-                Arguments.of( program1, result1 ),
-                Arguments.of( program2, result2 ),
-                Arguments.of( program3, result3 )
+                Arguments.of( program0, expect0 ),
+                Arguments.of( program1, expect1 ),
+                Arguments.of( program2, expect2 ),
+                Arguments.of( program3, expect3 ),
+                Arguments.of( program4, expect4 )
                 );
     }
 }        
