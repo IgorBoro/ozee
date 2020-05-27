@@ -160,32 +160,4 @@ public class OzVm{
         System.out.println("oZee virtual machine stopped");
         System.out.println("Execution time: " + execTime + " ms");
     }
-
-    public void printMemoryDump(){
-        printMemoryDump(0, ram.length-1);
-    }
-
-    public void printMemoryDump(int from, int to){
-        if( from % 16 == 0){
-            System.out.print(String.format("0x%08X: 0x%02X", from, ram[from]));
-        } else {
-            int start = 16 * (from / 16);
-            System.out.print(String.format("0x%08X:", start));
-            for( int ptr = start; ptr < from; ptr ++ ){
-                System.out.print("     ");
-            }
-            System.out.print(String.format(" 0x%02X", ram[from]));
-
-        }
-        from++;
-        for (int ptr = from; ptr <= to; ptr++){
-            if( ptr % 16 == 0){
-                System.out.println();                
-                System.out.print(String.format("0x%08X: 0x%02X", ptr, ram[ptr]));
-            } else {
-                System.out.print(String.format(" 0x%02X", ram[ptr]));
-            }
-        }
-        System.out.println();                
-    }
 }

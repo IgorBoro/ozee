@@ -44,5 +44,34 @@ public class OzUtils {
             ret[i] = in.get(i);
         }
         return ret;
-    }    
+    }
+
+    public static void printMemoryDump(final byte[] mem){
+        printMemoryDump(mem, 0, mem.length-1);
+    }
+
+    public static void printMemoryDump(final byte[] mem, int from, int to){
+        if( from % 16 == 0){
+            System.out.print(String.format("0x%08X: 0x%02X", from, mem[from]));
+        } else {
+            int start = 16 * (from / 16);
+            System.out.print(String.format("0x%08X:", start));
+            for( int ptr = start; ptr < from; ptr ++ ){
+                System.out.print("     ");
+            }
+            System.out.print(String.format(" 0x%02X", mem[from]));
+
+        }
+        from++;
+        for (int ptr = from; ptr <= to; ptr++){
+            if( ptr % 16 == 0){
+                System.out.println();                
+                System.out.print(String.format("0x%08X: 0x%02X", ptr, mem[ptr]));
+            } else {
+                System.out.print(String.format(" 0x%02X", mem[ptr]));
+            }
+        }
+        System.out.println();                
+    }
+
 }

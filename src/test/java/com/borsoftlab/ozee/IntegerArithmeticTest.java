@@ -62,7 +62,7 @@ public class IntegerArithmeticTest {
                 scanner.symbolTable.dumpSymbolTableByName();
                 vm.loadProgram(programImage);
                 vm.execute();
-                vm.printMemoryDump();
+                OzUtils.printMemoryDump(vm.getRam());
                 int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
                 value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
                 System.out.println("r = " + value);
