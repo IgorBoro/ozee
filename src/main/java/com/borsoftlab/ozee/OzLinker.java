@@ -6,8 +6,8 @@ import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 public class OzLinker {
 
-        public static byte[] linkImage(final List<Byte> program, final List<Symbol> symbols){
-                int progSize = program.size();     
+        public static byte[] linkImage(final byte[] program, final List<Symbol> symbols){
+                int progSize = program.length;     
                 int symbolTableSize = 0;
 
                 for (Symbol symbol : symbols) {
@@ -18,7 +18,7 @@ public class OzLinker {
                 byte[] image = new byte[imageSize];
 
                 for (int i = 0; i < progSize; i++) {
-                        image[i] = program.get(i);
+                        image[i] = program[i];
                 }
 
                 // re-binding refs

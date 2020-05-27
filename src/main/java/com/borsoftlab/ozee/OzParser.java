@@ -1,7 +1,5 @@
 package com.borsoftlab.ozee;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import com.borsoftlab.ozee.OzSymbols.Symbol;
@@ -10,7 +8,7 @@ public class OzParser {
 
     OzScanner scanner;
     int aheadLexeme = 0;
-    List<Byte> mem = new ArrayList<Byte>();
+    ByteArray mem = new ByteArray();
     int pc = 0;
 
     /*
@@ -359,7 +357,7 @@ public class OzParser {
 
     private void emitMem(byte opcode, int arg){
         emitMem(opcode);
-        OzUtils.storeIntToByteArray(mem, pc, arg);
+        OzUtils.addIntToByteArray(mem, arg);
         pc += 4;
     }
 
@@ -371,12 +369,8 @@ public class OzParser {
         emitMem(opcode, sym.allocAddress);
     }
 
-    public byte[] getProgramInByteArray(){
-        return OzUtils.toByteArray(mem);
-    }
-
-    public List<Byte> getProgramInListArray(){
-        return mem;
+    public byte[] getProgramImage(){
+        return mem.mem;
     }
 
     private void match(final int lexeme, final String msg) throws Exception {
@@ -437,5 +431,21 @@ public class OzParser {
             }
         }
        return topType;
+    }
+
+    public class ByteArray{
+        
+        final static int CHUNK_SIZE = 64;
+        byte[] mem = new byte[CHUNK_SIZE];
+        int used = 0;
+
+        void add(byte b){
+            if( used == mem.length ){
+                byte[] tmp = new byte[mem.length + CHUNK_SIZE];
+                System.arraycopy(mem, 0, tmp, 0, mem.length);
+                mem = tmp;
+            }
+            mem[used++] = b;
+        }
     }
 }

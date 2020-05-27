@@ -44,10 +44,10 @@ public class oZee {
             System.out.println(scanner.text.loc.line + " lines compiled");
             final OzVm vm = new OzVm();
 //            byte[] program = parser.getExecMemModule();
-            List<Byte> program = parser.getProgramInListArray();
+           // List<Byte> program = parser.getProgramInListArray();
             List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
-            byte[] progImage = OzLinker.linkImage(program, symbols);
-            vm.loadProgram(progImage);
+            byte[] execImage = OzLinker.linkImage(parser.getProgramImage(), symbols);
+            vm.loadProgram(execImage);
             vm.execute();
         } catch (Throwable e) {
             e.printStackTrace();

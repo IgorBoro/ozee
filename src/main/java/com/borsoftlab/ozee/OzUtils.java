@@ -2,6 +2,8 @@ package com.borsoftlab.ozee;
 
 import java.util.List;
 
+import com.borsoftlab.ozee.OzParser.ByteArray;
+
 public class OzUtils {
 
 
@@ -13,6 +15,14 @@ public class OzUtils {
         mem[addr + 3] = (byte) (( value & 0xFF000000 ) >> 24 );
     }
 
+    static public void addIntToByteArray(final ByteArray mem, final int value){
+        // little-endian
+        mem.add( (byte)  ( value & 0x000000FF         ));
+        mem.add( (byte) (( value & 0x0000FF00 ) >>  8 ));
+        mem.add( (byte) (( value & 0x00FF0000 ) >> 16 ));
+        mem.add( (byte) (( value & 0xFF000000 ) >> 24 ));
+    }
+
     static public int fetchIntFromByteArray(final byte[] mem, final int addr){
         // little-endian
         return  ( mem[addr + 3] << 24 ) & 0xFF000000 |
@@ -21,7 +31,7 @@ public class OzUtils {
                 ( mem[addr]         ) & 0x000000FF;
     }
 
-    static public void storeIntToByteArray(final List<Byte> mem, final int addr, final int value){
+    static public void addIntToByteArray(final List<Byte> mem, final int value){
         // little-endian
         mem.add((byte)  ( value & 0x000000FF         ));
         mem.add((byte) (( value & 0x0000FF00 ) >>  8 ));

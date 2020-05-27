@@ -82,7 +82,7 @@ public class IntegerArithmeticTest {
                 parser.compile(scanner);
 
                 final OzVm vm = new OzVm();
-                List<Byte> compiledProgram = parser.getProgramInListArray();
+                byte[] compiledProgram = parser.getProgramImage();
                 List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
                 byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
                 scanner.symbolTable.dumpSymbolTableByName();
