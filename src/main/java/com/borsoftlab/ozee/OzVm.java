@@ -128,14 +128,14 @@ public class OzVm{
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_ADD:
-                    lvalue = stack[--sp];
                     rvalue = stack[--sp];
+                    lvalue = stack[--sp];
                     stack[sp++] = lvalue + rvalue;
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_SUB:
-                    lvalue = stack[--sp];
                     rvalue = stack[--sp];
+                    lvalue = stack[--sp];
                     stack[sp++] = lvalue - rvalue;
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;

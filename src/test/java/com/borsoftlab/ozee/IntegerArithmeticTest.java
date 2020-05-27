@@ -18,42 +18,27 @@ import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 @Nested
 @DisplayName("Test class")
-public class ArithmeticOpTest {
+public class IntegerArithmeticTest {
 
     final static String program0 
         = "int a = 4;" + '\n'
         + "int b = 5;" + '\n'
-        + "int c = a + b;";
-    final static String message0
-        = "Ok";
-
+        + "int r = a + b;";
+    final static int result0 = 9;
 
     final static String program1 
-        = "int i = 1 + 2    3 + 4;";
-    final static String message1
-        = "int i = 1 + 2    3 + 4;"   + "\n"
-        + "                 ^"        + "\n"
-        + "Error in line 1: unexpected lexeme" + "\n";
-
-    final static String program2 
-        = "int i = 1.2;"  + "\n"
-        + "float f = 3;";
-    final static String message2
-        = "Ok";
-
-    final static String program3 
-        = "sbyte w;";
-    final static String message3
-        = "sbyte w;" + "\n"
-        + "^"        + "\n"
-        + "Error in line 1: name 'sbyte' not defined" + "\n";
+        = "int a = 6;" + '\n'
+        + "int b = 8;" + '\n'
+        + "int r = a - b;";
+    final static int result1 = -2;
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
-    public void test(String program, String message) {
+    public void test(String program, int result) {
+        int value = Integer.MIN_VALUE;
         System.out.println("::------------------------------------------::");
         try {     
             final InputStream programStream = new ByteArrayInputStream(program.getBytes());
@@ -70,6 +55,9 @@ public class ArithmeticOpTest {
                 vm.loadProgram(programImage);
                 vm.execute();
                 vm.printMemoryDump();
+                int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
+                value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
+                System.out.println("r = " + value);
             } catch (final Exception e) {
                 e.printStackTrace();
             } finally {
@@ -83,15 +71,13 @@ public class ArithmeticOpTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        assertEquals(message, OzCompileError.messageString.toString());
+        assertEquals(result, value);
     }
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-                Arguments.of( program0, message0 )
-//                Arguments.of( program1, message1 ),
-//                Arguments.of( program2, message2 ),
-//                Arguments.of( program3, message3 )
+                Arguments.of( program0, result0 ),
+                Arguments.of( program1, result1 )
                 );
     }
 }        
