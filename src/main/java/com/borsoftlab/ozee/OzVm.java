@@ -139,8 +139,14 @@ public class OzVm{
                     stack[sp++] = lvalue - rvalue;
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
+                case OPCODE_MUL:
+                    rvalue = stack[--sp];
+                    lvalue = stack[--sp];
+                    stack[sp++] = lvalue * rvalue;
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
                 default:
-                    throw new Exception(String.format("OzVm Runtime error: Unknown opcode - 0x%08X", cmd));
+                    throw new Exception(String.format("OzVm RTE: Unknown opcode - 0x%08X", cmd));
             }
             System.out.print("[ ");
             for( int ptr = 0; ptr < sp; ptr++ ){
