@@ -172,7 +172,7 @@ public class OzParser {
                         symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);
                         if( symbol.varType == OzScanner.VAR_TYPE_BYTE ){
-                            emitCommentListing("signed bit extension for byte");
+                            emitCommentListing("a signed bit extension for byte");
                             emit( OzVm.OPCODE_PUSH, 24 );
                             emit( OzVm.OPCODE_LSL );
                             emit( OzVm.OPCODE_PUSH, 24 );
@@ -185,7 +185,7 @@ public class OzParser {
                         symbol.varType == OzScanner.VAR_TYPE_USHORT) {
                         emit(OzVm.OPCODE_EVALS);
                         if( symbol.varType == OzScanner.VAR_TYPE_SHORT ) {
-                            emitCommentListing("signed bit extension for short");
+                            emitCommentListing("a signed bit extension for short");
                             emit( OzVm.OPCODE_PUSH, 16 );
                             emit( OzVm.OPCODE_LSL );
                             emit( OzVm.OPCODE_PUSH, 16 );
@@ -413,24 +413,24 @@ public class OzParser {
     }
 
     private int genCodeConvertTypeBinOp(){
-        int topType    = tsStack.pop();
-        int subTopType = tsStack.pop();
-        if( topType != subTopType ){
-            if( topType == OzScanner.VAR_TYPE_FLOAT ){
-                emitCommentListing("convert stack operand for binary operation");
+        int typeOfTop    = tsStack.pop();
+        int typeOfSubTop = tsStack.pop();
+        if( typeOfTop != typeOfSubTop ){
+            if( typeOfTop == OzScanner.VAR_TYPE_FLOAT ){
+                emitCommentListing("convert a sub top stack operand for the binary operation");
                 emit(OzVm.OPCODE_SWAP);
                 emit(OzVm.OPCODE_FLT);
                 emit(OzVm.OPCODE_SWAP);
                 emitCommentListing("-");
                 return OzScanner.VAR_TYPE_FLOAT;
-            } else if ( subTopType == OzScanner.VAR_TYPE_FLOAT ){
-                emitCommentListing("convert stack operand for binary operation");
+            } else if ( typeOfSubTop == OzScanner.VAR_TYPE_FLOAT ){
+                emitCommentListing("convert a top stack operand for the binary operation");
                 emit(OzVm.OPCODE_FLT);
                 emitCommentListing("-");
                 return OzScanner.VAR_TYPE_FLOAT;
             }
         }
-       return topType;
+        return typeOfTop;
     }
 
     public class ByteArray{
