@@ -45,7 +45,6 @@ public class OzVm{
     public static final byte OPCODE_ASGNB = (byte) 0x25;
     public static final byte OPCODE_ASGNS = (byte) 0x26;
 
-
     /*
      *
      */
@@ -62,7 +61,6 @@ public class OzVm{
     public static final byte OPCODE_SWAP  = (byte) 0x32;
     public static final byte OPCODE_OVER  = (byte) 0x33;
 
-
     /*
      * Flow control commands
      */
@@ -75,11 +73,17 @@ public class OzVm{
     public static final byte OPCODE_CALL = (byte) 0x46;
     public static final byte OPCODE_RET  = (byte) 0x47;
 
+
+    public static final int STEP_BEFORE_EXECUTING   = 0;
+    public static final int STEP_AFTER_EXECUTING    = 1;
+    public static final int STEP_OPTIONAL_ARGUMENT  = 2;
+
     byte[] ram;  // little-endian
     int ramSizeInBytes = 1024;
 
     int[] stack;
     int stackSizeInWords = 32;
+    OnOzVmDebugListener debugListener;
 
     public OzVm(){
     }
@@ -88,6 +92,15 @@ public class OzVm{
         this.ramSizeInBytes = ramSize;
     }
 
+    public void setDebugListener(OnOzVmDebugListener listener){
+        if (debugListener instanceof OnOzVmDebugListener) {
+            debugListener = (OnOzVmDebugListener) listener;
+        } else {
+            throw new RuntimeException(listener.toString()
+                    + " must implement OnOzVmDebugListener interface");
+        }
+    }
+    
 	public void loadProgram(byte[] image) {
         ram = new byte[ramSizeInBytes];
         System.arraycopy(image, 0, ram, 0, image.length);
@@ -110,14 +123,19 @@ public class OzVm{
         while( cmd != OPCODE_STOP){
             pc++;
             int valueAddr, value, lvalue, rvalue;
+            if( debugListener != null ){
+                debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, cmd);
+            }
             System.out.print(OzAsm.getInstance().getMnemonic(cmd));
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack - expensive operation
                     value = OzUtils.fetchIntFromByteArray(ram, pc);
                     stack[sp++] = value;
                     pc += 4; // skip const in memory
-                    System.out.print(
-                        String.format(" 0x%08X", value));
+                    if( debugListener != null ){
+                        debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, value);
+                    }
+                    System.out.print( String.format(" 0x%08X", value) );
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchIntFromByteArray(ram, stack[sp - 1]);
@@ -173,7 +191,12 @@ public class OzVm{
                     break;
                 default:
                     throw new Exception(String.format("OzVm RTE: Unknown opcode - 0x%08X", cmd));
+
             }
+            if( debugListener != null ){
+                debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd);
+            }
+
             System.out.println();
             System.out.print("[ ");
             for( int ptr = 0; ptr < sp; ptr++ ){
@@ -183,9 +206,16 @@ public class OzVm{
             System.out.println("] <- top");
             cmd = ram[pc];
         }
-        System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+        if( debugListener != null ){
+            debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd);
+        }
+    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
         long execTime = System.currentTimeMillis() - startMillis;
         System.out.println("oZee virtual machine stopped");
         System.out.println("Execution time: " + execTime + " ms");
+    }
+
+    public interface OnOzVmDebugListener{
+        public void onExecutingCommand(int step, int cmd);
     }
 }
