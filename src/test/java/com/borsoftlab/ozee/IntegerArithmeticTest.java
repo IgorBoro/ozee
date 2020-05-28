@@ -220,7 +220,7 @@ public class IntegerArithmeticTest {
     OnOzVmDebugListener debugListener = new OnOzVmDebugListener(){
     
         @Override
-        public void onExecutingCommand(int step, int cmd, int[] stack, int sp) {
+        public void onExecutingCommand(int step, int pc, int cmd, int[] stack, int sp) {
             if( step == OzVm.STEP_BEFORE_EXECUTING ){
                 System.out.print(OzAsm.getInstance().getMnemonic(cmd));
             } else if( step == OzVm.STEP_OPTIONAL_ARGUMENT ){
@@ -234,9 +234,7 @@ public class IntegerArithmeticTest {
                     System.out.print(String.format("0x%08X ", value));
                 }
                 System.out.println("] <- top");
-    
             }
-
         }
     };
 

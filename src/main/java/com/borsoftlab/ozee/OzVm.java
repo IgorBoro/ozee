@@ -120,7 +120,7 @@ public class OzVm{
             pc++;
             int valueAddr, value, lvalue, rvalue;
             if( debugListener != null ){
-                debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, cmd, stack, sp);
+                debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
             }
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack - expensive operation
@@ -128,7 +128,7 @@ public class OzVm{
                     stack[sp++] = value;
                     pc += 4; // skip const in memory
                     if( debugListener != null ){
-                        debugListener.onExecutingCommand(STEP_OPTIONAL_ARGUMENT, value, stack, sp);
+                        debugListener.onExecutingCommand(STEP_OPTIONAL_ARGUMENT, pc, value, stack, sp);
                     }
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
@@ -179,26 +179,22 @@ public class OzVm{
                     shift = stack[--sp];
                     stack[sp-1] = (stack[sp-1] >> shift);
                     break;
-                case OPCODE_ROR:
-                    shift = stack[--sp];
-                    stack[sp-1] = stack[sp-1];
-                    break;
                 default:
                     throw new Exception(String.format("OzVm RTE: Unknown opcode - 0x%08X", cmd));
 
             }
             if( debugListener != null ){
-                debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd, stack, sp);
+                debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, pc, cmd, stack, sp);
             }
             cmd = ram[pc];
         }
         if( debugListener != null ){
-            debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, cmd, stack, sp);
-            debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd, stack, sp);
+            debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
+            debugListener.onExecutingCommand(STEP_AFTER_EXECUTING,  pc, cmd, stack, sp);
         }
     }
 
     public interface OnOzVmDebugListener{
-        public void onExecutingCommand(int step, int cmd, int[] stack, int sp);
+        public void onExecutingCommand(int step, int pc, int cmd, int[] stack, int sp);
     }
 }
