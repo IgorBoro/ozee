@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.borsoftlab.ozee.OzSymbols.Symbol;
+import com.borsoftlab.ozee.OzVm.OnOzVmDebugListener;
 
 @Nested
 @DisplayName("Test class")
@@ -215,6 +216,30 @@ public class IntegerArithmeticTest {
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
+
+    OnOzVmDebugListener debugListener = new OnOzVmDebugListener(){
+    
+        @Override
+        public void onExecutingCommand(int step, int cmd, int[] stack, int sp) {
+            if( step == OzVm.STEP_BEFORE_EXECUTING ){
+                System.out.print(OzAsm.getInstance().getMnemonic(cmd));
+            } else if( step == OzVm.STEP_OPTIONAL_ARGUMENT ){
+                System.out.print( String.format(" 0x%08X", cmd) );
+            } else if( step == OzVm.STEP_AFTER_EXECUTING ){
+                System.out.println();                
+
+                System.out.print("[ ");
+                for( int ptr = 0; ptr < sp; ptr++ ){
+                    int value = stack[ptr];
+                    System.out.print(String.format("0x%08X ", value));
+                }
+                System.out.println("] <- top");
+    
+            }
+
+        }
+    };
+
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
     public void test(String program, int expect) {
@@ -228,6 +253,7 @@ public class IntegerArithmeticTest {
                 parser.compile(scanner);
 
                 final OzVm vm = new OzVm();
+                vm.setDebugListener(debugListener);
                 byte[] compiledProgram = parser.getProgramImage();
                 List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
                 byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);

@@ -92,11 +92,11 @@ public class OzVm{
         this.ramSizeInBytes = ramSize;
     }
 
-    public void setDebugListener(OnOzVmDebugListener listener){
+    public void setDebugListener(OnOzVmDebugListener debugListener){
         if (debugListener instanceof OnOzVmDebugListener) {
-            debugListener = (OnOzVmDebugListener) listener;
+            this.debugListener = (OnOzVmDebugListener) debugListener;
         } else {
-            throw new RuntimeException(listener.toString()
+            throw new RuntimeException(debugListener.toString()
                     + " must implement OnOzVmDebugListener interface");
         }
     }
@@ -124,18 +124,18 @@ public class OzVm{
             pc++;
             int valueAddr, value, lvalue, rvalue;
             if( debugListener != null ){
-                debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, cmd);
+                debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, cmd, stack, sp);
             }
-            System.out.print(OzAsm.getInstance().getMnemonic(cmd));
+//            System.out.print(OzAsm.getInstance().getMnemonic(cmd));
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack - expensive operation
                     value = OzUtils.fetchIntFromByteArray(ram, pc);
                     stack[sp++] = value;
                     pc += 4; // skip const in memory
                     if( debugListener != null ){
-                        debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, value);
+                        debugListener.onExecutingCommand(STEP_OPTIONAL_ARGUMENT, value, stack, sp);
                     }
-                    System.out.print( String.format(" 0x%08X", value) );
+//                    System.out.print( String.format(" 0x%08X", value) );
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchIntFromByteArray(ram, stack[sp - 1]);
@@ -194,20 +194,11 @@ public class OzVm{
 
             }
             if( debugListener != null ){
-                debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd);
+                debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd, stack, sp);
             }
 
-            System.out.println();
-            System.out.print("[ ");
-            for( int ptr = 0; ptr < sp; ptr++ ){
-                value = stack[ptr];
-                System.out.print(String.format("0x%08X ", value));
-            }
-            System.out.println("] <- top");
+//            System.out.println();
             cmd = ram[pc];
-        }
-        if( debugListener != null ){
-            debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd);
         }
     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
         long execTime = System.currentTimeMillis() - startMillis;
@@ -216,6 +207,6 @@ public class OzVm{
     }
 
     public interface OnOzVmDebugListener{
-        public void onExecutingCommand(int step, int cmd);
+        public void onExecutingCommand(int step, int cmd, int[] stack, int sp);
     }
 }
