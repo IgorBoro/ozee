@@ -85,11 +85,20 @@ public class OzVm{
     int stackSizeInWords = 32;
     OnOzVmDebugListener debugListener;
 
+    int pc;
+    int sp;
+
     public OzVm(){
+        init();
     }
 
     public OzVm(final int ramSize){
         this.ramSizeInBytes = ramSize;
+        init();
+    }
+
+    public void init(){
+        stack = new int[stackSizeInWords];
     }
 
     public void setDebugListener(OnOzVmDebugListener debugListener){
@@ -111,11 +120,10 @@ public class OzVm{
     }
 
     public void execute() throws Exception {
-        int pc = 0;
-        stack = new int[stackSizeInWords];
-        int sp = 0; // the stack is growing up
-        byte cmd = ram[pc];
+        pc = 0;
+        sp = 0; // the stack is growing up
 
+        byte cmd = ram[pc];
         while( cmd != OPCODE_STOP){
             pc++;
             int valueAddr, value, lvalue, rvalue;
@@ -180,8 +188,7 @@ public class OzVm{
                     stack[sp-1] = (stack[sp-1] >> shift);
                     break;
                 default:
-                    throw new Exception(String.format("OzVm RTE: Unknown opcode - 0x%08X", cmd));
-
+                    throw new Exception(String.format("OzVm RTE: unknown opcode - 0x%08X", cmd));
             }
             if( debugListener != null ){
                 debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, pc, cmd, stack, sp);
@@ -190,6 +197,8 @@ public class OzVm{
         }
         if( debugListener != null ){
             debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
+            pc = 0;
+            sp = 0;
             debugListener.onExecutingCommand(STEP_AFTER_EXECUTING,  pc, cmd, stack, sp);
         }
     }
