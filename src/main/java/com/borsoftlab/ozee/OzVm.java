@@ -110,83 +110,71 @@ public class OzVm{
         while( cmd != OPCODE_STOP){
             pc++;
             int valueAddr, value, lvalue, rvalue;
+            System.out.print(OzAsm.getInstance().getMnemonic(cmd));
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack - expensive operation
                     value = OzUtils.fetchIntFromByteArray(ram, pc);
                     stack[sp++] = value;
                     pc += 4; // skip const in memory
-                    System.out.print(OzAsm.getInstance().getMnemonic(cmd));
-                    System.out.println(
+                    System.out.print(
                         String.format(" 0x%08X", value));
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchIntFromByteArray(ram, stack[sp - 1]);
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_EVALB: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchByteFromByteArray(ram, stack[sp - 1]);
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_EVALS: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchShortFromByteArray(ram, stack[sp - 1]);
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_ASGN: // get value from stack and store it to memory - expensive operation
                     valueAddr = stack[--sp];
                     OzUtils.storeIntToByteArray(ram, valueAddr, stack[--sp]);
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_NEG:
                     stack[sp - 1] = -stack[sp - 1];
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_ADD:
                     rvalue = stack[--sp];
                     lvalue = stack[--sp];
                     stack[sp++] = lvalue + rvalue;
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_SUB:
                     rvalue = stack[--sp];
                     lvalue = stack[--sp];
                     stack[sp++] = lvalue - rvalue;
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_MUL:
                     rvalue = stack[--sp];
                     lvalue = stack[--sp];
                     stack[sp++] = lvalue * rvalue;
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_DIV:
                     rvalue = stack[--sp];
                     lvalue = stack[--sp];
                     stack[sp++] = lvalue / rvalue;
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_LSL:
                     int shift = stack[--sp];
                     stack[sp-1] = (stack[sp-1] << shift);
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_LSR:
                     shift = stack[--sp];
                     stack[sp-1] = (stack[sp-1] >>> shift);
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_ASR:
                     shift = stack[--sp];
                     stack[sp-1] = (stack[sp-1] >> shift);
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 case OPCODE_ROR:
                     shift = stack[--sp];
                     stack[sp-1] = stack[sp-1];
-                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 default:
                     throw new Exception(String.format("OzVm RTE: Unknown opcode - 0x%08X", cmd));
             }
+            System.out.println();
             System.out.print("[ ");
             for( int ptr = 0; ptr < sp; ptr++ ){
                 value = stack[ptr];
