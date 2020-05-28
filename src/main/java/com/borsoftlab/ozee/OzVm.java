@@ -114,10 +114,6 @@ public class OzVm{
         int pc = 0;
         stack = new int[stackSizeInWords];
         int sp = 0; // the stack is growing up
-        System.out.println("\noZee virtual machine started...");
-
-        long startMillis = System.currentTimeMillis();
-
         byte cmd = ram[pc];
 
         while( cmd != OPCODE_STOP){
@@ -126,7 +122,6 @@ public class OzVm{
             if( debugListener != null ){
                 debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, cmd, stack, sp);
             }
-//            System.out.print(OzAsm.getInstance().getMnemonic(cmd));
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack - expensive operation
                     value = OzUtils.fetchIntFromByteArray(ram, pc);
@@ -135,7 +130,6 @@ public class OzVm{
                     if( debugListener != null ){
                         debugListener.onExecutingCommand(STEP_OPTIONAL_ARGUMENT, value, stack, sp);
                     }
-//                    System.out.print( String.format(" 0x%08X", value) );
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchIntFromByteArray(ram, stack[sp - 1]);
@@ -196,14 +190,12 @@ public class OzVm{
             if( debugListener != null ){
                 debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd, stack, sp);
             }
-
-//            System.out.println();
             cmd = ram[pc];
         }
-    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
-        long execTime = System.currentTimeMillis() - startMillis;
-        System.out.println("oZee virtual machine stopped");
-        System.out.println("Execution time: " + execTime + " ms");
+        if( debugListener != null ){
+            debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, cmd, stack, sp);
+            debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, cmd, stack, sp);
+        }
     }
 
     public interface OnOzVmDebugListener{

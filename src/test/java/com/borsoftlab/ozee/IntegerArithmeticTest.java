@@ -259,7 +259,13 @@ public class IntegerArithmeticTest {
                 byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
                 scanner.symbolTable.dumpSymbolTableByName();
                 vm.loadProgram(programImage);
+                System.out.println("\noZee virtual machine started...");
+                long startMillis = System.currentTimeMillis();
                 vm.execute();
+                long execTime = System.currentTimeMillis() - startMillis;
+                System.out.println("oZee virtual machine stopped");
+                System.out.println("Execution time: " + execTime + " ms");
+        
                 // OzUtils.printMemoryDump(vm.getRam());
                 int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
                 value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
