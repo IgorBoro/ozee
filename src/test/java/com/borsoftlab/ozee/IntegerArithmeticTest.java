@@ -195,6 +195,21 @@ public class IntegerArithmeticTest {
         + "int r =  a;";
     final static int expect33 = 156;
 
+    final static String program34
+        = "ushort a =  156;" + "\n"
+        + "int r =  a;";
+    final static int expect34 = 156;
+
+    final static String program35
+        = "ushort a =  46111;" + "\n"
+        + "int r =  a;";
+    final static int expect35 = 46111;
+
+    final static String program36
+        = "short a =  46111;" + "\n"
+        + "int r =  a;";
+    final static int expect36 = -19425;
+
     // -----------------------------------------
 
     OzParser parser   = new OzParser();
@@ -274,7 +289,10 @@ public class IntegerArithmeticTest {
                 Arguments.of( program30, expect30 ),
                 Arguments.of( program31, expect31 ),
                 Arguments.of( program32, expect32 ),
-                Arguments.of( program33, expect33 )
+                Arguments.of( program33, expect33 ),
+                Arguments.of( program34, expect34 ),
+                Arguments.of( program35, expect35 ),
+                Arguments.of( program36, expect36 )
                 );
     }
 }        
