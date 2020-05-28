@@ -174,7 +174,7 @@ public class OzParser {
                         if( symbol.varType == OzScanner.VAR_TYPE_BYTE ){
                             emitCommentListing("signed bit extension for byte");
                             emit( OzVm.OPCODE_PUSH, 24 );
-                            emit( OzVm.OPCODE_ASL );
+                            emit( OzVm.OPCODE_LSL );
                             emit( OzVm.OPCODE_PUSH, 24 );
                             emit( OzVm.OPCODE_ASR );
                             emitCommentListing("-");
@@ -187,7 +187,7 @@ public class OzParser {
                         if( symbol.varType == OzScanner.VAR_TYPE_SHORT ) {
                             emitCommentListing("signed bit extension for short");
                             emit( OzVm.OPCODE_PUSH, 16 );
-                            emit( OzVm.OPCODE_ASL );
+                            emit( OzVm.OPCODE_LSL );
                             emit( OzVm.OPCODE_PUSH, 16 );
                             emit( OzVm.OPCODE_ASR );
                             emitCommentListing("-");

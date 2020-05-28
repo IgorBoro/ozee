@@ -28,10 +28,11 @@ public class OzVm{
     public static final byte OPCODE_CMP  = (byte) 0x0E;
     public static final byte OPCODE_INT  = (byte) 0x0F;
     public static final byte OPCODE_FLT  = (byte) 0x10;
+    // shifts
     public static final byte OPCODE_LSL  = (byte) 0x11;
     public static final byte OPCODE_LSR  = (byte) 0x12;
-    public static final byte OPCODE_ASL  =  OPCODE_LSL;
     public static final byte OPCODE_ASR  = (byte) 0x13;
+    public static final byte OPCODE_ROR  = (byte) 0x14;
 
     /*
      * Memory operations
@@ -122,6 +123,14 @@ public class OzVm{
                     stack[sp - 1] = OzUtils.fetchIntFromByteArray(ram, stack[sp - 1]);
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
+                case OPCODE_EVALB: // push value to stack expensive operation
+                    stack[sp - 1] = OzUtils.fetchByteFromByteArray(ram, stack[sp - 1]);
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+                case OPCODE_EVALS: // push value to stack expensive operation
+                    stack[sp - 1] = OzUtils.fetchShortFromByteArray(ram, stack[sp - 1]);
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
                 case OPCODE_ASGN: // get value from stack and store it to memory - expensive operation
                     valueAddr = stack[--sp];
                     OzUtils.storeIntToByteArray(ram, valueAddr, stack[--sp]);
@@ -153,6 +162,26 @@ public class OzVm{
                     rvalue = stack[--sp];
                     lvalue = stack[--sp];
                     stack[sp++] = lvalue / rvalue;
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+                case OPCODE_LSL:
+                    int shift = stack[--sp];
+                    stack[sp-1] = (stack[sp-1] << shift);
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+                case OPCODE_LSR:
+                    shift = stack[--sp];
+                    stack[sp-1] = (stack[sp-1] >>> shift);
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+                case OPCODE_ASR:
+                    shift = stack[--sp];
+                    stack[sp-1] = (stack[sp-1] >> shift);
+                    System.out.println(OzAsm.getInstance().getMnemonic(cmd));
+                    break;
+                case OPCODE_ROR:
+                    shift = stack[--sp];
+                    stack[sp-1] = stack[sp-1];
                     System.out.println(OzAsm.getInstance().getMnemonic(cmd));
                     break;
                 default:

@@ -42,7 +42,6 @@ public class OzAsm {
 
         install(OzVm.OPCODE_LSL,  "LSL");
         install(OzVm.OPCODE_LSR,  "LSR");
-        install(OzVm.OPCODE_ASL,  "ASL");
         install(OzVm.OPCODE_ASR,  "ASR");
 
         install(OzVm.OPCODE_PUSH,  "PUSH");
