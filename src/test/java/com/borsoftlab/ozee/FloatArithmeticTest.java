@@ -113,8 +113,11 @@ public class FloatArithmeticTest {
     final static float expect3 = 0;
 
     final static String program4 
-        = "int r =  3 * ( 5 + 7);";
-    final static int expect4 = 36;
+        = "float a = 23.14;" +"\n"
+        + "float b =  6.93;" +"\n"
+        + "float c = 11;"    +"\n"
+        + "float r = b*b -4*a*c;";
+    final static float expect4 = -970.1351f;
 
     final static String program5 
         = "int r =  8/4;";
@@ -290,8 +293,8 @@ public class FloatArithmeticTest {
                 ,Arguments.of( program1, expect1 )
                 ,Arguments.of( program2, expect2 )
                 ,Arguments.of( program3, expect3 )
-                /*
                 ,Arguments.of( program4, expect4 )
+                /*
                 ,Arguments.of( program5, expect5 )
                 ,Arguments.of( program6, expect6 )
                 ,Arguments.of( program7, expect7 )

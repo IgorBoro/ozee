@@ -153,6 +153,11 @@ public class OzVm{
                     valueAddr = stack[--sp];
                     OzUtils.storeIntToByteArray(ram, valueAddr, stack[--sp]);
                     break;
+                case OPCODE_SWAP:
+                    int_value     = stack[sp - 2];
+                    stack[sp - 2] = stack[sp - 1];
+                    stack[sp - 1] = int_value;
+                    break;    
                 case OPCODE_NEG:
                     stack[sp - 1] = -stack[sp - 1];
                     break;
