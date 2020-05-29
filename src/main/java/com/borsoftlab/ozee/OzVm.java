@@ -126,17 +126,18 @@ public class OzVm{
         byte cmd = ram[pc];
         while( cmd != OPCODE_STOP){
             pc++;
-            int valueAddr, value, lvalue, rvalue;
+            int valueAddr, int_value, l_int_value, r_int_value;
+            float  flt_value, l_flt_value, r_flt_value;
             if( debugListener != null ){
                 debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
             }
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack - expensive operation
-                    value = OzUtils.fetchIntFromByteArray(ram, pc);
-                    stack[sp++] = value;
+                    int_value = OzUtils.fetchIntFromByteArray(ram, pc);
+                    stack[sp++] = int_value;
                     pc += 4; // skip const in memory
                     if( debugListener != null ){
-                        debugListener.onExecutingCommand(STEP_OPTIONAL_ARGUMENT, pc, value, stack, sp);
+                        debugListener.onExecutingCommand(STEP_OPTIONAL_ARGUMENT, pc, int_value, stack, sp);
                     }
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
@@ -156,24 +157,53 @@ public class OzVm{
                     stack[sp - 1] = -stack[sp - 1];
                     break;
                 case OPCODE_ADD:
-                    rvalue = stack[--sp];
-                    lvalue = stack[--sp];
-                    stack[sp++] = lvalue + rvalue;
+                    r_int_value = stack[--sp];
+                    l_int_value = stack[--sp];
+                    stack[sp++] = l_int_value + r_int_value;
                     break;
                 case OPCODE_SUB:
-                    rvalue = stack[--sp];
-                    lvalue = stack[--sp];
-                    stack[sp++] = lvalue - rvalue;
+                    r_int_value = stack[--sp];
+                    l_int_value = stack[--sp];
+                    stack[sp++] = l_int_value - r_int_value;
                     break;
                 case OPCODE_MUL:
-                    rvalue = stack[--sp];
-                    lvalue = stack[--sp];
-                    stack[sp++] = lvalue * rvalue;
+                    r_int_value = stack[--sp];
+                    l_int_value = stack[--sp];
+                    stack[sp++] = l_int_value * r_int_value;
                     break;
                 case OPCODE_DIV:
-                    rvalue = stack[--sp];
-                    lvalue = stack[--sp];
-                    stack[sp++] = lvalue / rvalue;
+                    r_int_value = stack[--sp];
+                    l_int_value = stack[--sp];
+                    stack[sp++] = l_int_value / r_int_value;
+                    break;
+                case OPCODE_INT:
+                    stack[sp - 1] = (int)Float.intBitsToFloat(stack[sp - 1]);
+                    break;
+                case OPCODE_FLT:
+                    stack[sp - 1] = Float.floatToIntBits(stack[sp - 1]);
+                    break;     
+                case OPCODE_NEGF:
+                    stack[sp - 1] = Float.floatToIntBits(- Float.intBitsToFloat(stack[sp - 1]));
+                    break;
+                case OPCODE_ADDF:
+                    r_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    l_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    stack[sp++] = Float.floatToIntBits(l_flt_value + r_flt_value);
+                    break;
+                case OPCODE_SUBF:
+                    r_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    l_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    stack[sp++] = Float.floatToIntBits(l_flt_value - r_flt_value);
+                    break;
+                case OPCODE_MULF:
+                    r_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    l_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    stack[sp++] = Float.floatToIntBits(l_flt_value * r_flt_value);
+                    break;
+                case OPCODE_DIVF:
+                    r_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    l_flt_value = Float.intBitsToFloat(stack[--sp]);
+                    stack[sp++] = Float.floatToIntBits(l_flt_value / r_flt_value);
                     break;
                 case OPCODE_LSL:
                     int shift = stack[--sp];
