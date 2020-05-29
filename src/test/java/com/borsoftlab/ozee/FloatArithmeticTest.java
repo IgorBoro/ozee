@@ -21,6 +21,77 @@ import com.borsoftlab.ozee.OzVm.OnOzVmDebugListener;
 @DisplayName("Test class")
 public class FloatArithmeticTest {
 
+    OzParser parser   = new OzParser();
+    OzScanner scanner = new OzScanner();
+
+
+    OnOzVmDebugListener debugListener = new OnOzVmDebugListener(){
+    
+        @Override
+        public void onExecutingCommand(int step, int pc, int cmd, int[] stack, int sp) {
+            if( step == OzVm.STEP_BEFORE_EXECUTING ){
+                System.out.print(OzAsm.getInstance().getMnemonic(cmd));
+            } else if( step == OzVm.STEP_OPTIONAL_ARGUMENT ){
+                System.out.print( String.format(" 0x%08X", cmd) );
+            } else if( step == OzVm.STEP_AFTER_EXECUTING ){
+                System.out.println();                
+
+                System.out.print("[ ");
+                for( int ptr = 0; ptr < sp; ptr++ ){
+                    int value = stack[ptr];
+                    System.out.print(String.format("0x%08X ", value));
+                }
+                System.out.println("] <- top");
+            }
+        }
+    };
+
+    @ParameterizedTest(name="{index}")
+    @MethodSource("argumentProvider")
+    public void test(String program, float expect) {
+        float value = Float.MIN_VALUE;
+        System.out.println("::------------------------------------------::");
+        try {     
+            final InputStream programStream = new ByteArrayInputStream(program.getBytes());
+            try {
+                final OzText text = new OzText(programStream);
+                scanner.resetText(text);
+                parser.compile(scanner);
+
+                final OzVm vm = new OzVm();
+                vm.setDebugListener(debugListener);
+                byte[] compiledProgram = parser.getProgramImage();
+                List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
+                byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
+                scanner.symbolTable.dumpSymbolTableByName();
+                vm.loadProgram(programImage);
+                System.out.println("\noZee virtual machine started...");
+                long startMillis = System.currentTimeMillis();
+                vm.execute();
+                long execTime = System.currentTimeMillis() - startMillis;
+                System.out.println("oZee virtual machine stopped");
+                System.out.println("Execution time: " + execTime + " ms");
+        
+                // OzUtils.printMemoryDump(vm.getRam());
+                int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
+                value = OzUtils.fetchFloatFromByteArray(vm.getRam(), valueAddr);
+                System.out.println("r = " + value);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            } finally {
+                System.out.println(OzCompileError.messageString);
+                try {
+                    programStream.close();
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        assertEquals(expect, value);
+    }
+
     final static String program0 
         = "float a = 4.78;" + '\n'
         + "float b = 5.22;" + '\n'
@@ -32,12 +103,14 @@ public class FloatArithmeticTest {
     final static float expect1 = 33;
 
     final static String program2 
-        = "int r = 1 + 2 + 3 + 4 + 5 + 6;";
-    final static int expect2 = 21;
+        = "float r = - 82.79;";
+    final static float expect2 = -82.79f;
 
     final static String program3 
-        = "int r =  3 * 25;";
-    final static int expect3 = 75;
+        = "float a = -4.78;" + '\n'
+        + "float b = -a;" + '\n'
+        + "float r = a + b;";
+    final static float expect3 = 0;
 
     final static String program4 
         = "int r =  3 * ( 5 + 7);";
@@ -211,84 +284,13 @@ public class FloatArithmeticTest {
 
     // -----------------------------------------
 
-    OzParser parser   = new OzParser();
-    OzScanner scanner = new OzScanner();
-
-
-    OnOzVmDebugListener debugListener = new OnOzVmDebugListener(){
-    
-        @Override
-        public void onExecutingCommand(int step, int pc, int cmd, int[] stack, int sp) {
-            if( step == OzVm.STEP_BEFORE_EXECUTING ){
-                System.out.print(OzAsm.getInstance().getMnemonic(cmd));
-            } else if( step == OzVm.STEP_OPTIONAL_ARGUMENT ){
-                System.out.print( String.format(" 0x%08X", cmd) );
-            } else if( step == OzVm.STEP_AFTER_EXECUTING ){
-                System.out.println();                
-
-                System.out.print("[ ");
-                for( int ptr = 0; ptr < sp; ptr++ ){
-                    int value = stack[ptr];
-                    System.out.print(String.format("0x%08X ", value));
-                }
-                System.out.println("] <- top");
-            }
-        }
-    };
-
-    @ParameterizedTest(name="{index}")
-    @MethodSource("argumentProvider")
-    public void test(String program, float expect) {
-        float value = Float.MIN_VALUE;
-        System.out.println("::------------------------------------------::");
-        try {     
-            final InputStream programStream = new ByteArrayInputStream(program.getBytes());
-            try {
-                final OzText text = new OzText(programStream);
-                scanner.resetText(text);
-                parser.compile(scanner);
-
-                final OzVm vm = new OzVm();
-                vm.setDebugListener(debugListener);
-                byte[] compiledProgram = parser.getProgramImage();
-                List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
-                byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
-                scanner.symbolTable.dumpSymbolTableByName();
-                vm.loadProgram(programImage);
-                System.out.println("\noZee virtual machine started...");
-                long startMillis = System.currentTimeMillis();
-                vm.execute();
-                long execTime = System.currentTimeMillis() - startMillis;
-                System.out.println("oZee virtual machine stopped");
-                System.out.println("Execution time: " + execTime + " ms");
-        
-                // OzUtils.printMemoryDump(vm.getRam());
-                int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
-                value = OzUtils.fetchFloatFromByteArray(vm.getRam(), valueAddr);
-                System.out.println("r = " + value);
-            } catch (final Exception e) {
-                e.printStackTrace();
-            } finally {
-                System.out.println(OzCompileError.messageString);
-                try {
-                    programStream.close();
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        assertEquals(expect, value);
-    }
-
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
                  Arguments.of( program0, expect0 )
                 ,Arguments.of( program1, expect1 )
-                /*
                 ,Arguments.of( program2, expect2 )
                 ,Arguments.of( program3, expect3 )
+                /*
                 ,Arguments.of( program4, expect4 )
                 ,Arguments.of( program5, expect5 )
                 ,Arguments.of( program6, expect6 )
