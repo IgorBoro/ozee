@@ -197,7 +197,11 @@ public class OzParser {
                     }
                     // теперь все стало VAR_TYPE_INT и далее, вплоть до присваивания будет
                     // или VAR_TYPE_INT или VAR_TYPE_FLOAT
-                    tsStack.push(OzScanner.VAR_TYPE_INT);
+                    if( symbol.varType == OzScanner.VAR_TYPE_FLOAT) {
+                        tsStack.push(OzScanner.VAR_TYPE_FLOAT);
+                    } else {
+                        tsStack.push(OzScanner.VAR_TYPE_INT);
+                    }
                     break;
                 case OzScanner.lexEOF:
                 break ;   
