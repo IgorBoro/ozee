@@ -124,29 +124,29 @@ public class FloatArithmeticTest {
     final static float expect5 = 3;
 
     final static String program6 
-        = "int r =  7/2;";
-    final static int expect6 = 3;
+        = "float r =  7/2;";
+    final static float expect6 = 3;
 
     final static String program7 
-        = "int r =  7.0/2;";
+        = "float r =  7.0/2;";
     final static float expect7 = 3.5f;
 
     final static String program8 
-        = "int r =  7/2.0;";
+        = "float r =  7/2.0;";
     final static float expect8 = 3.5f;
 
     final static String program9
         = "int a =  11;" + "\n"
         + "int b = 10; int c = 13; int d = 7;"  + "\n"
-        + "int r =  a + a * (b + c/d);";
-    final static int expect9 = 132;
+        + "float r =  a + a * (b + c/d);";
+    final static float expect9 = 132;
 
     // ------------------------------------------------------
 
     final static String program10
-        = "byte a =  11;" + "\n"
-        + "int r =  a;";
-    final static int expect10 = 11;
+        = "int   a =  11.84;" + "\n"
+        + "float r =  a;";
+    final static float expect10 = 11;
 
     final static String program11
         = "byte a =  -17;" + "\n"
@@ -298,9 +298,9 @@ public class FloatArithmeticTest {
                 ,Arguments.of( program6, expect6 )
                 ,Arguments.of( program7, expect7 )
                 ,Arguments.of( program8, expect8 )
-                /*
                 ,Arguments.of( program9, expect9 )
                 ,Arguments.of( program10, expect10 )
+                /*
                 ,Arguments.of( program11, expect11 )
                 ,Arguments.of( program12, expect12 )
                 ,Arguments.of( program13, expect13 )
