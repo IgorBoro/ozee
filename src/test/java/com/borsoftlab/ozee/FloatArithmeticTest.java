@@ -22,10 +22,10 @@ import com.borsoftlab.ozee.OzVm.OnOzVmDebugListener;
 public class FloatArithmeticTest {
 
     final static String program0 
-        = "int a = 4;" + '\n'
-        + "int b = 5;" + '\n'
-        + "int r = a + b;";
-    final static int expect0 = 9;
+        = "float a = 4.78;" + '\n'
+        + "float b = 5.22;" + '\n'
+        + "float r = a + b;";
+    final static float expect0 = 10;
 
     final static String program1 
         = "int a = 6;" + '\n'
@@ -240,8 +240,8 @@ public class FloatArithmeticTest {
 
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
-    public void test(String program, int expect) {
-        int value = Integer.MIN_VALUE;
+    public void test(String program, float expect) {
+        float value = Float.MIN_VALUE;
         System.out.println("::------------------------------------------::");
         try {     
             final InputStream programStream = new ByteArrayInputStream(program.getBytes());
@@ -266,7 +266,7 @@ public class FloatArithmeticTest {
         
                 // OzUtils.printMemoryDump(vm.getRam());
                 int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
-                value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
+                value = Float.intBitsToFloat(OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr));
                 System.out.println("r = " + value);
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -286,7 +286,9 @@ public class FloatArithmeticTest {
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-                Arguments.of( program0, expect0 ),
+                Arguments.of( program0, expect0 )
+                /*
+                ,
                 Arguments.of( program1, expect1 ),
                 Arguments.of( program2, expect2 ),
                 Arguments.of( program3, expect3 ),
@@ -323,6 +325,7 @@ public class FloatArithmeticTest {
                 Arguments.of( program34, expect34 ),
                 Arguments.of( program35, expect35 ),
                 Arguments.of( program36, expect36 )
+                */
                 );
     }
 }        
