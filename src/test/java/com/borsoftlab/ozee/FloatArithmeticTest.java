@@ -178,48 +178,51 @@ public class FloatArithmeticTest {
         + "float r =  (A - 128.0) * 100.0/128.0;";
     final static float expect16 = -45.3125f;
 
-    // ------------------------------------------------------
-
 
     final static String program17
-        = "ubyte a =  -17;" + "\n"
-        + "int r =  a;";
-    final static int expect17 = 239;
+        = "ubyte a =   18;" + "\n"
+        + "ubyte b =  220;" + "\n"
+        + "float r =  a * 256 + b;";
+    final static float expect17 = 4828;
 
     final static String program18
-        = "ubyte a =  128;" + "\n"
-        + "int r =  a;";
-    final static int expect18 = 128;
+        = "ushort a =  4828;" + "\n"
+        + "float  r =  a;";
+    final static float expect18 = 4828;
 
     final static String program19
-        = "ubyte a =  129;" + "\n"
-        + "int r =  a;";
-    final static int expect19 = 129;
+        = "ushort a =  -10;" + "\n"
+        + "float  r =  a;";
+    final static float expect19 = 65526.0f;
 
     final static String program20
-        = "ubyte a =  130;" + "\n"
-        + "int r =  a;";
-    final static int expect20 = 130;
+        = "ubyte a =  255;" + "\n"
+        + "ubyte b =  255;" + "\n"
+        + "float r =  (a*256.0 + b)*2.0/65535.0;";
+    final static float expect20 = 2.0f;
 
     final static String program21
-        = "ubyte a =  156;" + "\n"
-        + "int r =  a;";
-    final static int expect21 = 156;
+        = "ubyte a =  128;" + "\n"
+        + "ubyte b =  128;" + "\n"
+        + "float r =  (a*256.0 + b)/ 200.0;";
+    final static float expect21 = 164.48f;
 
     final static String program22
-        = "short a =  11;" + "\n"
-        + "int r =  a;";
-    final static int expect22 = 11;
+        = "short a =  -478;" + "\n"
+        + "float r =  2.0 * a;";
+    final static float expect22 = -956.0f;
 
     final static String program23
-        = "short a =  -2317;" + "\n"
-        + "int r =  a;";
-    final static int expect23 = -2317;
+        = "short a =  -478;" + "\n"
+        + "float r =  2 * a;";
+    final static float expect23 = -956.0f;
 
     final static String program24
-        = "short a =  128;" + "\n"
-        + "int r =  a;";
-    final static int expect24 = 128;
+        = "short a =  478;" + "\n"
+        + "float r =  2 * a;";
+    final static float expect24 = 956.0f;
+
+    // ------------------------------------------------------
 
     final static String program25
         = "short a =  129;" + "\n"
@@ -302,7 +305,6 @@ public class FloatArithmeticTest {
                 ,Arguments.of( program14, expect14 )
                 ,Arguments.of( program15, expect15 )
                 ,Arguments.of( program16, expect16 )
-                /*
                 ,Arguments.of( program17, expect17 )
                 ,Arguments.of( program18, expect18 )
                 ,Arguments.of( program19, expect19 )
@@ -311,6 +313,7 @@ public class FloatArithmeticTest {
                 ,Arguments.of( program22, expect22 )
                 ,Arguments.of( program23, expect23 )
                 ,Arguments.of( program24, expect24 )
+                /*
                 ,Arguments.of( program25, expect25 )
                 ,Arguments.of( program26, expect26 )
                 ,Arguments.of( program27, expect27 )
