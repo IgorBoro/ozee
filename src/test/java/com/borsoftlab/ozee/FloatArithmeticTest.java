@@ -28,10 +28,8 @@ public class FloatArithmeticTest {
     final static float expect0 = 10;
 
     final static String program1 
-        = "int a = 6;" + '\n'
-        + "int b = 8;" + '\n'
-        + "int r = a - b;";
-    final static int expect1 = -2;
+        = "float r = 56 - 23;";
+    final static float expect1 = 33;
 
     final static String program2 
         = "int r = 1 + 2 + 3 + 4 + 5 + 6;";
@@ -266,7 +264,7 @@ public class FloatArithmeticTest {
         
                 // OzUtils.printMemoryDump(vm.getRam());
                 int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
-                value = Float.intBitsToFloat(OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr));
+                value = OzUtils.fetchFloatFromByteArray(vm.getRam(), valueAddr);
                 System.out.println("r = " + value);
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -286,45 +284,44 @@ public class FloatArithmeticTest {
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-                Arguments.of( program0, expect0 )
+                 Arguments.of( program0, expect0 )
+                ,Arguments.of( program1, expect1 )
                 /*
-                ,
-                Arguments.of( program1, expect1 ),
-                Arguments.of( program2, expect2 ),
-                Arguments.of( program3, expect3 ),
-                Arguments.of( program4, expect4 ),
-                Arguments.of( program5, expect5 ),
-                Arguments.of( program6, expect6 ),
-                Arguments.of( program7, expect7 ),
-                Arguments.of( program8, expect8 ),
-                Arguments.of( program9, expect9 ),
-                Arguments.of( program10, expect10 ),
-                Arguments.of( program11, expect11 ),
-                Arguments.of( program12, expect12 ),
-                Arguments.of( program13, expect13 ),
-                Arguments.of( program14, expect14 ),
-                Arguments.of( program15, expect15 ),
-                Arguments.of( program16, expect16 ),
-                Arguments.of( program17, expect17 ),
-                Arguments.of( program18, expect18 ),
-                Arguments.of( program19, expect19 ),
-                Arguments.of( program20, expect20 ),
-                Arguments.of( program21, expect21 ),
-                Arguments.of( program22, expect22 ),
-                Arguments.of( program23, expect23 ),
-                Arguments.of( program24, expect24 ),
-                Arguments.of( program25, expect25 ),
-                Arguments.of( program26, expect26 ),
-                Arguments.of( program27, expect27 ),
-                Arguments.of( program28, expect28 ),
-                Arguments.of( program29, expect29 ),
-                Arguments.of( program30, expect30 ),
-                Arguments.of( program31, expect31 ),
-                Arguments.of( program32, expect32 ),
-                Arguments.of( program33, expect33 ),
-                Arguments.of( program34, expect34 ),
-                Arguments.of( program35, expect35 ),
-                Arguments.of( program36, expect36 )
+                ,Arguments.of( program2, expect2 )
+                ,Arguments.of( program3, expect3 )
+                ,Arguments.of( program4, expect4 )
+                ,Arguments.of( program5, expect5 )
+                ,Arguments.of( program6, expect6 )
+                ,Arguments.of( program7, expect7 )
+                ,Arguments.of( program8, expect8 )
+                ,Arguments.of( program9, expect9 )
+                ,Arguments.of( program10, expect10 )
+                ,Arguments.of( program11, expect11 )
+                ,Arguments.of( program12, expect12 )
+                ,Arguments.of( program13, expect13 )
+                ,Arguments.of( program14, expect14 )
+                ,Arguments.of( program15, expect15 )
+                ,Arguments.of( program16, expect16 )
+                ,Arguments.of( program17, expect17 )
+                ,Arguments.of( program18, expect18 )
+                ,Arguments.of( program19, expect19 )
+                ,Arguments.of( program20, expect20 )
+                ,Arguments.of( program21, expect21 )
+                ,Arguments.of( program22, expect22 )
+                ,Arguments.of( program23, expect23 )
+                ,Arguments.of( program24, expect24 )
+                ,Arguments.of( program25, expect25 )
+                ,Arguments.of( program26, expect26 )
+                ,Arguments.of( program27, expect27 )
+                ,Arguments.of( program28, expect28 )
+                ,Arguments.of( program29, expect29 )
+                ,Arguments.of( program30, expect30 )
+                ,Arguments.of( program31, expect31 )
+                ,Arguments.of( program32, expect32 )
+                ,Arguments.of( program33, expect33 )
+                ,Arguments.of( program34, expect34 )
+                ,Arguments.of( program35, expect35 )
+                ,Arguments.of( program36, expect36 )
                 */
                 );
     }

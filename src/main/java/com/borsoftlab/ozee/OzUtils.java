@@ -42,6 +42,10 @@ public class OzUtils {
                 ( mem[addr]         ) & 0x000000FF;
     }
 
+    static public float fetchFloatFromByteArray(final byte[] mem, final int addr){
+        return  Float.intBitsToFloat(fetchIntFromByteArray(mem, addr));
+    }
+
     static public int fetchByteFromByteArray(final byte[] mem, final int addr){
         // little-endian
         return  ( mem[addr]   & 0x000000FF );
