@@ -127,7 +127,7 @@ public class OzVm{
         while( cmd != OPCODE_STOP){
             pc++;
             int valueAddr, int_value, l_int_value, r_int_value;
-            float  flt_value, l_flt_value, r_flt_value;
+            float  l_flt_value, r_flt_value;
             if( debugListener != null ){
                 debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
             }
