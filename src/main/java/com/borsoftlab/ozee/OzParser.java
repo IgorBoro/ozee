@@ -103,6 +103,7 @@ public class OzParser {
         symbol.addRef(pc-4);
         switch(symbol.varType){
             case OzScanner.VAR_TYPE_INT:
+            case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_ASGN);
                 break;
             case OzScanner.VAR_TYPE_BYTE:
