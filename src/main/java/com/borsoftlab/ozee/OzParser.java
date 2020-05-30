@@ -101,7 +101,19 @@ public class OzParser {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         symbol.addRef(pc-4);
-        emit(OzVm.OPCODE_ASGN);
+        switch(symbol.varType){
+            case OzScanner.VAR_TYPE_INT:
+                emit(OzVm.OPCODE_ASGN);
+                break;
+            case OzScanner.VAR_TYPE_BYTE:
+            case OzScanner.VAR_TYPE_UBYTE:
+                emit(OzVm.OPCODE_ASGNB);
+                break;
+            case OzScanner.VAR_TYPE_SHORT:
+            case OzScanner.VAR_TYPE_USHORT:
+                emit(OzVm.OPCODE_ASGNS);
+                break;
+            }
     }
 
     public void expression() throws Exception {

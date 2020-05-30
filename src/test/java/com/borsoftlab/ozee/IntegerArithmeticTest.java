@@ -211,6 +211,14 @@ public class IntegerArithmeticTest {
         + "int r =  a;";
     final static int expect36 = -19425;
 
+    final static String program37
+        = "byte a =  146;" + "\n"
+        + "byte b =  62;"  + "\n"
+        + "a =  104;"  + "\n"
+        + "int r =  b;";
+    final static int expect37 = 62;
+
+
     // -----------------------------------------
 
     OzParser parser   = new OzParser();
@@ -322,7 +330,8 @@ public class IntegerArithmeticTest {
                 Arguments.of( program33, expect33 ),
                 Arguments.of( program34, expect34 ),
                 Arguments.of( program35, expect35 ),
-                Arguments.of( program36, expect36 )
+                Arguments.of( program36, expect36 ),
+                Arguments.of( program37, expect37 )
                 );
     }
 }        
