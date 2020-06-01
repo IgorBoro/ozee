@@ -49,25 +49,16 @@ public class OzParser {
                     varType = OzScanner.VAR_TYPE_INT_ARRAY;
                 }
             } 
-    
+   
             OzSymbols.Symbol symbol = newVariable(varType);
-    
-          ///////////////// declareVarAndAssignStmt(symbol, varType);
 
-//           match(OzScanner.lexVARNAME, "variable name");
-//           if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON){
-//               // empty
-//           } else {
-//                assignExpression(symbol);
-//           }
-
-           match(OzScanner.lexVARNAME, "variable name");
-           if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-               if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
-                   assignArrayDefinition(symbol);
-               } else {
-                   assignExpression(symbol);
-               }
+            match(OzScanner.lexVARNAME, "variable name");
+            if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+                if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                    assignArrayDefinition(symbol);
+                } else {
+                    assignExpression(symbol);
+                }
            } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
                    // empty
            } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
@@ -75,32 +66,23 @@ public class OzParser {
            } else {
                OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
            }
-  
-        }
-        else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+        } else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = variable();
             int varType = symbol.varType;
-           /////// assignStmt(symbol);
-           match(OzScanner.lexVARNAME, "variable name");
-           /*
-           assignExpression(symbol);
-           */
-
-          if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
-                assignArrayDefinition(symbol);
-            } else {
-                assignExpression(symbol);
-            }
-        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+            match(OzScanner.lexVARNAME, "variable name");
+            if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+                if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                    assignArrayDefinition(symbol);
+                } else {
+                    assignExpression(symbol);
+                }
+            } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
                 // empty
-        } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
-        } else {
-            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
-        }
-
-   
+            } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+                OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+            } else {
+                OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+            }
         }
         else {
             expression(); // it will be not always
