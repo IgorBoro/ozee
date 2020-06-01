@@ -107,6 +107,7 @@ public class OzParser {
 
     private void assignArrayDefinition(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexASSIGN, "'='");
+        OzLocation loc = new OzLocation(scanner.loc);
         int varType = varType();
 
         if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY &&
@@ -123,7 +124,7 @@ public class OzParser {
                 match(OzScanner.lexRSQUARE);
             }    
         } else {
-            OzCompileError.message(scanner, "incompatible types", scanner.loc);
+            OzCompileError.message(scanner, "incompatible array types", loc);
         }
     }
 

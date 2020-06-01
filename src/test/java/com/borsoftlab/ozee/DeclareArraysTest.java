@@ -72,7 +72,9 @@ public class DeclareArraysTest {
                         = "int[] i;" + "\n"
                         + "i = short[15];";
     final static String message7
-                        = "Ok";
+                        = "i = short[15];" + "\n"
+                        + "    ^"          + "\n"
+                        + "Error in line 2: incompatible array types" + "\n";
                         
 
 // -----------------------------------------------------------------------                        
@@ -114,8 +116,8 @@ public class DeclareArraysTest {
             Arguments.of( program3, message3 ),
             Arguments.of( program4, message4 ),
             Arguments.of( program5, message5 ),
-            Arguments.of( program6, message6 )
-//            Arguments.of( program7, message7 ),
+            Arguments.of( program6, message6 ),
+            Arguments.of( program7, message7 )
 //            Arguments.of( program8, message8 ),
 //            Arguments.of( program9, message9 ),
 //            Arguments.of( program10, message10 ),
