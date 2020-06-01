@@ -33,11 +33,11 @@ public class DeclareArraysTest {
 
     static String program2
                         = "int[] i;" + "\n"
-                        + "short[] s;" + "\n"
+                        + "short[  ] s;" + "\n"
                         + "ushort[] us;" + "\n"
-                        + "byte[] b;" + "\n"
-                        + "ubyte[] ub;" + "\n"
-                        + "float[] f;";
+                        + "byte [] b;" + "\n"
+                        + "ubyte [ ]  ub;" + "\n"
+                        + "float [] f;";
     static String message2 
                         = "Ok";
 
