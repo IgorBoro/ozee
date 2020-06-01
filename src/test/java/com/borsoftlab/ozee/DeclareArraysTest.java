@@ -87,16 +87,14 @@ public class DeclareArraysTest {
                         + "    ^"          + "\n"
                         + "Error in line 2: incompatible array types" + "\n";
 
-// -----------------------------------------------------------------------                        
-
-
     final static String program10 
-                        = "int[] i = int[15];";
+                        = "int[] i = int[a];";
     final static String message10
-                        = "int i = int[15];" + "\n"
-                        + "        ^"        + "\n"
-                        + "Error in line 1: expected scalar type" + "\n";
+                        = "int[] i = int[a];" + "\n"
+                        + "              ^"        + "\n"
+                        + "Error in line 1: name 'a' not defined" + "\n";
                         
+// -----------------------------------------------------------------------                        
 
 
     OzParser parser   = new OzParser();
@@ -139,8 +137,8 @@ public class DeclareArraysTest {
             Arguments.of( program6, message6 ),
             Arguments.of( program7, message7 ),
             Arguments.of( program8, message8 ),
-            Arguments.of( program9, message9 )
-//            Arguments.of( program10, message10 )
+            Arguments.of( program9, message9 ),
+            Arguments.of( program10, message10 )
 //            Arguments.of( program11, message11 ),
 //            Arguments.of( program12, message12 ),
 //            Arguments.of( program13, message13 ),
