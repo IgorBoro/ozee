@@ -41,7 +41,7 @@ public class DeclareVarsTest {
     final static String message3
                         = "int i=;"  + '\n'
                         + "      ^"  + '\n'
-                        + "Error in line 1: unexpected lexeme"   + '\n';
+                        + "Error in line 1: expected scalar type"   + '\n';
                         
     final static String program4 
                         = "int i=5;";
@@ -80,7 +80,7 @@ public class DeclareVarsTest {
     final static String message8
                         = "int i= ;"  + '\n'
                         + "       ^"  + '\n'
-                        + "Error in line 1: unexpected lexeme"   + '\n';
+                        + "Error in line 1: expected scalar type"   + '\n';
 
     static String program9
                         = "int i + ";

@@ -251,7 +251,7 @@ public class OzParser {
                 case OzScanner.lexEOF:
                 break ;   
                 default:
-                    OzCompileError.message(scanner, "unexpected lexeme", scanner.loc);    
+                    OzCompileError.expected(scanner, "scalar type", scanner.loc);    
             }
         }
         if( unaryMinus ) {
