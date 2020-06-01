@@ -18,17 +18,18 @@ import java.util.stream.Stream;
 public class DeclareArraysTest {
 
     static String program0
-                        = "int[] i;";
+                        = "int [ ] i;";
     static String message0 
                         = "Ok";
 
     static String program1
                         = "int[] i;" + "\n"
+                        + "int[] a;" + "\n"
                         + "short i;";
     static String message1 
                         = "short i;"  + '\n'
                         + "      ^"   + '\n'
-                        + "Error in line 2: name 'i' already defined" + '\n';
+                        + "Error in line 3: name 'i' already defined" + '\n';
 
     static String program2
                         = "int[] i;" + "\n"
@@ -46,7 +47,6 @@ public class DeclareArraysTest {
                         = "Ok";
                         
 // -----------------------------------------------------------------------                        
-
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
@@ -79,10 +79,10 @@ public class DeclareArraysTest {
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-            Arguments.of( program0, message0 ),
-            Arguments.of( program1, message1 ),
-            Arguments.of( program2, message2 ),
-            Arguments.of( program3, message3 )
+//            Arguments.of( program0, message0 ),
+            Arguments.of( program1, message1 )
+//            Arguments.of( program2, message2 )
+//            Arguments.of( program3, message3 )
 //            Arguments.of( program4, message4 ),
 //            Arguments.of( program5, message5 ),
 //            Arguments.of( program6, message6 ),

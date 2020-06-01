@@ -67,12 +67,12 @@ public class OzScanner {
         symbolTable.install( "byte",   lexVARTYPE, VAR_TYPE_BYTE   );
         symbolTable.install( "ubyte",  lexVARTYPE, VAR_TYPE_UBYTE  );
         symbolTable.install( "float",  lexVARTYPE, VAR_TYPE_FLOAT  );
-        symbolTable.install( "int[]",    lexVARTYPE, VAR_TYPE_INT_ARRAY );
-        symbolTable.install( "short[]",  lexVARTYPE, VAR_TYPE_SHORT_ARRAY  );
-        symbolTable.install( "ushort[]", lexVARTYPE, VAR_TYPE_USHORT_ARRAY );
-        symbolTable.install( "byte[]",   lexVARTYPE, VAR_TYPE_BYTE_ARRAY   );
-        symbolTable.install( "ubyte[]",  lexVARTYPE, VAR_TYPE_UBYTE_ARRAY  );
-        symbolTable.install( "float[]",  lexVARTYPE, VAR_TYPE_FLOAT_ARRAY  );
+    //    symbolTable.install( "int[]",    lexVARTYPE, VAR_TYPE_INT_ARRAY );
+    //    symbolTable.install( "short[]",  lexVARTYPE, VAR_TYPE_SHORT_ARRAY  );
+    //    symbolTable.install( "ushort[]", lexVARTYPE, VAR_TYPE_USHORT_ARRAY );
+    //    symbolTable.install( "byte[]",   lexVARTYPE, VAR_TYPE_BYTE_ARRAY   );
+    //    symbolTable.install( "ubyte[]",  lexVARTYPE, VAR_TYPE_UBYTE_ARRAY  );
+    //    symbolTable.install( "float[]",  lexVARTYPE, VAR_TYPE_FLOAT_ARRAY  );
     }
 
     public void resetText(final OzText text) {
@@ -223,8 +223,8 @@ public class OzScanner {
             text.nextChar();
         } while (Character.isLetterOrDigit(text.lookAheadChar)
             || text.lookAheadChar == '_'
-            || text.lookAheadChar == '['
-            || text.lookAheadChar == ']'
+        //    || text.lookAheadChar == '['
+        //    || text.lookAheadChar == ']'
         );
         String ident = String.valueOf(identBuffer, 0, i);
         symbol = symbolTable.lookup(ident);

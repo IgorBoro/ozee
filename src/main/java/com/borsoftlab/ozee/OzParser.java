@@ -53,6 +53,12 @@ public class OzParser {
 
     private void declareVarAndAssignStmt() throws Exception {
         int varType = varType();
+
+        if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+            match(OzScanner.lexLSQUARE);
+            match(OzScanner.lexRSQUARE);
+        }
+
         OzSymbols.Symbol symbol = newVariable(varType);
         match(OzScanner.lexVARNAME, "variable name");
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
