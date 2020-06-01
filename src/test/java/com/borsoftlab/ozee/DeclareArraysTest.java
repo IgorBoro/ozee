@@ -40,97 +40,13 @@ public class DeclareArraysTest {
     static String message2 
                         = "Ok";
 
-
-                        
     final static String program3
-                        = "int i=;";
+                        = "int[] i = int[15];";
     final static String message3
-                        = "int i=;"  + '\n'
-                        + "      ^"  + '\n'
-                        + "Error in line 1: unexpected lexeme"   + '\n';
+                        = "Ok";
                         
-    final static String program4 
-                        = "int i=5;";
-    final static String message4
-                        = "Ok";
+// -----------------------------------------------------------------------                        
 
-    final static String program5 
-                        = "int id = 180; // comment"   + '\n'
-                        + "int j = id;"                + '\n'
-                        + "byte l;"                    + '\n'
-                        + "int t12;"                   + '\n'
-                        + "float g;"                   + '\n'
-                        + "int k= 17 + j + t12;"       + '\n'
-                        + "/*"                         + '\n'
-                        + " * comment"                 + '\n'
-                        + " */"                        + '\n'
-                        + "byte b = 45;"               + '\n'
-                        + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
-    final static String message5
-                        = "Ok";
-
-    static String program6
-                        = "float ff=45. 6;";
-    static String message6 
-                        = "float ff=45. 6;"  + '\n'
-                        + "            ^"    + '\n'
-                        + "Error in line 1: unexpected symbol"   + '\n';
-
-    static String program7
-                        = "float ff=45.6;";
-    static String message7 
-                        = "Ok";
-
-    final static String program8
-                        = "int i= ;";
-    final static String message8
-                        = "int i= ;"  + '\n'
-                        + "       ^"  + '\n'
-                        + "Error in line 1: unexpected lexeme"   + '\n';
-
-    static String program9
-                        = "int i + ";
-    static String message9 
-                        = "int i + "   + '\n'
-                        + "      ^"    + '\n'
-                        + "Error in line 1: expected '=' or ';'" + '\n';
-
-
-    final static String program10 
-                        = "float ;";
-    final static String message10
-                        = "float ;"  + '\n'
-                        + "      ^"  + '\n'
-                        + "Error in line 1: expected variable name" + '\n';
-
-    final static String program11 
-                        = "float +";
-    final static String message11
-                        = "float +"  + '\n'
-                        + "      ^"  + '\n'
-                        + "Error in line 1: expected variable name" + '\n';
-
-
-    static String program12
-                        = "int d=4r56;";
-    static String message12 
-                        = "int d=4r56;"  + '\n'
-                        + "       ^"     + '\n'
-                        + "Error in line 1: unexpected lexeme" + '\n';
-
-    static String program13
-                        = "int d=4 56;";
-    static String message13 
-                        = "int d=4 56;"  + '\n'
-                        + "        ^"    + '\n'
-                        + "Error in line 1: unexpected lexeme" + '\n';
-
-    final static String program14 
-                        = "int i_val=m_val;";
-    final static String message14
-                        = "int i_val=m_val;"    + '\n'
-                        + "          ^"         + '\n'
-                        + "Error in line 1: name 'm_val' not defined" + '\n';
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
@@ -165,8 +81,8 @@ public class DeclareArraysTest {
         return Stream.of(
             Arguments.of( program0, message0 ),
             Arguments.of( program1, message1 ),
-            Arguments.of( program2, message2 )
-//            Arguments.of( program3, message3 ),
+            Arguments.of( program2, message2 ),
+            Arguments.of( program3, message3 )
 //            Arguments.of( program4, message4 ),
 //            Arguments.of( program5, message5 ),
 //            Arguments.of( program6, message6 ),
