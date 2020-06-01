@@ -222,69 +222,13 @@ public class FloatArithmeticTest {
         + "float r =  2 * a;";
     final static float expect24 = 956.0f;
 
-    // ------------------------------------------------------
-
     final static String program25
-        = "short a =  129;" + "\n"
-        + "int r =  a;";
-    final static int expect25 = 129;
+        = "ubyte A = 255;" + "\n"
+        + "ubyte B =  255;" + "\n"
+        + "float r =  (((A*256.0)+B)-26880.0)/128.0;";
+    final static float expect25 = 301.9922f;
 
-    final static String program26
-        = "short a =  130;" + "\n"
-        + "int r =  a;";
-    final static int expect26 = 130;
-
-    final static String program27
-        = "short a =  34500;" + "\n"
-        + "int r =  a;";
-    final static int expect27 = -31036;
-
-    final static String program28
-        = "ushort a =  11;" + "\n"
-        + "int r =  a;";
-    final static int expect28 = 11;
-
-    final static String program29
-        = "ushort a =  -17;" + "\n"
-        + "int r =  a;";
-    final static int expect29 = 65519;
-
-    final static String program30
-        = "ushort a =  128;" + "\n"
-        + "int r =  a;";
-    final static int expect30 = 128;
-
-    final static String program31
-        = "ushort a =  129;" + "\n"
-        + "int r =  a;";
-    final static int expect31 = 129;
-
-    final static String program32
-        = "ushort a =  130;" + "\n"
-        + "int r =  a;";
-    final static int expect32 = 130;
-
-    final static String program33
-        = "ushort a =  156;" + "\n"
-        + "int r =  a;";
-    final static int expect33 = 156;
-
-    final static String program34
-        = "ushort a =  156;" + "\n"
-        + "int r =  a;";
-    final static int expect34 = 156;
-
-    final static String program35
-        = "ushort a =  46111;" + "\n"
-        + "int r =  a;";
-    final static int expect35 = 46111;
-
-    final static String program36
-        = "short a =  46111;" + "\n"
-        + "int r =  a;";
-    final static int expect36 = -19425;
-
-    // -----------------------------------------
+    // ------------------------------------------------------
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
@@ -313,20 +257,7 @@ public class FloatArithmeticTest {
                 ,Arguments.of( program22, expect22 )
                 ,Arguments.of( program23, expect23 )
                 ,Arguments.of( program24, expect24 )
-                /*
                 ,Arguments.of( program25, expect25 )
-                ,Arguments.of( program26, expect26 )
-                ,Arguments.of( program27, expect27 )
-                ,Arguments.of( program28, expect28 )
-                ,Arguments.of( program29, expect29 )
-                ,Arguments.of( program30, expect30 )
-                ,Arguments.of( program31, expect31 )
-                ,Arguments.of( program32, expect32 )
-                ,Arguments.of( program33, expect33 )
-                ,Arguments.of( program34, expect34 )
-                ,Arguments.of( program35, expect35 )
-                ,Arguments.of( program36, expect36 )
-                */
                 );
     }
 }        
