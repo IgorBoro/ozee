@@ -97,7 +97,7 @@ public class OzParser {
         assign(symbol);
     }
 
-    private void assign(OzSymbols.Symbol symbol){
+    private void assign(OzSymbols.Symbol symbol) throws Exception {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         symbol.addRef(pc-4);
@@ -114,7 +114,9 @@ public class OzParser {
             case OzScanner.VAR_TYPE_USHORT:
                 emit(OzVm.OPCODE_ASGNS);
                 break;
-            }
+            default:
+    			OzCompileError.message(scanner, "Compilation error: assignment type error", scanner.loc);
+	        }
     }
 
     public void expression() throws Exception {
