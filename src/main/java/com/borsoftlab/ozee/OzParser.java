@@ -41,54 +41,74 @@ public class OzParser {
 
     void stmt() throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            declareVarAndAssignStmt();
+            int varType = varType();
+            if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+                match(OzScanner.lexLSQUARE);
+                match(OzScanner.lexRSQUARE);
+                if( varType == OzScanner.VAR_TYPE_INT ){
+                    varType = OzScanner.VAR_TYPE_INT_ARRAY;
+                }
+            } 
+    
+            OzSymbols.Symbol symbol = newVariable(varType);
+    
+          ///////////////// declareVarAndAssignStmt(symbol, varType);
+
+//           match(OzScanner.lexVARNAME, "variable name");
+//           if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON){
+//               // empty
+//           } else {
+//                assignExpression(symbol);
+//           }
+
+           match(OzScanner.lexVARNAME, "variable name");
+           if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+               if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                   assignArrayDefinition(symbol);
+               } else {
+                   assignExpression(symbol);
+               }
+           } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+                   // empty
+           } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+               OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+           } else {
+               OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+           }
+  
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            assignStmt();
+            OzSymbols.Symbol symbol = variable();
+           /////// assignStmt(symbol);
+           
+           match(OzScanner.lexVARNAME, "variable name");
+           assignExpression(symbol);
+   
         }
         else {
             expression(); // it will be not always
         } 
     }
 
-    private void declareVarAndAssignStmt() throws Exception {
-        int varType = varType();
+    /*
+    private void declareVarAndAssignStmt(OzSymbols.Symbol symbol, int varType) throws Exception {
 
-        if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
-            match(OzScanner.lexLSQUARE);
-            match(OzScanner.lexRSQUARE);
-            if( varType == OzScanner.VAR_TYPE_INT ){
-                varType = OzScanner.VAR_TYPE_INT_ARRAY;
-            }
-
-            OzSymbols.Symbol symbol = newVariable(varType);
-            match(OzScanner.lexVARNAME, "variable name");
-            if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+        match(OzScanner.lexVARNAME, "variable name");
+        if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+            if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
                 assignArrayDefinition(symbol);
-            } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
-                // empty
-            } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-                OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
             } else {
-                OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
-            }
-
-
-        } else {
-
-           OzSymbols.Symbol symbol = newVariable(varType);
-            match(OzScanner.lexVARNAME, "variable name");
-            if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
                 assignExpression(symbol);
-            } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
-                // empty
-            } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-                OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
-            } else {
-                OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
             }
+        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+                // empty
+        } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+        } else {
+            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
         }
     }
+    */
 
     private int varType() throws Exception {
         match(OzScanner.lexVARTYPE, "var type definition");
@@ -114,8 +134,7 @@ public class OzParser {
         return scanner.symbol;
     }
 
-    public void assignStmt() throws Exception {
-        OzSymbols.Symbol symbol = variable();
+    public void assignStmt(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexVARNAME, "variable name");
         assignExpression(symbol);
     }
@@ -130,8 +149,8 @@ public class OzParser {
         match(OzScanner.lexASSIGN, "'='");
         int varType = varType();
 
-        if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY && 
-                   varType == OzScanner.VAR_TYPE_INT){
+        if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY &&
+                   varType == OzScanner.VAR_TYPE_INT ){
 
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
                 match(OzScanner.lexLSQUARE);
