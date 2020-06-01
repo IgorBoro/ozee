@@ -120,7 +120,7 @@ public class OzVm{
     }
 
     public void execute() throws Exception {
-        pc = 0;
+        pc = OzUtils.fetchIntFromByteArray(ram, 0);
         sp = 0; // the stack is growing up
 
         byte cmd = ram[pc];
