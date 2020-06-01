@@ -39,6 +39,13 @@ public class OzSymbols {
                 return 1;
             case OzScanner.VAR_TYPE_FLOAT:
                 return 4;
+            case OzScanner.VAR_TYPE_INT_ARRAY:
+            case OzScanner.VAR_TYPE_SHORT_ARRAY:
+            case OzScanner.VAR_TYPE_USHORT_ARRAY:
+            case OzScanner.VAR_TYPE_BYTE_ARRAY:
+            case OzScanner.VAR_TYPE_UBYTE_ARRAY:
+            case OzScanner.VAR_TYPE_FLOAT_ARRAY:
+                return 4;
             default:
                 return 0;
         }
@@ -51,29 +58,7 @@ public class OzSymbols {
         for( Map.Entry<String, Symbol> entry : sortedMap.entrySet()){
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
-                String sType;
-                switch(sym.varType){
-                    case OzScanner.VAR_TYPE_BYTE:
-                        sType = "byte";
-                        break;
-                    case OzScanner.VAR_TYPE_UBYTE:
-                        sType = "ubyte";
-                        break;
-                    case OzScanner.VAR_TYPE_SHORT:
-                        sType = "short";
-                        break;
-                    case OzScanner.VAR_TYPE_USHORT:
-                        sType = "ushort";
-                        break;
-                    case OzScanner.VAR_TYPE_INT:
-                        sType = "int";
-                        break;
-                    case OzScanner.VAR_TYPE_FLOAT:
-                        sType = "float";
-                        break;
-                    default:
-                        sType = "unknown";    
-                }
+                String sType = getVarTypeName(sym);
                 System.out.print(String.format("%-24s %-5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
                 System.out.print("\t");
                 for (Integer ref : sym.refList) {
@@ -97,29 +82,7 @@ public class OzSymbols {
         for( Map.Entry<String, Symbol> entry : sortedMap.entrySet()){
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
-                String sType;
-                switch(sym.varType){
-                    case OzScanner.VAR_TYPE_BYTE:
-                        sType = "byte";
-                        break;
-                    case OzScanner.VAR_TYPE_UBYTE:
-                        sType = "ubyte";
-                        break;
-                    case OzScanner.VAR_TYPE_SHORT:
-                        sType = "short";
-                        break;
-                    case OzScanner.VAR_TYPE_USHORT:
-                        sType = "ushort";
-                        break;
-                    case OzScanner.VAR_TYPE_INT:
-                        sType = "int";
-                        break;
-                    case OzScanner.VAR_TYPE_FLOAT:
-                        sType = "float";
-                        break;
-                    default:
-                        sType = "unknown";    
-                }
+                String sType = getVarTypeName(sym);
                 System.out.print(String.format("0x%08X: %-24s %-5s %d", sym.allocAddress, sym.name, sType, sym.sizeInBytes));
                 System.out.print("\t");
                 for (Integer ref : sym.refList) {
@@ -130,6 +93,51 @@ public class OzSymbols {
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY ADDR END  =============");
+    }
+
+    private String getVarTypeName(Symbol sym) {
+        String sType;
+        switch(sym.varType){
+            case OzScanner.VAR_TYPE_BYTE:
+                sType = "byte";
+                break;
+            case OzScanner.VAR_TYPE_UBYTE:
+                sType = "ubyte";
+                break;
+            case OzScanner.VAR_TYPE_SHORT:
+                sType = "short";
+                break;
+            case OzScanner.VAR_TYPE_USHORT:
+                sType = "ushort";
+                break;
+            case OzScanner.VAR_TYPE_INT:
+                sType = "int";
+                break;
+            case OzScanner.VAR_TYPE_FLOAT:
+                sType = "float";
+                break;
+            case OzScanner.VAR_TYPE_BYTE_ARRAY:
+                sType = "byte array";
+                break;
+            case OzScanner.VAR_TYPE_UBYTE_ARRAY:
+                sType = "ubyte array";
+                break;
+            case OzScanner.VAR_TYPE_SHORT_ARRAY:
+                sType = "short array";
+                break;
+            case OzScanner.VAR_TYPE_USHORT_ARRAY:
+                sType = "ushort array";
+                break;
+            case OzScanner.VAR_TYPE_INT_ARRAY:
+                sType = "int array";
+                break;
+            case OzScanner.VAR_TYPE_FLOAT_ARRAY:
+                sType = "float array";
+                break;
+            default:
+                sType = "unknown";    
+        }
+        return sType;
     }
 
     public List<Symbol> getTableOrderedByAddr(){

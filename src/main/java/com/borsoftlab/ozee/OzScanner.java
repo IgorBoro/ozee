@@ -16,6 +16,8 @@ public class OzScanner {
     public static final int lexCOMMA       = 10; 
     public static final int lexSEMICOLON   = 11;
     public static final int lexVARTYPE     = 12;
+    public static final int lexLSQUARE     = 13;
+    public static final int lexRSQUARE     = 14;
 
     public static final int VAR_TYPE_UNDEF  = 0;
     public static final int VAR_TYPE_INT    = 1;
@@ -24,6 +26,13 @@ public class OzScanner {
     public static final int VAR_TYPE_BYTE   = 4;
     public static final int VAR_TYPE_UBYTE  = 5;
     public static final int VAR_TYPE_FLOAT  = 6;
+
+    public static final int VAR_TYPE_INT_ARRAY    =  7;
+    public static final int VAR_TYPE_SHORT_ARRAY  =  8;
+    public static final int VAR_TYPE_USHORT_ARRAY =  9;
+    public static final int VAR_TYPE_BYTE_ARRAY   = 10;
+    public static final int VAR_TYPE_UBYTE_ARRAY  = 11;
+    public static final int VAR_TYPE_FLOAT_ARRAY  = 12;
 
     public int lookAheadLexeme;
     public OzText text;
@@ -58,6 +67,12 @@ public class OzScanner {
         symbolTable.install( "byte",   lexVARTYPE, VAR_TYPE_BYTE   );
         symbolTable.install( "ubyte",  lexVARTYPE, VAR_TYPE_UBYTE  );
         symbolTable.install( "float",  lexVARTYPE, VAR_TYPE_FLOAT  );
+        symbolTable.install( "int[]",    lexVARTYPE, VAR_TYPE_INT_ARRAY );
+        symbolTable.install( "short[]",  lexVARTYPE, VAR_TYPE_SHORT_ARRAY  );
+        symbolTable.install( "ushort[]", lexVARTYPE, VAR_TYPE_USHORT_ARRAY );
+        symbolTable.install( "byte[]",   lexVARTYPE, VAR_TYPE_BYTE_ARRAY   );
+        symbolTable.install( "ubyte[]",  lexVARTYPE, VAR_TYPE_UBYTE_ARRAY  );
+        symbolTable.install( "float[]",  lexVARTYPE, VAR_TYPE_FLOAT_ARRAY  );
     }
 
     public void resetText(final OzText text) {
@@ -103,6 +118,14 @@ public class OzScanner {
             case ')':
                 text.nextChar();
                 lookAheadLexeme = lexRPAREN;
+                break;
+            case '[':
+                text.nextChar();
+                lookAheadLexeme = lexLSQUARE;
+                break;
+            case ']':
+                text.nextChar();
+                lookAheadLexeme = lexRSQUARE;
                 break;
             case '/':
                 text.nextChar();
@@ -198,7 +221,11 @@ public class OzScanner {
                 break;
             identBuffer[i++] = (char) text.lookAheadChar;
             text.nextChar();
-        }while (Character.isLetterOrDigit(text.lookAheadChar) || text.lookAheadChar == '_');
+        } while (Character.isLetterOrDigit(text.lookAheadChar)
+            || text.lookAheadChar == '_'
+            || text.lookAheadChar == '['
+            || text.lookAheadChar == ']'
+        );
         String ident = String.valueOf(identBuffer, 0, i);
         symbol = symbolTable.lookup(ident);
         if(symbol == null){
