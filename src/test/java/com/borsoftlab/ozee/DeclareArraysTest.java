@@ -24,21 +24,24 @@ public class DeclareArraysTest {
 
     static String program1
                         = "int[] i;" + "\n"
-                        + "int[] i;" + "\n"
-                        + "int[] i;" + "\n"
-                        + "int[] i;" + "\n"
-                        + "int[] i;" + "\n"
-                        + "int[] i;";
+                        + "short i;";
     static String message1 
+                        = "short i;"  + '\n'
+                        + "      ^"   + '\n'
+                        + "Error in line 2: name 'i' already defined" + '\n';
+
+    static String program2
+                        = "int[] i;" + "\n"
+                        + "short[] s;" + "\n"
+                        + "ushort[] us;" + "\n"
+                        + "byte[] b;" + "\n"
+                        + "ubyte[] ub;" + "\n"
+                        + "float[] f;";
+    static String message2 
                         = "Ok";
 
-    final static String program2
-                        = "int i=";
-    final static String message2
-                        = "int i="  + '\n'
-                        + "      ^" + '\n'
-                        + "Error in line 1: unexpected EOF"   + '\n';
 
+                        
     final static String program3
                         = "int i=;";
     final static String message3
@@ -63,7 +66,6 @@ public class DeclareArraysTest {
                         + " */"                        + '\n'
                         + "byte b = 45;"               + '\n'
                         + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
-//                        + "float f = 12 + 41. 6/32 * (32 + 76) + j;";
     final static String message5
                         = "Ok";
 
@@ -162,8 +164,8 @@ public class DeclareArraysTest {
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
             Arguments.of( program0, message0 ),
-            Arguments.of( program1, message1 )
-//            Arguments.of( program2, message2 ),
+            Arguments.of( program1, message1 ),
+            Arguments.of( program2, message2 )
 //            Arguments.of( program3, message3 ),
 //            Arguments.of( program4, message4 ),
 //            Arguments.of( program5, message5 ),

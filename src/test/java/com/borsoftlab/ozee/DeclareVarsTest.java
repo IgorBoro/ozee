@@ -60,7 +60,6 @@ public class DeclareVarsTest {
                         + " */"                        + '\n'
                         + "byte b = 45;"               + '\n'
                         + "float f = 0.523 * 12.3 - 41.6/32 * (32 + 76) + j;";
-//                        + "float f = 12 + 41. 6/32 * (32 + 76) + j;";
     final static String message5
                         = "Ok";
 
