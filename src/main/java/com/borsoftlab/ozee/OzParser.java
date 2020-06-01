@@ -79,10 +79,27 @@ public class OzParser {
         }
         else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = variable();
+            int varType = symbol.varType;
            /////// assignStmt(symbol);
-           
            match(OzScanner.lexVARNAME, "variable name");
+           /*
            assignExpression(symbol);
+           */
+
+          if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+            if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                assignArrayDefinition(symbol);
+            } else {
+                assignExpression(symbol);
+            }
+        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+                // empty
+        } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+        } else {
+            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+        }
+
    
         }
         else {
