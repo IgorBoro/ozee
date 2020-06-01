@@ -73,6 +73,11 @@ public class OzParser {
     }
 
     private OzSymbols.Symbol newVariable(int varType) throws Exception {
+        if( scanner.symbol.lexeme  == OzScanner.lexVARNAME &&
+            scanner.symbol.varType != OzScanner.VAR_TYPE_UNDEF ){
+            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined",
+            scanner.loc);
+        }
         scanner.symbol.allocateVariable(varType);
         return scanner.symbol;
     }

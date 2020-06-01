@@ -127,6 +127,14 @@ public class DeclareVarsTest {
                         + "          ^"         + '\n'
                         + "Error in line 1: name 'm_val' not defined" + '\n';
 
+    final static String program15 
+                        = "int i; int i;";
+    final static String message15
+                        = "int i; int i;"    + '\n'
+                        + "           ^"         + '\n'
+                        + "Error in line 1: name 'i' already defined" + '\n';
+
+
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
 
@@ -172,7 +180,8 @@ public class DeclareVarsTest {
             Arguments.of( program11, message11 ),
             Arguments.of( program12, message12 ),
             Arguments.of( program13, message13 ),
-            Arguments.of( program14, message14 )
+            Arguments.of( program14, message14 ),
+            Arguments.of( program15, message15 )
         );
     }
 }
