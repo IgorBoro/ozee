@@ -57,6 +57,9 @@ public class OzParser {
         if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
             match(OzScanner.lexLSQUARE);
             match(OzScanner.lexRSQUARE);
+            if( varType == OzScanner.VAR_TYPE_INT ){
+                varType = OzScanner.VAR_TYPE_INT_ARRAY;
+            }
         }
 
         OzSymbols.Symbol symbol = newVariable(varType);
