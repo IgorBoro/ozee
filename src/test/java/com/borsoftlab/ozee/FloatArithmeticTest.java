@@ -224,7 +224,7 @@ public class FloatArithmeticTest {
 
     final static String program25
         = "ubyte A = 255;" + "\n"
-        + "ubyte B =  255;" + "\n"
+        + "ubyte B = 255;" + "\n"
         + "float r =  (((A*256.0)+B)-26880.0)/128.0;";
     final static float expect25 = 301.9922f;
 
