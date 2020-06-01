@@ -129,16 +129,23 @@ public class OzParser {
     private void assignArrayDefinition(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexASSIGN, "'='");
         int varType = varType();
-        if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
-            match(OzScanner.lexLSQUARE);
 
-            if( scanner.lookAheadLexeme == OzScanner.lexNUMBER ){
-                match(OzScanner.lexNUMBER);
-            } else if ( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
-                match(OzScanner.lexVARNAME);
-            }
-            match(OzScanner.lexRSQUARE);
-        }    
+        if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY && 
+                   varType == OzScanner.VAR_TYPE_INT){
+
+            if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+                match(OzScanner.lexLSQUARE);
+
+                if( scanner.lookAheadLexeme == OzScanner.lexNUMBER ){
+                    match(OzScanner.lexNUMBER);
+                } else if ( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
+                    match(OzScanner.lexVARNAME);
+                }
+                match(OzScanner.lexRSQUARE);
+            }    
+        } else {
+            OzCompileError.message(scanner, "incompatible types", scanner.loc);
+        }
     }
 
     private void assign(OzSymbols.Symbol symbol) throws Exception {

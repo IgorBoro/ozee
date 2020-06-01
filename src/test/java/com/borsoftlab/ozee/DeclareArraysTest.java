@@ -51,7 +51,14 @@ public class DeclareArraysTest {
                         + "i = int[15];";
     final static String message4
                         = "Ok";
+
+    final static String program5
+                        = "int[] i;" + "\n"
+                        + "i = short[15];";
+    final static String message5
+                        = "Ok";
                         
+
 // -----------------------------------------------------------------------                        
 
     OzParser parser   = new OzParser();
@@ -90,8 +97,7 @@ public class DeclareArraysTest {
 //            Arguments.of( program2, message2 ),
             
               Arguments.of( program3, message3 )
-
-         //   Arguments.of( program4, message4 )
+//              Arguments.of( program4, message4 )
 //            Arguments.of( program5, message5 ),
 //            Arguments.of( program6, message6 ),
 //            Arguments.of( program7, message7 ),
