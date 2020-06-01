@@ -60,18 +60,33 @@ public class OzParser {
             if( varType == OzScanner.VAR_TYPE_INT ){
                 varType = OzScanner.VAR_TYPE_INT_ARRAY;
             }
-        }
 
-        OzSymbols.Symbol symbol = newVariable(varType);
-        match(OzScanner.lexVARNAME, "variable name");
-        if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            assignExpression(symbol);
-        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
-            // empty
-        } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+            OzSymbols.Symbol symbol = newVariable(varType);
+            match(OzScanner.lexVARNAME, "variable name");
+            if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+                assignArrayDefinition(symbol);
+            } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+                // empty
+            } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+                OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+            } else {
+                OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+            }
+
+
         } else {
-            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+
+           OzSymbols.Symbol symbol = newVariable(varType);
+            match(OzScanner.lexVARNAME, "variable name");
+            if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+                assignExpression(symbol);
+            } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+                // empty
+            } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+                OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+            } else {
+                OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+            }
         }
     }
 
@@ -109,6 +124,21 @@ public class OzParser {
         match(OzScanner.lexASSIGN, "'='");
         expression();
         assign(symbol);
+    }
+
+    private void assignArrayDefinition(OzSymbols.Symbol symbol) throws Exception {
+        match(OzScanner.lexASSIGN, "'='");
+        int varType = varType();
+        if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+            match(OzScanner.lexLSQUARE);
+
+            if( scanner.lookAheadLexeme == OzScanner.lexNUMBER ){
+                match(OzScanner.lexNUMBER);
+            } else if ( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
+                match(OzScanner.lexVARNAME);
+            }
+            match(OzScanner.lexRSQUARE);
+        }    
     }
 
     private void assign(OzSymbols.Symbol symbol) throws Exception {
