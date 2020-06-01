@@ -87,8 +87,8 @@ public class OzParser {
 //            }
         }
 
-
-
+        assignExpr(symbol);
+        /*
         match(OzScanner.lexVARNAME, "variable name");
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             if( varType == OzScanner.VAR_TYPE_INT_ARRAY ){
@@ -103,6 +103,26 @@ public class OzParser {
        } else {
            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
        }
+       */
+    }
+
+
+    private void assignExpr(OzSymbols.Symbol symbol) throws Exception {
+        match(OzScanner.lexVARNAME, "variable name");
+        if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+            if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                assignArrayDefinition(symbol);
+            } else {
+                assignExpression(symbol);
+            }
+       } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+               // empty
+       } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+           OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+       } else {
+           OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+       }
+
     }
 
     /*
