@@ -137,8 +137,8 @@ public class DeclareArraysTest {
             Arguments.of( program6, message6 ),
             Arguments.of( program7, message7 ),
             Arguments.of( program8, message8 ),
-            Arguments.of( program9, message9 ),
-            Arguments.of( program10, message10 )
+            Arguments.of( program9, message9 )
+//            Arguments.of( program10, message10 )
 //            Arguments.of( program11, message11 ),
 //            Arguments.of( program12, message12 ),
 //            Arguments.of( program13, message13 ),

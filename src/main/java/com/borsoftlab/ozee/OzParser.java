@@ -40,18 +40,14 @@ public class OzParser {
     }
 
     void stmt() throws Exception {
+        // если обнаружено объявление типа
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             int varType = varType();
-            if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
-                match(OzScanner.lexLSQUARE);
-                match(OzScanner.lexRSQUARE);
-                if( varType == OzScanner.VAR_TYPE_INT ){
-                    varType = OzScanner.VAR_TYPE_INT_ARRAY;
-                }
-            } 
+            varType = checkArrayDefinition(varType); 
             OzSymbols.Symbol symbol = newVariable(varType);
             assignExpression(symbol);
-        } else if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+        } else // если обнаружено имя переменной
+        if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = variable();
             assignExpression(symbol);
         }
@@ -60,6 +56,7 @@ public class OzParser {
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexVARNAME, "variable name");
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
+            match(OzScanner.lexASSIGN, "'='");
             if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
                 assignArrayDefinition(symbol);
             } else {
@@ -78,6 +75,17 @@ public class OzParser {
     private int varType() throws Exception {
         match(OzScanner.lexVARTYPE, "var type definition");
         int varType = scanner.varType;
+        return varType;
+    }
+
+    private int checkArrayDefinition(int varType) throws Exception {
+        if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+            match(OzScanner.lexLSQUARE);
+            match(OzScanner.lexRSQUARE);
+            if( varType == OzScanner.VAR_TYPE_INT ){
+                varType = OzScanner.VAR_TYPE_INT_ARRAY;
+            }
+        }
         return varType;
     }
 
@@ -100,13 +108,11 @@ public class OzParser {
     }
 
     private void assignArithmeticExpression(OzSymbols.Symbol symbol) throws Exception {
-        match(OzScanner.lexASSIGN, "'='");
         expression();
         assign(symbol);
     }
 
     private void assignArrayDefinition(OzSymbols.Symbol symbol) throws Exception {
-        match(OzScanner.lexASSIGN, "'='");
         OzLocation loc = new OzLocation(scanner.loc);
         int varType = varType();
 
