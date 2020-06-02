@@ -121,12 +121,11 @@ public class OzParser {
 
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
                 match(OzScanner.lexLSQUARE);
-
-                if( scanner.lookAheadLexeme == OzScanner.lexNUMBER ){
-                    match(OzScanner.lexNUMBER);
-                } else if ( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
-                    match(OzScanner.lexVARNAME);
+                if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
+                    scanner.varType != OzScanner.VAR_TYPE_INT) {
+                        OzCompileError.expected(scanner, "integer number for array size", scanner.loc);
                 }
+                match(OzScanner.lexNUMBER);
                 match(OzScanner.lexRSQUARE);
             }    
         } else {
