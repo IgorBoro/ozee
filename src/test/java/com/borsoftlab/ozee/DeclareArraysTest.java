@@ -127,6 +127,11 @@ public class DeclareArraysTest {
                         + "                 ^"      + "\n"
                         + "Error in line 1: unexpected lexeme" + "\n";
 
+    final static String program16
+                        = "int[] i = int[ 16 ];";
+    final static String message16
+                        = "Ok";
+
 // -----------------------------------------------------------------------                        
 
 
@@ -176,7 +181,8 @@ public class DeclareArraysTest {
             Arguments.of( program12, message12 ),
             Arguments.of( program13, message13 ),
             Arguments.of( program14, message14 ),
-            Arguments.of( program15, message15 )
+            Arguments.of( program15, message15 ),
+            Arguments.of( program16, message16 )
         );
     }
 }   
