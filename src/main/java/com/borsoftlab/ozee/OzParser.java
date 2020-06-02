@@ -43,7 +43,7 @@ public class OzParser {
         // если обнаружено объявление типа
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             int varType = varType();
-            varType = checkArrayDefinition(varType); 
+            varType = checkArrayDeclaration(varType); 
             OzSymbols.Symbol symbol = newVariable(varType);
             assignExpression(symbol);
         } else // если обнаружено имя переменной
@@ -78,7 +78,7 @@ public class OzParser {
         return varType;
     }
 
-    private int checkArrayDefinition(int varType) throws Exception {
+    private int checkArrayDeclaration(int varType) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
             match(OzScanner.lexLSQUARE);
             match(OzScanner.lexRSQUARE);
