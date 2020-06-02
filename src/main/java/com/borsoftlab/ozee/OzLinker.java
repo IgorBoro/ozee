@@ -6,7 +6,7 @@ import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 public class OzLinker {
 
-        public static byte[] linkImage(final byte[] program, final List<Symbol> symbols){
+        public static byte[] linkImage(final byte[] program, final OzSymbols symbolTable){
 
                 // a header of image is empty
                 int headerSize = 0;
@@ -15,6 +15,7 @@ public class OzLinker {
                 int progSize = program.length;     
                 int dataSectionSize = 0;
 
+                List<Symbol> symbols = symbolTable.getTableOrderedByAddr();
                 // calculate image size
                 for (Symbol symbol : symbols) {
                         symbol.allocAddress += ( codeOriginAddress + progSize );        
@@ -36,10 +37,14 @@ public class OzLinker {
                 }
 
                 // initialize the data section
-                               
+                              
                 // re-binding refs
                 for (Symbol symbol : symbols) {
-                    
+
+                    if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                                               
+                    }
+                                
                     switch(symbol.sizeInBytes){
                         case 4:
                             OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.value);        

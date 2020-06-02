@@ -11,10 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.stream.Stream;
-
-import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 @Nested
 @DisplayName("Test class")
@@ -27,7 +24,7 @@ public class DefineArraysTest {
     @MethodSource("argumentProvider")
     public void test(String program, String message) {
 
-        float value = Float.MIN_VALUE;
+//        float value = Float.MIN_VALUE;
 
 
         System.out.println("::------------------------------------------::");
@@ -41,8 +38,7 @@ public class DefineArraysTest {
                 final OzVm vm = new OzVm();
 //                vm.setDebugListener(debugListener);
                 byte[] compiledProgram = parser.getProgramImage();
-                List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
-                byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
+                byte[] programImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
                 scanner.symbolTable.dumpSymbolTableByName();
                 vm.loadProgram(programImage);
                 System.out.println("\noZee virtual machine started...");

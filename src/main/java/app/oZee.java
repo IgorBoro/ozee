@@ -1,12 +1,10 @@
 package app;
 
 import com.borsoftlab.ozee.*;
-import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 /*
  * mvn exec:java -Dexec.mainClass="app.oZee" -Dexec.args="program01.oZee"
@@ -45,8 +43,7 @@ public class oZee {
             final OzVm vm = new OzVm();
 //            byte[] program = parser.getExecMemModule();
            // List<Byte> program = parser.getProgramInListArray();
-            List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
-            byte[] execImage = OzLinker.linkImage(parser.getProgramImage(), symbols);
+            byte[] execImage = OzLinker.linkImage(parser.getProgramImage(), scanner.symbolTable);
             vm.loadProgram(execImage);
             vm.execute();
         } catch (Throwable e) {

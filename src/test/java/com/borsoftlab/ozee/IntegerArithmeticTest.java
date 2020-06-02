@@ -11,10 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.stream.Stream;
 
-import com.borsoftlab.ozee.OzSymbols.Symbol;
 import com.borsoftlab.ozee.OzVm.OnOzVmDebugListener;
 
 @Nested
@@ -261,8 +259,7 @@ public class IntegerArithmeticTest {
                 final OzVm vm = new OzVm();
                 vm.setDebugListener(debugListener);
                 byte[] compiledProgram = parser.getProgramImage();
-                List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
-                byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
+                byte[] programImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
                 scanner.symbolTable.dumpSymbolTableByName();
                 vm.loadProgram(programImage);
                 System.out.println("\noZee virtual machine started...");
