@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class OzSymbols {
 
     private Map<String, Symbol> map = new HashMap<>();
-    int curAddress = 0;
+    int freeAddress = 0;
 
     public Symbol lookup(String key){
         return map.get(key);
@@ -51,6 +51,39 @@ public class OzSymbols {
         }
     }
 
+    public static int scalarSizeByArrayType(int type){
+        switch( type ){
+            case OzScanner.VAR_TYPE_UNDEF:
+                return 0;
+            case OzScanner.VAR_TYPE_INT:
+                return 4;
+            case OzScanner.VAR_TYPE_SHORT:
+                return 2;
+            case OzScanner.VAR_TYPE_USHORT:
+                return 2;
+            case OzScanner.VAR_TYPE_BYTE:
+                return 1;
+            case OzScanner.VAR_TYPE_UBYTE:
+                return 1;
+            case OzScanner.VAR_TYPE_FLOAT:
+                return 4;
+            case OzScanner.VAR_TYPE_INT_ARRAY:
+                return OzScanner.VAR_TYPE_INT;
+            case OzScanner.VAR_TYPE_SHORT_ARRAY:
+                return OzScanner.VAR_TYPE_SHORT;
+            case OzScanner.VAR_TYPE_USHORT_ARRAY:
+                return OzScanner.VAR_TYPE_USHORT;
+            case OzScanner.VAR_TYPE_BYTE_ARRAY:
+                return OzScanner.VAR_TYPE_BYTE;
+            case OzScanner.VAR_TYPE_UBYTE_ARRAY:
+                return OzScanner.VAR_TYPE_UBYTE;
+            case OzScanner.VAR_TYPE_FLOAT_ARRAY:
+                return OzScanner.VAR_TYPE_FLOAT;
+            default:
+                return 0;
+        }
+    }
+
     public void dumpSymbolTableByName(){
         System.out.println("; ============= SYMBOL TABLE DUMP BY NAME BEGIN ============");
         
@@ -59,13 +92,14 @@ public class OzSymbols {
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
-                System.out.print(String.format("%-24s %-5s %d  0x%08X", sym.name, sType, sym.sizeInBytes, sym.allocAddress));
-                System.out.print("\t");
+                System.out.print(String.format("%-24s %-5s %d  0x%08X [0x%08X]",
+                    sym.name, sType, sym.sizeInBytes, sym.allocAddress, sym.value));
+                System.out.print(" { ");
                 for (Integer ref : sym.refList) {
                     System.out.print(String.format("0x%08X", ref));
                     System.out.print(" ");
                 }
-                System.out.println();
+                System.out.println("}");
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY NAME END  =============");
@@ -83,13 +117,14 @@ public class OzSymbols {
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
-                System.out.print(String.format("0x%08X: %-24s %-5s %d", sym.allocAddress, sym.name, sType, sym.sizeInBytes));
-                System.out.print("\t");
+                System.out.print(String.format("0x%08X: %-24s %-5s %d [0x%08X]",
+                    sym.allocAddress, sym.name, sType, sym.sizeInBytes, sym.value));
+                System.out.print(" { ");
                 for (Integer ref : sym.refList) {
                     System.out.print(String.format("0x%08X", ref));
                     System.out.print(" ");
                 }
-                System.out.println();
+                System.out.println("}");
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY ADDR END  =============");
@@ -161,6 +196,7 @@ public class OzSymbols {
         int varType;
         int allocAddress;
         int sizeInBytes;
+        int value;
 
         List<Integer> refList = new ArrayList<>();
 
@@ -176,9 +212,15 @@ public class OzSymbols {
             }
             if( lexeme == OzScanner.lexVARNAME ){
                 sizeInBytes = sizeOfType(varType);
-                allocAddress = curAddress;
-                curAddress += sizeInBytes;
+                allocAddress = freeAddress;
+                freeAddress += sizeInBytes;
             }
+        }
+
+        public void allocateArray(int arraySize) {
+            value = freeAddress;
+            int scalarType = scalarSizeByArrayType(OzScanner.VAR_TYPE_INT);
+            freeAddress += 4 + arraySize * sizeOfType(scalarType);
         }
 
         public void addRef(int ref){

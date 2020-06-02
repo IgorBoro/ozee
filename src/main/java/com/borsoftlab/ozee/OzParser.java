@@ -135,6 +135,7 @@ public class OzParser {
         } else {
             OzCompileError.message(scanner, "incompatible array types", loc);
         }
+        symbol.allocateArray(scanner.intNumber);
     }
 
     private void assign(OzSymbols.Symbol symbol) throws Exception {
