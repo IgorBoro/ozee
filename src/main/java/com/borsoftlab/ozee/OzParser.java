@@ -123,9 +123,13 @@ public class OzParser {
                 match(OzScanner.lexLSQUARE);
                 if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
                     scanner.varType != OzScanner.VAR_TYPE_INT ) {
-                        OzCompileError.expected(scanner, "positive integer number for array size", scanner.loc);
+                        OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
                 }
+                loc.copy(scanner.loc);
                 match(OzScanner.lexNUMBER);
+                if( scanner.intNumber <= 0 ) {
+                    OzCompileError.expected(scanner, "an integer above zero for array size", loc);
+                }
                 match(OzScanner.lexRSQUARE);
             }    
         } else {

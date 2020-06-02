@@ -92,7 +92,7 @@ public class DeclareArraysTest {
     final static String message10
                         = "int[] i = int[a];" + "\n"
                         + "              ^"   + "\n"
-                        + "Error in line 1: expected positive integer number for array size" + "\n";
+                        + "Error in line 1: expected a positive integer number for array size" + "\n";
 
     final static String program11
                         = "int [ ] intArray = int[ 256 ];";
@@ -104,8 +104,29 @@ public class DeclareArraysTest {
     final static String message12
                         = "int [ ] intArray = int[ -256 ];" + "\n"
                         + "                        ^"       + "\n"
-                        + "Error in line 1: expected positive integer number for array size" + "\n";
-                        
+                        + "Error in line 1: expected a positive integer number for array size" + "\n";
+
+    final static String program13
+                        = "int [ ] intArray = int[ 0 ];";
+    final static String message13
+                        = "int [ ] intArray = int[ 0 ];" + "\n"
+                        + "                        ^"       + "\n"
+                        + "Error in line 1: expected an integer above zero for array size" + "\n";
+
+    final static String program14
+                        = "int [ ] intArray = int[ 2.56 ];";
+    final static String message14
+                        = "int [ ] intArray = int[ 2.56 ];" + "\n"
+                        + "                        ^"       + "\n"
+                        + "Error in line 1: expected a positive integer number for array size" + "\n";
+
+    final static String program15
+                        = "int[] i = int[ 2 * 8 ];";
+    final static String message15
+                        = "int[] i = int[ 2 * 8 ];" + "\n"
+                        + "                 ^"       + "\n"
+                        + "Error in line 1: unexpected lexeme" + "\n";
+
 // -----------------------------------------------------------------------                        
 
 
@@ -152,9 +173,10 @@ public class DeclareArraysTest {
             Arguments.of( program9, message9 ),
             Arguments.of( program10, message10 ),
             Arguments.of( program11, message11 ),
-            Arguments.of( program12, message12 )
-//            Arguments.of( program13, message13 ),
-//            Arguments.of( program14, message14 )
+            Arguments.of( program12, message12 ),
+            Arguments.of( program13, message13 ),
+            Arguments.of( program14, message14 ),
+            Arguments.of( program15, message15 )
         );
     }
 }   
