@@ -122,8 +122,8 @@ public class OzParser {
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
                 match(OzScanner.lexLSQUARE);
                 if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
-                    scanner.varType != OzScanner.VAR_TYPE_INT) {
-                        OzCompileError.expected(scanner, "integer number for array size", scanner.loc);
+                    scanner.varType != OzScanner.VAR_TYPE_INT ) {
+                        OzCompileError.expected(scanner, "positive integer number for array size", scanner.loc);
                 }
                 match(OzScanner.lexNUMBER);
                 match(OzScanner.lexRSQUARE);

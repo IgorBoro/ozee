@@ -91,13 +91,20 @@ public class DeclareArraysTest {
                         = "int[] i = int[a];";
     final static String message10
                         = "int[] i = int[a];" + "\n"
-                        + "              ^"        + "\n"
-                        + "Error in line 1: expected integer number for array size" + "\n";
+                        + "              ^"   + "\n"
+                        + "Error in line 1: expected positive integer number for array size" + "\n";
 
     final static String program11
                         = "int [ ] intArray = int[ 256 ];";
     final static String message11
                         = "Ok";
+
+    final static String program12
+                        = "int [ ] intArray = int[ -256 ];";
+    final static String message12
+                        = "int [ ] intArray = int[ -256 ];" + "\n"
+                        + "                        ^"       + "\n"
+                        + "Error in line 1: expected positive integer number for array size" + "\n";
                         
 // -----------------------------------------------------------------------                        
 
@@ -144,8 +151,8 @@ public class DeclareArraysTest {
             Arguments.of( program8, message8 ),
             Arguments.of( program9, message9 ),
             Arguments.of( program10, message10 ),
-            Arguments.of( program11, message11 )
-//            Arguments.of( program12, message12 ),
+            Arguments.of( program11, message11 ),
+            Arguments.of( program12, message12 )
 //            Arguments.of( program13, message13 ),
 //            Arguments.of( program14, message14 )
         );
