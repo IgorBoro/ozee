@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class OzSymbols {
 
     private Map<String, Symbol> map = new HashMap<>();
-    int freeAddress = 0;
+    int usedMemory = 0;
 
     public Symbol lookup(String key){
         return map.get(key);
@@ -212,15 +212,15 @@ public class OzSymbols {
             }
             if( lexeme == OzScanner.lexVARNAME ){
                 sizeInBytes = sizeOfType(varType);
-                allocAddress = freeAddress;
-                freeAddress += sizeInBytes;
+                allocAddress = usedMemory;
+                usedMemory += sizeInBytes;
             }
         }
 
         public void allocateArray(int arraySize) {
-            value = freeAddress;
+            value = usedMemory;
             int scalarType = scalarSizeByArrayType(OzScanner.VAR_TYPE_INT);
-            freeAddress += 4 + arraySize * sizeOfType(scalarType);
+            usedMemory += 4 + arraySize * sizeOfType(scalarType);
         }
 
         public void addRef(int ref){

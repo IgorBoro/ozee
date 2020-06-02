@@ -13,13 +13,17 @@ public class OzLinker {
                 int codeOriginAddress = 4 + headerSize;
 
                 int progSize = program.length;     
-                int dataSectionSize = 0;
+                int dataSectionSize = symbolTable.usedMemory;
 
                 List<Symbol> symbols = symbolTable.getTableOrderedByAddr();
                 // calculate image size
                 for (Symbol symbol : symbols) {
-                        symbol.allocAddress += ( codeOriginAddress + progSize );        
-                        dataSectionSize += symbol.sizeInBytes;
+                        symbol.allocAddress += ( codeOriginAddress + progSize );    
+                       
+                        /*
+                         * does not take into account the size of arrays    
+                         * dataSectionSize += symbol.sizeInBytes;
+                         */
                 }
                 int imageSize = codeOriginAddress + progSize + dataSectionSize;
 
