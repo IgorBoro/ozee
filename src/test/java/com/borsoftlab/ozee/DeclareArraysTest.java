@@ -124,7 +124,7 @@ public class DeclareArraysTest {
                         = "int[] i = int[ 2 * 8 ];";
     final static String message15
                         = "int[] i = int[ 2 * 8 ];" + "\n"
-                        + "                 ^"       + "\n"
+                        + "                 ^"      + "\n"
                         + "Error in line 1: unexpected lexeme" + "\n";
 
 // -----------------------------------------------------------------------                        
