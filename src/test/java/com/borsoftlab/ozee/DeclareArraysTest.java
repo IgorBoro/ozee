@@ -110,7 +110,7 @@ public class DeclareArraysTest {
                         = "int [ ] intArray = int[ 0 ];";
     final static String message13
                         = "int [ ] intArray = int[ 0 ];" + "\n"
-                        + "                        ^"       + "\n"
+                        + "                        ^"    + "\n"
                         + "Error in line 1: expected an integer above zero for array size" + "\n";
 
     final static String program14
