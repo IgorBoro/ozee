@@ -197,6 +197,7 @@ public class OzSymbols {
         int allocAddress;
         int sizeInBytes;
         int value;
+        int arraySize;
 
         List<Integer> refList = new ArrayList<>();
 
@@ -218,9 +219,10 @@ public class OzSymbols {
         }
 
         public void allocateArray(int arraySize) {
+            this.arraySize = arraySize;
             value = usedMemory;
-            int scalarType = scalarSizeByArrayType(OzScanner.VAR_TYPE_INT);
-            usedMemory += 4 + arraySize * sizeOfType(scalarType);
+            int scalarType = scalarSizeByArrayType(OzScanner.VAR_TYPE_INT_ARRAY);
+            usedMemory += 4 + this.arraySize * sizeOfType(scalarType);
         }
 
         public void addRef(int ref){

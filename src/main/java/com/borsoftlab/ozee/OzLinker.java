@@ -13,19 +13,22 @@ public class OzLinker {
                 int codeOriginAddress = 4 + headerSize;
 
                 int progSize = program.length;     
-                int dataSectionSize = symbolTable.usedMemory;
+                int dataSegmentSize = symbolTable.usedMemory;
 
                 List<Symbol> symbols = symbolTable.getTableOrderedByAddr();
+                int codeSegmentSize = codeOriginAddress + progSize;
                 // calculate image size
                 for (Symbol symbol : symbols) {
-                        symbol.allocAddress += ( codeOriginAddress + progSize );    
+                        if( symbol.lexeme == OzScanner.lexVARNAME) {
+                            symbol.allocAddress += codeSegmentSize;    
+                        }
                        
                         /*
                          * does not take into account the size of arrays    
                          * dataSectionSize += symbol.sizeInBytes;
                          */
                 }
-                int imageSize = codeOriginAddress + progSize + dataSectionSize;
+                int imageSize = codeSegmentSize + dataSegmentSize;
 
                 // create the empty image
                 byte[] image = new byte[imageSize];
@@ -44,26 +47,30 @@ public class OzLinker {
                               
                 // re-binding refs
                 for (Symbol symbol : symbols) {
+                    if( symbol.lexeme == OzScanner.lexVARNAME) {
 
-                    if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
-                                               
-                    }
+                       // редактируем значение ссылочного типа (массив)
+                        if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                            symbol.value += codeSegmentSize;      
+                            OzUtils.storeIntToByteArray(image, symbol.value, symbol.arraySize);                     
+                        }
                                 
-                    switch(symbol.sizeInBytes){
-                        case 4:
-                            OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.value);        
-                            break;
-                        case 2:
-                            OzUtils.storeShortToByteArray(image, symbol.allocAddress, symbol.value);        
-                            break;
-                        case 1:
-                            OzUtils.storeByteToByteArray (image, symbol.allocAddress, symbol.value);        
-                            break;
-                    }
+                        switch(symbol.sizeInBytes){
+                            case 4:
+                                OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.value);        
+                                break;
+                            case 2:
+                                OzUtils.storeShortToByteArray(image, symbol.allocAddress, symbol.value);        
+                                break;
+                            case 1:
+                                OzUtils.storeByteToByteArray (image, symbol.allocAddress, symbol.value);        
+                                break;
+                        }
                     
-                    List<Integer> refList = symbol.refList;
-                    for (Integer ref : refList) {
-                        OzUtils.storeIntToByteArray(image, codeOriginAddress + ref, symbol.allocAddress);        
+                        List<Integer> refList = symbol.refList;
+                        for (Integer ref : refList) {
+                            OzUtils.storeIntToByteArray(image, codeOriginAddress + ref, symbol.allocAddress);        
+                        }
                     }
                 }
                 return image;
