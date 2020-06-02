@@ -11,7 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.stream.Stream;
+
+import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 @Nested
 @DisplayName("Test class")
@@ -23,6 +26,10 @@ public class DefineArraysTest {
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
     public void test(String program, String message) {
+
+        float value = Float.MIN_VALUE;
+
+
         System.out.println("::------------------------------------------::");
         try {     
             final InputStream programStream = new ByteArrayInputStream(program.getBytes());
@@ -30,8 +37,28 @@ public class DefineArraysTest {
                 final OzText text = new OzText(programStream);
                 scanner.resetText(text);
                 parser.compile(scanner);
+
+                final OzVm vm = new OzVm();
+//                vm.setDebugListener(debugListener);
+                byte[] compiledProgram = parser.getProgramImage();
+                List<Symbol> symbols = scanner.symbolTable.getTableOrderedByAddr();
+                byte[] programImage = OzLinker.linkImage(compiledProgram, symbols);
                 scanner.symbolTable.dumpSymbolTableByName();
+                vm.loadProgram(programImage);
+                System.out.println("\noZee virtual machine started...");
+                long startMillis = System.currentTimeMillis();
+                vm.execute();
+                long execTime = System.currentTimeMillis() - startMillis;
+                System.out.println("oZee virtual machine stopped");
+                System.out.println("Execution time: " + execTime + " ms");
+        
+                OzUtils.printMemoryDump(vm.getRam());
+//                int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
+//                value = OzUtils.fetchFloatFromByteArray(vm.getRam(), valueAddr);
+//                System.out.println("r = " + value);
+
             } catch (final Exception e) {
+                e.printStackTrace();
             } finally {
                 System.out.println(OzCompileError.messageString);
                 try {
