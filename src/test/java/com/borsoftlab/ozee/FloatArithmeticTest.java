@@ -21,8 +21,6 @@ public class FloatArithmeticTest {
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
-
-
     OnOzVmDebugListener debugListener = new OnOzVmDebugListener(){
     
         @Override

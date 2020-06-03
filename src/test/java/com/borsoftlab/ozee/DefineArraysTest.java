@@ -13,12 +13,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.stream.Stream;
 
+import com.borsoftlab.ozee.OzVm.OnOzVmDebugListener;
+
 @Nested
 @DisplayName("Test class")
 public class DefineArraysTest {
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
+
+    OnOzVmDebugListener debugListener = new OnOzVmDebugListener(){
+    
+        @Override
+        public void onExecutingCommand(int step, int pc, int cmd, int[] stack, int sp) {
+            if( step == OzVm.STEP_BEFORE_EXECUTING ){
+                System.out.print(OzAsm.getInstance().getMnemonic(cmd));
+            } else if( step == OzVm.STEP_OPTIONAL_ARGUMENT ){
+                System.out.print( String.format(" 0x%08X", cmd) );
+            } else if( step == OzVm.STEP_AFTER_EXECUTING ){
+                System.out.println();                
+
+                System.out.print("[ ");
+                for( int ptr = 0; ptr < sp; ptr++ ){
+                    int value = stack[ptr];
+                    System.out.print(String.format("0x%08X ", value));
+                }
+                System.out.println("] <- top");
+            }
+        }
+    };
+
+
 
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
@@ -36,10 +61,10 @@ public class DefineArraysTest {
                 parser.compile(scanner);
 
                 final OzVm vm = new OzVm();
-//                vm.setDebugListener(debugListener);
                 byte[] compiledProgram = parser.getProgramImage();
                 byte[] programImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
                 scanner.symbolTable.dumpSymbolTableByName();
+                vm.setDebugListener(debugListener);
                 vm.loadProgram(programImage);
                 System.out.println("\noZee virtual machine started...");
                 long startMillis = System.currentTimeMillis();
@@ -86,13 +111,40 @@ public class DefineArraysTest {
             = "int[] vv[16] = int[16];" + "\n"
             + "             ^"          + "\n"
             + "Error in line 1: expected ';'" + "\n";
+
+    static String program3
+            = "int[] vv[16];" + "\n"
+            + "int v;";
+    static String message3 
+            = "Ok";
+
+    static String program4
+            = "int[] vv[16];" + "\n"
+            + "int v = 77;";
+    static String message4 
+            = "Ok";
+
+    static String program5
+            = "int v = 3 + 4;";
+    static String message5 
+            = "Ok";
+
+    static String program6
+            = "int[] vv[16];" + "\n"
+            + "int v = vv[3];";
+    static String message6 
+            = "Ok";
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
 //            Arguments.of( program0, message0 ),
 //            Arguments.of( program1, message1 ),
-            Arguments.of( program2, message2 )
+//            Arguments.of( program2, message2 ),
+//            Arguments.of( program3, message3 ),
+//            Arguments.of( program4, message4 ),
+            Arguments.of( program5, message5 )
         );
     }
 } 
