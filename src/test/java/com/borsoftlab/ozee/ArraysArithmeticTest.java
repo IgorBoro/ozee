@@ -116,13 +116,23 @@ public class ArraysArithmeticTest {
     static int expect2 
             = 1234567890;
 
+    static String program3
+            = "int[] vv[16];"                + "\n"
+            + "int index0 = 2;"              + "\n" 
+            + "vv[index0 + 5] = 12;"         + "\n" 
+            + "int index1 = 4;"              + "\n" 
+            + "int v = 6 * vv[index1 + 3] - 8;";
+    static int expect3 
+            = 64;
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
             Arguments.of( program0, expect0 ),
             Arguments.of( program1, expect1 ),
-            Arguments.of( program2, expect2 )
+            Arguments.of( program2, expect2 ),
+            Arguments.of( program3, expect3 )
         );
     }
 } 
