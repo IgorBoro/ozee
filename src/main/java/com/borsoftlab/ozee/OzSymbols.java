@@ -92,7 +92,7 @@ public class OzSymbols {
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
-                System.out.print(String.format("%-24s %-5s %d  addr:0x%08X val:[0x%08X]",
+                System.out.print(String.format("%-24s %-12s %d  addr:0x%08X val:[0x%08X]",
                     sym.name, sType, sym.sizeInBytes, sym.allocAddress, sym.value));
                 System.out.print(" refs:{ ");
                 for (Integer ref : sym.refList) {
@@ -117,7 +117,7 @@ public class OzSymbols {
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
-                System.out.print(String.format("0x%08X: %-24s %-5s %d val:[0x%08X]",
+                System.out.print(String.format("0x%08X: %-24s %-12s %d val:[0x%08X]",
                     sym.allocAddress, sym.name, sType, sym.sizeInBytes, sym.value));
                 System.out.print(" refs:{ ");
                 for (Integer ref : sym.refList) {

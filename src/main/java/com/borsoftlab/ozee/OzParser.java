@@ -262,6 +262,24 @@ public class OzParser {
                             emit( OzVm.OPCODE_ASR );
                             emitCommentListing("-");
                         }
+                    } else
+                    if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ) {
+                        // определяем адрес массива
+                        emitCommentListing("evaluation the address of the first element of the array");
+                        emit(OzVm.OPCODE_EVAL);
+                        emitCommentListing("skip the word of size of the array");
+                        emit(OzVm.OPCODE_PUSH, 4);
+                        emit(OzVm.OPCODE_ADD);
+                        // разбираем выражение в квадратных скобках
+                        emitCommentListing("evaluation the offset the element inside the array");
+                        match(OzScanner.lexLSQUARE);
+                        expression();
+                        match(OzScanner.lexRSQUARE);
+                        emit(OzVm.OPCODE_ADD);
+                        emitCommentListing("there is an element address on the stack");
+                        emit(OzVm.OPCODE_EVAL);
+                        emitCommentListing("there is an element value on the stack");
+                        emitCommentListing("-");
                     } else {
                         emit(OzVm.OPCODE_EVAL);
                     }

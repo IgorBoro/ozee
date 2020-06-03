@@ -74,9 +74,9 @@ public class DefineArraysTest {
                 System.out.println("Execution time: " + execTime + " ms");
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length);
-//                int valueAddr = scanner.symbolTable.lookup("r").allocAddress;
-//                value = OzUtils.fetchFloatFromByteArray(vm.getRam(), valueAddr);
-//                System.out.println("r = " + value);
+                int valueAddr = scanner.symbolTable.lookup("v").allocAddress;
+                int value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
+                System.out.println("v = " + value);
 
             } catch (final Exception e) {
                 // e.printStackTrace();
@@ -144,7 +144,8 @@ public class DefineArraysTest {
 //            Arguments.of( program2, message2 ),
 //            Arguments.of( program3, message3 ),
 //            Arguments.of( program4, message4 ),
-            Arguments.of( program5, message5 )
+//            Arguments.of( program5, message5 ),
+            Arguments.of( program6, message6 )
         );
     }
 } 
