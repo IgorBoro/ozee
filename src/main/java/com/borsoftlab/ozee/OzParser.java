@@ -126,6 +126,7 @@ public class OzParser {
                    varType == OzScanner.VAR_TYPE_INT ){
 
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+                /*
                 match(OzScanner.lexLSQUARE);
                 if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
                     scanner.varType != OzScanner.VAR_TYPE_INT ) {
@@ -137,11 +138,13 @@ public class OzParser {
                     OzCompileError.expected(scanner, "an integer above zero for array size", loc);
                 }
                 match(OzScanner.lexRSQUARE);
+                */
+                defineArray();
             }    
         } else {
             OzCompileError.message(scanner, "incompatible array types", loc);
         }
-        symbol.allocateArray(scanner.intNumber);
+//        symbol.allocateArray(scanner.intNumber);
     }
 
     private void defineArray() throws Exception {
@@ -157,6 +160,8 @@ public class OzParser {
         }
         match(OzScanner.lexRSQUARE);
         scanner.symbol.allocateArray(scanner.intNumber);
+
+        
         if( scanner.lookAheadLexeme != OzScanner.lexSEMICOLON) {
             OzCompileError.expected(scanner, "';'", scanner.loc);
         }
