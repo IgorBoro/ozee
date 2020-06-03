@@ -135,17 +135,24 @@ public class DefineArraysTest {
     static String message6 
             = "Ok";
 
+    static String program7
+            = "int[] vv[16];" + "\n"
+            + "vv[7] = 1234567890;";
+    static String message7 
+            = "Ok";
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-            Arguments.of( program0, message0 ),
-            Arguments.of( program1, message1 ),
-            Arguments.of( program2, message2 ),
-            Arguments.of( program3, message3 ),
-            Arguments.of( program4, message4 ),
-            Arguments.of( program5, message5 ),
-            Arguments.of( program6, message6 )
+//            Arguments.of( program0, message0 ),
+//            Arguments.of( program1, message1 ),
+//            Arguments.of( program2, message2 ),
+//            Arguments.of( program3, message3 ),
+//            Arguments.of( program4, message4 ),
+//            Arguments.of( program5, message5 ),
+//            Arguments.of( program6, message6 ),
+            Arguments.of( program7, message7 )
         );
     }
 } 
