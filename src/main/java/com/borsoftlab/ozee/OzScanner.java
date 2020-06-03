@@ -38,7 +38,7 @@ public class OzScanner {
     public OzText text;
 
     public OzSymbols symbolTable  = new OzSymbols();
-    public OzSymbols keyWordTable = new OzSymbols();
+    public OzSymbols keywordTable = new OzSymbols();
     OzSymbols.Symbol symbol = null;
 
     int varType = VAR_TYPE_UNDEF;
@@ -62,12 +62,12 @@ public class OzScanner {
     }
 
     private void initSymbolTable() {
-        symbolTable.install( "int",    lexVARTYPE, VAR_TYPE_INT    );
-        symbolTable.install( "short",  lexVARTYPE, VAR_TYPE_SHORT  );
-        symbolTable.install( "ushort", lexVARTYPE, VAR_TYPE_USHORT );
-        symbolTable.install( "byte",   lexVARTYPE, VAR_TYPE_BYTE   );
-        symbolTable.install( "ubyte",  lexVARTYPE, VAR_TYPE_UBYTE  );
-        symbolTable.install( "float",  lexVARTYPE, VAR_TYPE_FLOAT  );
+        keywordTable.install( "int",    lexVARTYPE, VAR_TYPE_INT    );
+        keywordTable.install( "short",  lexVARTYPE, VAR_TYPE_SHORT  );
+        keywordTable.install( "ushort", lexVARTYPE, VAR_TYPE_USHORT );
+        keywordTable.install( "byte",   lexVARTYPE, VAR_TYPE_BYTE   );
+        keywordTable.install( "ubyte",  lexVARTYPE, VAR_TYPE_UBYTE  );
+        keywordTable.install( "float",  lexVARTYPE, VAR_TYPE_FLOAT  );
     //    symbolTable.install( "int[]",    lexVARTYPE, VAR_TYPE_INT_ARRAY );
     //    symbolTable.install( "short[]",  lexVARTYPE, VAR_TYPE_SHORT_ARRAY  );
     //    symbolTable.install( "ushort[]", lexVARTYPE, VAR_TYPE_USHORT_ARRAY );
@@ -228,12 +228,16 @@ public class OzScanner {
         //    || text.lookAheadChar == ']'
         );
         String ident = String.valueOf(identBuffer, 0, i);
-        symbol = symbolTable.lookup(ident);
-        if(symbol == null){
-            symbol = symbolTable.install(ident, lexVARNAME, VAR_TYPE_UNDEF);
-        } else {
+
+        symbol = keywordTable.lookup(ident);
+        if( symbol != null ){
             if( symbol.lexeme == OzScanner.lexVARTYPE ){
                 varType = symbol.varType;
+            }
+        } else {
+            symbol = symbolTable.lookup(ident);
+            if(symbol == null){
+                symbol = symbolTable.install(ident, lexVARNAME, VAR_TYPE_UNDEF);
             }
         }
         lookAheadLexeme = symbol.lexeme;
