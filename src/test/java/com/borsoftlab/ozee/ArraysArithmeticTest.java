@@ -99,11 +99,30 @@ public class ArraysArithmeticTest {
     static int expect0 
             = 1234567890;
 
+    static String program1
+            = "int[] vv[16];"       + "\n"
+            + "vv[7] = 1234567890;" + "\n" 
+            + "int index = 4;"      + "\n" 
+            + "int v = vv[index + 3];";
+    static int expect1 
+            = 1234567890;
+
+    static String program2
+            = "int[] vv[16];"                + "\n"
+            + "int index0 = 2;"              + "\n" 
+            + "vv[index0 + 5] = 1234567890;" + "\n" 
+            + "int index1 = 4;"              + "\n" 
+            + "int v = vv[index1 + 3];";
+    static int expect2 
+            = 1234567890;
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-            Arguments.of( program0, expect0 )
+            Arguments.of( program0, expect0 ),
+            Arguments.of( program1, expect1 ),
+            Arguments.of( program2, expect2 )
         );
     }
 } 
