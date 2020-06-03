@@ -17,7 +17,7 @@ import com.borsoftlab.ozee.OzVm.OnOzVmDebugListener;
 
 @Nested
 @DisplayName("Test class")
-public class DefineArraysTest {
+public class ArraysArithmeticTest {
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
@@ -44,14 +44,10 @@ public class DefineArraysTest {
     };
 
 
-
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
-    public void test(String program, String message) {
-
-//        float value = Float.MIN_VALUE;
-
-
+    public void test(String program, int expect) {
+        int value = Integer.MIN_VALUE;
         System.out.println("::------------------------------------------::");
         try {     
             final InputStream programStream = new ByteArrayInputStream(program.getBytes());
@@ -75,7 +71,7 @@ public class DefineArraysTest {
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length);
                 int valueAddr = scanner.symbolTable.lookup("v").allocAddress;
-                int value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
+                value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
                 System.out.println("v = " + value);
 
             } catch (final Exception e) {
@@ -91,69 +87,23 @@ public class DefineArraysTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        assertEquals(message, OzCompileError.messageString.toString());
+        assertEquals(expect, value);
     }
 
     // -----------------------------------------------------------------------                        
+
     static String program0
-            = "int[] i = int[16];";
-    static String message0 
-            = "Ok";
-
-    static String program1
-            = "int[] vv[16];";
-    static String message1 
-            = "Ok";
-
-    static String program2
-            = "int[] vv[16] = int[16];";
-    static String message2 
-            = "int[] vv[16] = int[16];" + "\n"
-            + "             ^"          + "\n"
-            + "Error in line 1: expected ';'" + "\n";
-
-    static String program3
-            = "int[] vv[16];" + "\n"
-            + "int v;";
-    static String message3 
-            = "Ok";
-
-    static String program4
-            = "int[] vv[16];" + "\n"
-            + "int v = 77;";
-    static String message4 
-            = "Ok";
-
-    static String program5
-            = "int v = 3 + 4;";
-    static String message5 
-            = "Ok";
-
-    static String program6
-            = "int[] vv[16];" + "\n"
-            + "int v = vv[3];";
-    static String message6 
-            = "Ok";
-
-    static String program7
             = "int[] vv[16];"       + "\n"
             + "vv[7] = 1234567890;" + "\n" 
             + "int v = vv[7];";
-    static String message7 
-            = "Ok";
+    static int expect0 
+            = 1234567890;
 
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-            Arguments.of( program0, message0 ),
-            Arguments.of( program1, message1 ),
-            Arguments.of( program2, message2 ),
-            Arguments.of( program3, message3 ),
-            Arguments.of( program4, message4 ),
-            Arguments.of( program5, message5 ),
-            Arguments.of( program6, message6 ),
-            Arguments.of( program7, message7 )
+            Arguments.of( program0, expect0 )
         );
     }
 } 
