@@ -99,21 +99,7 @@ public class OzParser {
 
         // проверяем объявление имени переменной на дальнейшую квадратную скобку
         if( varType == OzScanner.VAR_TYPE_INT_ARRAY && scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
-            match(OzScanner.lexLSQUARE);
-            if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
-                scanner.varType != OzScanner.VAR_TYPE_INT ) {
-                    OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
-            }
-            OzLocation loc = new OzLocation(scanner.loc);
-            match(OzScanner.lexNUMBER);
-            if( scanner.intNumber <= 0 ) {
-                OzCompileError.expected(scanner, "an integer above zero for array size", loc);
-            }
-            match(OzScanner.lexRSQUARE);
-            scanner.symbol.allocateArray(scanner.intNumber);
-            if( scanner.lookAheadLexeme != OzScanner.lexSEMICOLON) {
-                OzCompileError.expected(scanner, "';'", scanner.loc);
-            }
+            defineArray();
         }
         return scanner.symbol;
     }
@@ -156,6 +142,24 @@ public class OzParser {
             OzCompileError.message(scanner, "incompatible array types", loc);
         }
         symbol.allocateArray(scanner.intNumber);
+    }
+
+    private void defineArray() throws Exception {
+        match(OzScanner.lexLSQUARE);
+        if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
+            scanner.varType != OzScanner.VAR_TYPE_INT ) {
+                OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
+        }
+        OzLocation loc = new OzLocation(scanner.loc);
+        match(OzScanner.lexNUMBER);
+        if( scanner.intNumber <= 0 ) {
+            OzCompileError.expected(scanner, "an integer above zero for array size", loc);
+        }
+        match(OzScanner.lexRSQUARE);
+        scanner.symbol.allocateArray(scanner.intNumber);
+        if( scanner.lookAheadLexeme != OzScanner.lexSEMICOLON) {
+            OzCompileError.expected(scanner, "';'", scanner.loc);
+        }
     }
 
     private void assign(OzSymbols.Symbol symbol) throws Exception {
