@@ -54,7 +54,7 @@ public class DefineArraysTest {
 //                System.out.println("r = " + value);
 
             } catch (final Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             } finally {
                 System.out.println(OzCompileError.messageString);
                 try {
@@ -74,11 +74,25 @@ public class DefineArraysTest {
             = "int[] i = int[16];";
     static String message0 
             = "Ok";
+
+    static String program1
+            = "int[] vv[16];";
+    static String message1 
+            = "Ok";
+
+    static String program2
+            = "int[] vv[16] = int[16];";
+    static String message2 
+            = "int[] vv[16] = int[16];" + "\n"
+            + "             ^"          + "\n"
+            + "Error in line 1: expected ';'" + "\n";
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-            Arguments.of( program0, message0 )
+//            Arguments.of( program0, message0 ),
+//            Arguments.of( program1, message1 ),
+            Arguments.of( program2, message2 )
         );
     }
 } 

@@ -54,7 +54,6 @@ public class OzParser {
     }
 
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
-        match(OzScanner.lexVARNAME, "variable name");
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             match(OzScanner.lexASSIGN, "'='");
             if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
@@ -95,7 +94,27 @@ public class OzParser {
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined",
             scanner.loc);
         }
+        match(OzScanner.lexVARNAME, "variable name");
         scanner.symbol.allocateVariable(varType);
+
+        // проверяем объявление имени переменной на дальнейшую квадратную скобку
+        if( varType == OzScanner.VAR_TYPE_INT_ARRAY && scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+            match(OzScanner.lexLSQUARE);
+            if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
+                scanner.varType != OzScanner.VAR_TYPE_INT ) {
+                    OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
+            }
+            OzLocation loc = new OzLocation(scanner.loc);
+            match(OzScanner.lexNUMBER);
+            if( scanner.intNumber <= 0 ) {
+                OzCompileError.expected(scanner, "an integer above zero for array size", loc);
+            }
+            match(OzScanner.lexRSQUARE);
+            scanner.symbol.allocateArray(scanner.intNumber);
+            if( scanner.lookAheadLexeme != OzScanner.lexSEMICOLON) {
+                OzCompileError.expected(scanner, "';'", scanner.loc);
+            }
+        }
         return scanner.symbol;
     }
 
@@ -104,6 +123,7 @@ public class OzParser {
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined",
             scanner.loc);
         }
+        match(OzScanner.lexVARNAME, "variable name");
         return scanner.symbol;
     }
 
@@ -221,7 +241,6 @@ public class OzParser {
                     break;
                 case OzScanner.lexVARNAME:
                     OzSymbols.Symbol symbol = variable();
-                    match(OzScanner.lexVARNAME, "variable name");                    
                     emit(OzVm.OPCODE_PUSH, symbol);
                     symbol.addRef(pc-4);
                     if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||
