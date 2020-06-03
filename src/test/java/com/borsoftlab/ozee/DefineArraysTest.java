@@ -73,7 +73,7 @@ public class DefineArraysTest {
                 System.out.println("oZee virtual machine stopped");
                 System.out.println("Execution time: " + execTime + " ms");
         
-                OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length);
+                OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length );
                 int valueAddr = scanner.symbolTable.lookup("v").allocAddress;
                 int value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
                 System.out.println("v = " + value);

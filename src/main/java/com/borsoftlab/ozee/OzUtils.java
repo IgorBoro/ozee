@@ -83,10 +83,10 @@ public class OzUtils {
     }
 
     public static void printMemoryDump(final byte[] mem){
-        printMemoryDump(mem, 0, mem.length-1);
+        printMemoryDump(mem, 0, mem.length);
     }
 
-    public static void printMemoryDump(final byte[] mem, int from, int to){
+    public static void printMemoryDump(final byte[] mem, int from, int length){
         if( from % 16 == 0){
             System.out.print(String.format("0x%08X: 0x%02X", from, mem[from]));
         } else {
@@ -99,7 +99,8 @@ public class OzUtils {
 
         }
         from++;
-        for (int ptr = from; ptr <= to; ptr++){
+        int rightBorder = Math.min(length, mem.length);
+        for (int ptr = from; ptr < rightBorder; ptr++){
             if( ptr % 16 == 0){
                 System.out.println();                
                 System.out.print(String.format("0x%08X: 0x%02X", ptr, mem[ptr]));

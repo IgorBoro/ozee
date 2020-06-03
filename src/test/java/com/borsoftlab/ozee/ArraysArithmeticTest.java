@@ -69,7 +69,7 @@ public class ArraysArithmeticTest {
                 System.out.println("oZee virtual machine stopped");
                 System.out.println("Execution time: " + execTime + " ms");
         
-                OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length);
+                OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length );
                 int valueAddr = scanner.symbolTable.lookup("v").allocAddress;
                 value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
                 System.out.println("v = " + value);
@@ -135,6 +135,11 @@ public class ArraysArithmeticTest {
     static int expect4 
             = 69;
 
+    static String program5
+            = "int v = 3;";
+    static int expect5 
+            = 3;
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
@@ -143,7 +148,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program1, expect1 ),
             Arguments.of( program2, expect2 ),
             Arguments.of( program3, expect3 ),
-            Arguments.of( program4, expect4 )
+            Arguments.of( program4, expect4 ),
+            Arguments.of( program5, expect5 )
         );
     }
 } 
