@@ -140,6 +140,13 @@ public class ArraysArithmeticTest {
     static int expect5 
             = 3;
 
+    static String program6
+            = "int[] ari[4];"     + "\n"
+            + "ari[2] = 57;"  + "\n"
+            + "int v = ari[2];";
+    static int expect6 
+            = 57;
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
@@ -149,7 +156,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program2, expect2 ),
             Arguments.of( program3, expect3 ),
             Arguments.of( program4, expect4 ),
-            Arguments.of( program5, expect5 )
+            Arguments.of( program5, expect5 ),
+            Arguments.of( program6, expect6 )
         );
     }
 } 

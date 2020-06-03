@@ -31,8 +31,9 @@ public class OzParser {
 
     void stmtList() throws Exception {
         while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
-            if( tsStack.size() != 0 ){
-            // TODO    throw new Exception(String.format("Type stack size isn't wrong: %d", tsStack.size()));
+            if( tsStack.size() != 0 )
+            {
+                throw new Exception(String.format("Type stack size is wrong: %d", tsStack.size()));
             }
             stmt();
             match(OzScanner.lexSEMICOLON);
@@ -59,6 +60,7 @@ public class OzParser {
 
                 match(OzScanner.lexLSQUARE);
                 expression();
+                tsStack.pop();
                 match(OzScanner.lexRSQUARE);
 
                 emit(OzVm.OPCODE_PUSH, 4);
@@ -71,6 +73,7 @@ public class OzParser {
 
                 // вычисляем выражение
                 expression();
+                tsStack.pop();
 
                 // меняем местами адрес и значение
                 emit(OzVm.OPCODE_SWAP);
@@ -304,6 +307,7 @@ public class OzParser {
                         emitCommentListing("evaluation the offset the element inside the array");
                         match(OzScanner.lexLSQUARE);
                         expression();
+                        tsStack.pop();
                         match(OzScanner.lexRSQUARE);
                         emit(OzVm.OPCODE_PUSH, 4);
                         emit(OzVm.OPCODE_MUL);
