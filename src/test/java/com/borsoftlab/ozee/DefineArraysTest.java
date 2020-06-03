@@ -139,12 +139,12 @@ public class DefineArraysTest {
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-//            Arguments.of( program0, message0 ),
-//            Arguments.of( program1, message1 ),
-//            Arguments.of( program2, message2 ),
-//            Arguments.of( program3, message3 ),
-//            Arguments.of( program4, message4 ),
-//            Arguments.of( program5, message5 ),
+            Arguments.of( program0, message0 ),
+            Arguments.of( program1, message1 ),
+            Arguments.of( program2, message2 ),
+            Arguments.of( program3, message3 ),
+            Arguments.of( program4, message4 ),
+            Arguments.of( program5, message5 ),
             Arguments.of( program6, message6 )
         );
     }
