@@ -93,37 +93,47 @@ public class ArraysArithmeticTest {
     // -----------------------------------------------------------------------                        
 
     static String program0
-            = "int[] vv[16];"       + "\n"
-            + "vv[7] = 1234567890;" + "\n" 
-            + "int v = vv[7];";
+            = "int[] ari[16];"       + "\n"
+            + "ari[7] = 1234567890;" + "\n" 
+            + "int v = ari[7];";
     static int expect0 
             = 1234567890;
 
     static String program1
-            = "int[] vv[16];"       + "\n"
-            + "vv[7] = 1234567890;" + "\n" 
-            + "int index = 4;"      + "\n" 
-            + "int v = vv[index + 3];";
+            = "int[] ari[16];"       + "\n"
+            + "ari[7] = 1234567890;" + "\n" 
+            + "int index = 4;"       + "\n" 
+            + "int v = ari[index + 3];";
     static int expect1 
             = 1234567890;
 
     static String program2
-            = "int[] vv[16];"                + "\n"
-            + "int index0 = 2;"              + "\n" 
-            + "vv[index0 + 5] = 1234567890;" + "\n" 
-            + "int index1 = 4;"              + "\n" 
-            + "int v = vv[index1 + 3];";
+            = "int[] ari[16];"                + "\n"
+            + "int index0 = 2;"               + "\n" 
+            + "ari[index0 + 5] = 1234567890;" + "\n" 
+            + "int index1 = 4;"               + "\n" 
+            + "int v = ari[index1 + 3];";
     static int expect2 
             = 1234567890;
 
     static String program3
-            = "int[] vv[16];"                + "\n"
+            = "int[] ari[16];"               + "\n"
             + "int index0 = 2;"              + "\n" 
-            + "vv[index0 + 5] = 12;"         + "\n" 
+            + "ari[index0 + 5] = 12;"        + "\n" 
             + "int index1 = 4;"              + "\n" 
-            + "int v = 6 * vv[index1 + 3] - 8;";
+            + "int v = 6 * ari[index1 + 3] - 8;";
     static int expect3 
             = 64;
+
+    static String program4
+            = "int[] ari[16];"                   + "\n"
+            + "int index0 = 2;"                  + "\n" 
+            + "ari[index0] = 207;"               + "\n" 
+            + "int index1 = 4;"                  + "\n" 
+            + "ari[index1]  = ari[index0] / 3;"  + "\n"
+            + "int v = ari[index1];";
+    static int expect4 
+            = 69;
 
     // -----------------------------------------------------------------------                        
 
@@ -132,7 +142,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program0, expect0 ),
             Arguments.of( program1, expect1 ),
             Arguments.of( program2, expect2 ),
-            Arguments.of( program3, expect3 )
+            Arguments.of( program3, expect3 ),
+            Arguments.of( program4, expect4 )
         );
     }
 } 
