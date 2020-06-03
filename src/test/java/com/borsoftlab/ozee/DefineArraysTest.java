@@ -136,8 +136,9 @@ public class DefineArraysTest {
             = "Ok";
 
     static String program7
-            = "int[] vv[16];" + "\n"
-            + "vv[7] = 1234567890;";
+            = "int[] vv[16];"       + "\n"
+            + "vv[7] = 1234567890;" + "\n" 
+            + "int v = vv[7];";
     static String message7 
             = "Ok";
 

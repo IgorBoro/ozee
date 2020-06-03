@@ -32,7 +32,7 @@ public class OzParser {
     void stmtList() throws Exception {
         while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
             if( tsStack.size() != 0 ){
-                throw new Exception(String.format("Type stack size isn't wrong: %d", tsStack.size()));
+            // TODO    throw new Exception(String.format("Type stack size isn't wrong: %d", tsStack.size()));
             }
             stmt();
             match(OzScanner.lexSEMICOLON);
@@ -49,7 +49,37 @@ public class OzParser {
         } else // если обнаружено имя переменной
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = variable();
-            assignExpression(symbol);
+            if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ) {
+                emit(OzVm.OPCODE_PUSH, symbol);
+                symbol.addRef(pc-4);
+
+                emit(OzVm.OPCODE_EVAL);
+                emit(OzVm.OPCODE_PUSH, 4);
+                emit(OzVm.OPCODE_ADD);
+
+                match(OzScanner.lexLSQUARE);
+                expression();
+                match(OzScanner.lexRSQUARE);
+
+                emit(OzVm.OPCODE_PUSH, 4);
+                emit(OzVm.OPCODE_MUL);
+                emit(OzVm.OPCODE_ADD);
+                // теперь на стеке адрес куда надо припихнуть значение
+
+                // едим знак равенства
+                match(OzScanner.lexASSIGN);
+
+                // вычисляем выражение
+                expression();
+
+                // меняем местами адрес и значение
+                emit(OzVm.OPCODE_SWAP);
+                emit(OzVm.OPCODE_ASGN);
+//                assign(symbol);
+        
+            } else {
+                assignExpression(symbol);
+            }
         }
     }
 
@@ -275,6 +305,8 @@ public class OzParser {
                         match(OzScanner.lexLSQUARE);
                         expression();
                         match(OzScanner.lexRSQUARE);
+                        emit(OzVm.OPCODE_PUSH, 4);
+                        emit(OzVm.OPCODE_MUL);
                         emit(OzVm.OPCODE_ADD);
                         emitCommentListing("there is an element address on the stack");
                         emit(OzVm.OPCODE_EVAL);
