@@ -45,8 +45,8 @@ public class ArraysArithmeticTest {
 
 
     @ParameterizedTest(name="{index}")
-    @MethodSource("argumentProvider")
-    public void test(String program, float expect) {
+    @MethodSource("floatArgumentProvider")
+    public void testFloat(String program, float expect) {
         float value = Float.MIN_VALUE;
         System.out.println("::------------------------------------------::");
         try {     
@@ -96,6 +96,60 @@ public class ArraysArithmeticTest {
             e.printStackTrace();
         }
         assertEquals(expect, value);
+    }
+
+    @ParameterizedTest(name="{index}")
+    @MethodSource("stringArgumentProvider")
+    public void testString(String program, String expect) {
+        float value = Float.MIN_VALUE;
+        System.out.println("::------------------------------------------::");
+        try {     
+            final InputStream programStream = new ByteArrayInputStream(program.getBytes());
+            try {
+                final OzText text = new OzText(programStream);
+                scanner.resetText(text);
+                parser.compile(scanner);
+
+                final OzVm vm = new OzVm();
+                byte[] compiledProgram = parser.getProgramImage();
+                byte[] programImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
+                scanner.symbolTable.dumpSymbolTableByName();
+                vm.setDebugListener(debugListener);
+                vm.loadProgram(programImage);
+                System.out.println("\noZee virtual machine started...");
+                long startMillis = System.currentTimeMillis();
+                vm.execute();
+                long execTime = System.currentTimeMillis() - startMillis;
+                System.out.println("oZee virtual machine stopped");
+                System.out.println("Execution time: " + execTime + " ms");
+        
+                OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length );
+                OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
+                if( symbol != null ){
+                    int valueAddr = symbol.allocAddress;
+                    if( symbol.varType == OzScanner.VAR_TYPE_INT ){
+                        value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
+                        System.out.println("v = " + value);
+                    } else {
+                        value = OzUtils.fetchFloatFromByteArray(vm.getRam(), valueAddr);
+                        System.out.println("v = " + value);
+                    }
+                }
+
+            } catch (final Exception e) {
+                // e.printStackTrace();
+            } finally {
+                System.out.println(OzCompileError.messageString);
+                try {
+                    programStream.close();
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        assertEquals(expect,  OzCompileError.messageString.toString());
     }
 
     // -----------------------------------------------------------------------                        
@@ -177,9 +231,45 @@ public class ArraysArithmeticTest {
     static float expect9 
             = 2517;
 
+    static String program110
+            = "float[] arf[4];"       + "\n"
+            + "arf[3.4] = 1234;"      + "\n"
+            + "float v = arf[3.4];";
+    static String expect110 
+            = "arf[3.4] = 1234;"  + "\n"
+            + "    ^"             + "\n"
+            + "Error in line 2: expected integer value" + "\n";
+
+    static String program111
+            = "float[] arf[4];"       + "\n"
+            + "arf[3] = 1234;"        + "\n"
+            + "float v = arf[3.4];";
+    static String expect111 
+            = "float v = arf[3.4];"   + "\n"
+            + "              ^"       + "\n"
+            + "Error in line 3: expected integer value" + "\n";
+
+    static String program112
+            = "float[] arf[4];"     + "\n"
+            + "arf[3] = 1234;"      + "\n"
+            + "float a = 3;"        + "\n"
+            + "float v = arf[a];";
+    static String expect112 
+            = "float v = arf[a];"   + "\n"
+            + "              ^"     + "\n"
+            + "Error in line 4: expected integer value" + "\n";
+
+    static String program113
+            = "float[] arf[4];"+ "\n"
+            + "arf[3] = 1234;" + "\n"
+            + "int a = 3;"     + "\n"
+            + "float v = arf[a];";
+    static String expect113 
+            = "Ok";
+
     // -----------------------------------------------------------------------                        
 
-    private static Stream<Arguments> argumentProvider() {
+    private static Stream<Arguments> floatArgumentProvider() {
         return Stream.of(
             Arguments.of( program0, expect0 ),
             Arguments.of( program1, expect1 ),
@@ -193,4 +283,14 @@ public class ArraysArithmeticTest {
             Arguments.of( program9, expect9 )
         );
     }
+
+    private static Stream<Arguments> stringArgumentProvider() {
+        return Stream.of(
+            Arguments.of( program110, expect110 ),
+            Arguments.of( program111, expect111 ),
+            Arguments.of( program112, expect112 ),
+            Arguments.of( program113, expect113 )
+            );
+    }
+
 } 

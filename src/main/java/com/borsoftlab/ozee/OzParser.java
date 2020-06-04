@@ -54,18 +54,7 @@ public class OzParser {
                 emit(OzVm.OPCODE_PUSH, symbol);
                 symbol.addRef( pc - 4 );
 
-                emit(OzVm.OPCODE_EVAL);
-                emit(OzVm.OPCODE_PUSH, 4);
-                emit(OzVm.OPCODE_ADD);
-
-                match(OzScanner.lexLSQUARE);
-                expression();
-                tsStack.pop();
-                match(OzScanner.lexRSQUARE);
-
-                emit(OzVm.OPCODE_PUSH, 4);
-                emit(OzVm.OPCODE_MUL);
-                emit(OzVm.OPCODE_ADD);
+                evaluateArrayElementAddress();
 
                 // едим знак равенства
                 match(OzScanner.lexASSIGN);
@@ -87,6 +76,30 @@ public class OzParser {
                 assignExpression(symbol);
             }
         }
+    }
+
+    private void evaluateArrayElementAddress() throws Exception {
+        emitCommentListing("evaluate the address of the first element of the array");
+        emit(OzVm.OPCODE_EVAL);
+        emitCommentListing("skip four bytes of size of the array");
+
+        emit(OzVm.OPCODE_PUSH, 4);
+        emit(OzVm.OPCODE_ADD);
+
+        match(OzScanner.lexLSQUARE);
+        emitCommentListing("evaluate the offset the element inside the array");
+        OzLocation loc = new OzLocation(scanner.loc);
+        expression();
+        int type = tsStack.pop();
+        if( type != OzScanner.VAR_TYPE_INT ){
+            OzCompileError.expected(scanner, "integer value", loc);
+        }
+        match(OzScanner.lexRSQUARE);
+
+        emit(OzVm.OPCODE_PUSH, 4);
+        emit(OzVm.OPCODE_MUL);
+        emit(OzVm.OPCODE_ADD);
+        emitCommentListing("there is an element address on the stack");
     }
 
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
@@ -298,24 +311,8 @@ public class OzParser {
                     } else
                     if( symbol.isArray ) {
                         // определяем адрес массива
-                        emitCommentListing("evaluation the address of the first element of the array");
+                        evaluateArrayElementAddress();
                         emit(OzVm.OPCODE_EVAL);
-                        emitCommentListing("skip the word of size of the array");
-                        emit(OzVm.OPCODE_PUSH, 4);
-                        emit(OzVm.OPCODE_ADD);
-                        // разбираем выражение в квадратных скобках
-                        emitCommentListing("evaluation the offset the element inside the array");
-                        match(OzScanner.lexLSQUARE);
-                        expression();
-                        tsStack.pop();
-                        match(OzScanner.lexRSQUARE);
-                        emit(OzVm.OPCODE_PUSH, 4);
-                        emit(OzVm.OPCODE_MUL);
-                        emit(OzVm.OPCODE_ADD);
-                        emitCommentListing("there is an element address on the stack");
-                        emit(OzVm.OPCODE_EVAL);
-                        emitCommentListing("there is an element value on the stack");
-                        emitCommentListing("-");
                     } else {
                         emit(OzVm.OPCODE_EVAL);
                     }
