@@ -73,44 +73,16 @@ public class OzParser {
 
                 // вычисляем выражение
                 expression();
-            //    tsStack.pop();
-                // меняем местами адрес и значение
-//                emit(OzVm.OPCODE_SWAP);
-//                emit(OzVm.OPCODE_ASGN);
 
                 // теперь на верхушке стека находится значение которое надо положить
                 // в элемент массива, а под ним адрес элемента
 
                 // дальше по схеме
                 genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-//                emit(OzVm.OPCODE_PUSH, symbol);
+                // меняем местами адрес и значение
                 emit(OzVm.OPCODE_SWAP);
-            //    symbol.addRef(pc-4);
-                switch(symbol.varType){
-                    case OzScanner.VAR_TYPE_INT:
-                    case OzScanner.VAR_TYPE_FLOAT:
-                        emit(OzVm.OPCODE_ASGN);
-                        break;
-                    case OzScanner.VAR_TYPE_BYTE:
-                    case OzScanner.VAR_TYPE_UBYTE:
-                        emit(OzVm.OPCODE_ASGNB);
-                        break;
-                    case OzScanner.VAR_TYPE_SHORT:
-                    case OzScanner.VAR_TYPE_USHORT:
-                        emit(OzVm.OPCODE_ASGNS);
-                        break;
-                    default:
-                        OzCompileError.message(scanner, "Compilation error: assignment type error", scanner.loc);
-                    }
-        
-
-
-
-
-
-
-//                assign(symbol);
-        
+                // теперь адрес сверху адрес как и положено при сохранении в память                    
+                assign(symbol.varType);
             } else {
                 assignExpression(symbol);
             }
@@ -179,7 +151,10 @@ public class OzParser {
 
     private void assignArithmeticExpression(OzSymbols.Symbol symbol) throws Exception {
         expression();
-        assign(symbol);
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+        emit(OzVm.OPCODE_PUSH, symbol);
+        symbol.addRef(pc-4);
+        assign(symbol.varType);
     }
 
     private void assignArrayDefinition(OzSymbols.Symbol symbol) throws Exception {
@@ -214,11 +189,8 @@ public class OzParser {
         }
     }
 
-    private void assign(OzSymbols.Symbol symbol) throws Exception {
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-        emit(OzVm.OPCODE_PUSH, symbol);
-        symbol.addRef(pc-4);
-        switch(symbol.varType){
+    private void assign(int varType) throws Exception {
+        switch(varType){
             case OzScanner.VAR_TYPE_INT:
             case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_ASGN);
