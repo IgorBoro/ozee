@@ -39,46 +39,6 @@ public class OzSymbols {
                 return 1;
             case OzScanner.VAR_TYPE_FLOAT:
                 return 4;
-            case OzScanner.VAR_TYPE_INT_ARRAY:
-            case OzScanner.VAR_TYPE_SHORT_ARRAY:
-            case OzScanner.VAR_TYPE_USHORT_ARRAY:
-            case OzScanner.VAR_TYPE_BYTE_ARRAY:
-            case OzScanner.VAR_TYPE_UBYTE_ARRAY:
-            case OzScanner.VAR_TYPE_FLOAT_ARRAY:
-                return 4;
-            default:
-                return 0;
-        }
-    }
-
-    public static int scalarSizeByArrayType(int type){
-        switch( type ){
-            case OzScanner.VAR_TYPE_UNDEF:
-                return 0;
-            case OzScanner.VAR_TYPE_INT:
-                return 4;
-            case OzScanner.VAR_TYPE_SHORT:
-                return 2;
-            case OzScanner.VAR_TYPE_USHORT:
-                return 2;
-            case OzScanner.VAR_TYPE_BYTE:
-                return 1;
-            case OzScanner.VAR_TYPE_UBYTE:
-                return 1;
-            case OzScanner.VAR_TYPE_FLOAT:
-                return 4;
-            case OzScanner.VAR_TYPE_INT_ARRAY:
-                return OzScanner.VAR_TYPE_INT;
-            case OzScanner.VAR_TYPE_SHORT_ARRAY:
-                return OzScanner.VAR_TYPE_SHORT;
-            case OzScanner.VAR_TYPE_USHORT_ARRAY:
-                return OzScanner.VAR_TYPE_USHORT;
-            case OzScanner.VAR_TYPE_BYTE_ARRAY:
-                return OzScanner.VAR_TYPE_BYTE;
-            case OzScanner.VAR_TYPE_UBYTE_ARRAY:
-                return OzScanner.VAR_TYPE_UBYTE;
-            case OzScanner.VAR_TYPE_FLOAT_ARRAY:
-                return OzScanner.VAR_TYPE_FLOAT;
             default:
                 return 0;
         }

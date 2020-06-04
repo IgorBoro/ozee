@@ -27,13 +27,6 @@ public class OzScanner {
     public static final int VAR_TYPE_UBYTE  = 5;
     public static final int VAR_TYPE_FLOAT  = 6;
 
-    public static final int VAR_TYPE_INT_ARRAY    =  7;
-    public static final int VAR_TYPE_SHORT_ARRAY  =  8;
-    public static final int VAR_TYPE_USHORT_ARRAY =  9;
-    public static final int VAR_TYPE_BYTE_ARRAY   = 10;
-    public static final int VAR_TYPE_UBYTE_ARRAY  = 11;
-    public static final int VAR_TYPE_FLOAT_ARRAY  = 12;
-
     public int lookAheadLexeme;
     public OzText text;
 
