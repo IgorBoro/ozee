@@ -213,7 +213,11 @@ public class OzSymbols {
                 this.varType = varType;
             }
             if( lexeme == OzScanner.lexVARNAME ){
-                sizeInBytes = sizeOfType(varType);
+                if( isArray ){
+                    sizeInBytes = 4;
+                } else {
+                    sizeInBytes = sizeOfType(varType);
+                }
                 allocAddress = usedMemory;
                 usedMemory += sizeInBytes;
             }

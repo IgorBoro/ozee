@@ -50,7 +50,7 @@ public class OzLinker {
                     if( symbol.lexeme == OzScanner.lexVARNAME) {
 
                        // редактируем значение ссылочного типа (массив)
-                        if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+                        if( symbol.isArray ){
                             symbol.value += codeSegmentSize;      
                             OzUtils.storeIntToByteArray(image, symbol.value, symbol.arraySize);                     
                         }

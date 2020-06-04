@@ -45,9 +45,6 @@ public class OzParser {
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             int varType = varType();
             boolean isArray = checkArrayDeclaration(varType);
-            if( isArray ){
-                varType = OzScanner.VAR_TYPE_INT_ARRAY;
-            }
             OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
             assignExpression(symbol);
         } else // если обнаружено имя переменной
@@ -92,7 +89,7 @@ public class OzParser {
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             match(OzScanner.lexASSIGN, "'='");
-            if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ){
+            if( symbol.isArray ){
                 assignArrayDefinition(symbol);
             } else {
                 assignArithmeticExpression(symbol);
@@ -118,7 +115,6 @@ public class OzParser {
             match(OzScanner.lexLSQUARE);
             match(OzScanner.lexRSQUARE);
             if( varType == OzScanner.VAR_TYPE_INT ){
-                varType = OzScanner.VAR_TYPE_INT_ARRAY;
                 return true;
             }
         }
@@ -132,6 +128,7 @@ public class OzParser {
             scanner.loc);
         }
         match(OzScanner.lexVARNAME, "variable name");
+        scanner.symbol.isArray = isArray;
         scanner.symbol.allocateVariable(varType);
 
         // проверяем объявление имени переменной на дальнейшую квадратную скобку
@@ -160,8 +157,8 @@ public class OzParser {
         OzLocation loc = new OzLocation(scanner.loc);
         int varType = varType();
 
-        if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY &&
-                   varType == OzScanner.VAR_TYPE_INT ){
+        if( symbol.isArray &&
+                   varType != OzScanner.VAR_TYPE_UNDEF ){
 
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
                 defineArray();
@@ -300,7 +297,7 @@ public class OzParser {
                             emitCommentListing("-");
                         }
                     } else
-                    if( symbol.varType == OzScanner.VAR_TYPE_INT_ARRAY ) {
+                    if( symbol.isArray ) {
                         // определяем адрес массива
                         emitCommentListing("evaluation the address of the first element of the array");
                         emit(OzVm.OPCODE_EVAL);
