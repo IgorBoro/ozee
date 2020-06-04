@@ -54,7 +54,7 @@ public class OzParser {
                 emit(OzVm.OPCODE_PUSH, symbol);
                 symbol.addRef( pc - 4 );
 
-                evaluateArrayElementAddress();
+                evaluateAddressOfArrayElement();
 
                 // едим знак равенства
                 match(OzScanner.lexASSIGN);
@@ -78,7 +78,7 @@ public class OzParser {
         }
     }
 
-    private void evaluateArrayElementAddress() throws Exception {
+    private void evaluateAddressOfArrayElement() throws Exception {
         emitCommentListing("evaluate the address of the first element of the array");
         emit(OzVm.OPCODE_EVAL);
         emitCommentListing("skip four bytes of size of the array");
@@ -311,7 +311,7 @@ public class OzParser {
                     } else
                     if( symbol.isArray ) {
                         // определяем адрес массива
-                        evaluateArrayElementAddress();
+                        evaluateAddressOfArrayElement();
                         emit(OzVm.OPCODE_EVAL);
                     } else {
                         emit(OzVm.OPCODE_EVAL);
