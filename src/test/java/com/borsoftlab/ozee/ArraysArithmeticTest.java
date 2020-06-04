@@ -55,13 +55,16 @@ public class ArraysArithmeticTest {
                 final OzText text = new OzText(programStream);
                 scanner.resetText(text);
                 parser.compile(scanner);
+                System.out.println(scanner.text.loc.line + " lines compiled");
 
-                final OzVm vm = new OzVm();
                 byte[] compiledProgram = parser.getProgramImage();
-                byte[] programImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
+                System.out.println(compiledProgram.length + " bytes program image");
+                byte[] execImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
+                System.out.println(execImage.length + " bytes execution image");
                 scanner.symbolTable.dumpSymbolTableByName();
+                final OzVm vm = new OzVm();
                 vm.setDebugListener(debugListener);
-                vm.loadProgram(programImage);
+                vm.loadProgram(execImage);
                 System.out.println("\noZee virtual machine started...");
                 long startMillis = System.currentTimeMillis();
                 vm.execute();
@@ -69,7 +72,7 @@ public class ArraysArithmeticTest {
                 System.out.println("oZee virtual machine stopped");
                 System.out.println("Execution time: " + execTime + " ms");
         
-                OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length );
+                OzUtils.printMemoryDump(vm.getRam(), 0, execImage.length );
                 OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
                 if( symbol != null ){
                     int valueAddr = symbol.allocAddress;
