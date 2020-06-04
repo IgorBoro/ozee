@@ -46,8 +46,8 @@ public class ArraysArithmeticTest {
 
     @ParameterizedTest(name="{index}")
     @MethodSource("argumentProvider")
-    public void test(String program, int expect) {
-        int value = Integer.MIN_VALUE;
+    public void test(String program, float expect) {
+        float value = Float.MIN_VALUE;
         System.out.println("::------------------------------------------::");
         try {     
             final InputStream programStream = new ByteArrayInputStream(program.getBytes());
@@ -70,9 +70,17 @@ public class ArraysArithmeticTest {
                 System.out.println("Execution time: " + execTime + " ms");
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length );
-                int valueAddr = scanner.symbolTable.lookup("v").allocAddress;
-                value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
-                System.out.println("v = " + value);
+                OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
+                if( symbol != null ){
+                    int valueAddr = symbol.allocAddress;
+                    if( symbol.varType == OzScanner.VAR_TYPE_INT ){
+                        value = OzUtils.fetchIntFromByteArray(vm.getRam(), valueAddr);
+                        System.out.println("v = " + value);
+                    } else {
+                        value = OzUtils.fetchFloatFromByteArray(vm.getRam(), valueAddr);
+                        System.out.println("v = " + value);
+                    }
+                }
 
             } catch (final Exception e) {
                 // e.printStackTrace();
@@ -96,7 +104,7 @@ public class ArraysArithmeticTest {
             = "int[] ari[16];"       + "\n"
             + "ari[7] = 1234567890;" + "\n" 
             + "int v = ari[7];";
-    static int expect0 
+    static float expect0 
             = 1234567890;
 
     static String program1
@@ -104,7 +112,7 @@ public class ArraysArithmeticTest {
             + "ari[7] = 1234567890;" + "\n" 
             + "int index = 4;"       + "\n" 
             + "int v = ari[index + 3];";
-    static int expect1 
+    static float expect1 
             = 1234567890;
 
     static String program2
@@ -113,7 +121,7 @@ public class ArraysArithmeticTest {
             + "ari[index0 + 5] = 1234567890;" + "\n" 
             + "int index1 = 4;"               + "\n" 
             + "int v = ari[index1 + 3];";
-    static int expect2 
+    static float expect2 
             = 1234567890;
 
     static String program3
@@ -122,7 +130,7 @@ public class ArraysArithmeticTest {
             + "ari[index0 + 5] = 12;"        + "\n" 
             + "int index1 = 4;"              + "\n" 
             + "int v = 6 * ari[index1 + 3] - 8;";
-    static int expect3 
+    static float expect3 
             = 64;
 
     static String program4
@@ -132,20 +140,27 @@ public class ArraysArithmeticTest {
             + "int index1 = 4;"                  + "\n" 
             + "ari[index1]  = ari[index0] / 3;"  + "\n"
             + "int v = ari[index1];";
-    static int expect4 
+    static float expect4 
             = 69;
 
     static String program5
             = "int v = 3;";
-    static int expect5 
+    static float expect5 
             = 3;
 
     static String program6
             = "int[] ari[4];"     + "\n"
             + "ari[2] = 57;"  + "\n"
             + "int v = ari[2];";
-    static int expect6 
+    static float expect6 
             = 57;
+
+    static String program7
+            = "float[] arf[4];"     + "\n"
+            + "arf[2] = 57.4 + 12.89;"  + "\n"
+            + "float v = arf[2];";
+    static float expect7 
+            = 70.29f;
 
     // -----------------------------------------------------------------------                        
 
@@ -157,7 +172,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program3, expect3 ),
             Arguments.of( program4, expect4 ),
             Arguments.of( program5, expect5 ),
-            Arguments.of( program6, expect6 )
+            Arguments.of( program6, expect6 ),
+            Arguments.of( program7, expect7 )
         );
     }
 } 

@@ -166,7 +166,6 @@ public class DeclareArraysTest {
 
     private static Stream<Arguments> argumentProvider() {
         return Stream.of(
-            /*
             Arguments.of( program0, message0 ),
             Arguments.of( program1, message1 ),
             Arguments.of( program2, message2 ),
@@ -183,7 +182,6 @@ public class DeclareArraysTest {
             Arguments.of( program13, message13 ),
             Arguments.of( program14, message14 ),
             Arguments.of( program15, message15 ),
-            */
             Arguments.of( program16, message16 )
         );
     }

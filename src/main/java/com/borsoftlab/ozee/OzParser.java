@@ -114,9 +114,7 @@ public class OzParser {
         if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
             match(OzScanner.lexLSQUARE);
             match(OzScanner.lexRSQUARE);
-            if( varType == OzScanner.VAR_TYPE_INT ){
-                return true;
-            }
+            return true;
         }
         return false;
     }
@@ -157,9 +155,7 @@ public class OzParser {
         OzLocation loc = new OzLocation(scanner.loc);
         int varType = varType();
 
-        if( symbol.isArray &&
-                   varType != OzScanner.VAR_TYPE_UNDEF ){
-
+        if( symbol.isArray && symbol.varType == varType ){
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
                 defineArray();
             }    
