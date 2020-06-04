@@ -151,26 +151,12 @@ public class OzSymbols {
             case OzScanner.VAR_TYPE_FLOAT:
                 sType = "float";
                 break;
-            case OzScanner.VAR_TYPE_BYTE_ARRAY:
-                sType = "byte array";
-                break;
-            case OzScanner.VAR_TYPE_UBYTE_ARRAY:
-                sType = "ubyte array";
-                break;
-            case OzScanner.VAR_TYPE_SHORT_ARRAY:
-                sType = "short array";
-                break;
-            case OzScanner.VAR_TYPE_USHORT_ARRAY:
-                sType = "ushort array";
-                break;
-            case OzScanner.VAR_TYPE_INT_ARRAY:
-                sType = "int array";
-                break;
-            case OzScanner.VAR_TYPE_FLOAT_ARRAY:
-                sType = "float array";
-                break;
             default:
                 sType = "unknown";    
+        }
+
+        if ( sym.isArray ){
+            sType += " array";
         }
         return sType;
     }
