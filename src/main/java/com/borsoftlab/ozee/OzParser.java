@@ -52,7 +52,7 @@ public class OzParser {
             OzSymbols.Symbol symbol = variable();
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ) {
                 emit(OzVm.OPCODE_PUSH, symbol);
-                symbol.addRef(pc-4);
+                symbol.addRef( pc - 4 );
 
                 emit(OzVm.OPCODE_EVAL);
                 emit(OzVm.OPCODE_PUSH, 4);
@@ -153,7 +153,7 @@ public class OzParser {
         expression();
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
-        symbol.addRef(pc-4);
+        symbol.addRef( pc - 4 );
         assignValue(symbol.varType);
     }
 
@@ -270,7 +270,7 @@ public class OzParser {
                 case OzScanner.lexVARNAME:
                     OzSymbols.Symbol symbol = variable();
                     emit(OzVm.OPCODE_PUSH, symbol);
-                    symbol.addRef(pc-4);
+                    symbol.addRef( pc - 4 );
                     if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||
                         symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);
@@ -424,9 +424,9 @@ public class OzParser {
         emitMem(opcode, arg);
     }
 
-    private void emit(byte opcode, final Symbol sym){
-        emitListing(opcode, sym);
-        emitMem(opcode, sym);
+    private void emit(byte opcode, final Symbol symbol){
+        emitListing(opcode, symbol);
+        emitMem(opcode, symbol);
     }
 
     private void emitCommentListing(final String comment){
