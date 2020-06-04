@@ -162,6 +162,13 @@ public class ArraysArithmeticTest {
     static float expect7 
             = 70.29f;
 
+    static String program8
+            = "float[] arf[4];"     + "\n"
+            + "arf[2] = 1234;"  + "\n"
+            + "float v = arf[2];";
+    static float expect8 
+            = 1234;
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> argumentProvider() {
@@ -173,7 +180,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program4, expect4 ),
             Arguments.of( program5, expect5 ),
             Arguments.of( program6, expect6 ),
-            Arguments.of( program7, expect7 )
+            Arguments.of( program7, expect7 ),
+            Arguments.of( program8, expect8 )
         );
     }
 } 

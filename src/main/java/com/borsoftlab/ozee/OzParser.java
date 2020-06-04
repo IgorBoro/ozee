@@ -66,18 +66,49 @@ public class OzParser {
                 emit(OzVm.OPCODE_PUSH, 4);
                 emit(OzVm.OPCODE_MUL);
                 emit(OzVm.OPCODE_ADD);
-                // теперь на стеке адрес куда надо припихнуть значение
 
                 // едим знак равенства
                 match(OzScanner.lexASSIGN);
+                // теперь на верхушке стека находится адрес элемента массива
 
                 // вычисляем выражение
                 expression();
-                tsStack.pop();
-
+            //    tsStack.pop();
                 // меняем местами адрес и значение
+//                emit(OzVm.OPCODE_SWAP);
+//                emit(OzVm.OPCODE_ASGN);
+
+                // теперь на верхушке стека находится значение которое надо положить
+                // в элемент массива, а под ним адрес элемента
+
+                // дальше по схеме
+                genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+//                emit(OzVm.OPCODE_PUSH, symbol);
                 emit(OzVm.OPCODE_SWAP);
-                emit(OzVm.OPCODE_ASGN);
+            //    symbol.addRef(pc-4);
+                switch(symbol.varType){
+                    case OzScanner.VAR_TYPE_INT:
+                    case OzScanner.VAR_TYPE_FLOAT:
+                        emit(OzVm.OPCODE_ASGN);
+                        break;
+                    case OzScanner.VAR_TYPE_BYTE:
+                    case OzScanner.VAR_TYPE_UBYTE:
+                        emit(OzVm.OPCODE_ASGNB);
+                        break;
+                    case OzScanner.VAR_TYPE_SHORT:
+                    case OzScanner.VAR_TYPE_USHORT:
+                        emit(OzVm.OPCODE_ASGNS);
+                        break;
+                    default:
+                        OzCompileError.message(scanner, "Compilation error: assignment type error", scanner.loc);
+                    }
+        
+
+
+
+
+
+
 //                assign(symbol);
         
             } else {
