@@ -44,8 +44,11 @@ public class OzParser {
         // если обнаружено объявление типа
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             int varType = varType();
-            varType = checkArrayDeclaration(varType); 
-            OzSymbols.Symbol symbol = declareNewVariable(varType);
+            boolean isArray = checkArrayDeclaration(varType);
+            if( isArray ){
+                varType = OzScanner.VAR_TYPE_INT_ARRAY;
+            }
+            OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
             assignExpression(symbol);
         } else // если обнаружено имя переменной
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
@@ -110,18 +113,19 @@ public class OzParser {
         return varType;
     }
 
-    private int checkArrayDeclaration(int varType) throws Exception {
+    private boolean checkArrayDeclaration(int varType) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
             match(OzScanner.lexLSQUARE);
             match(OzScanner.lexRSQUARE);
             if( varType == OzScanner.VAR_TYPE_INT ){
                 varType = OzScanner.VAR_TYPE_INT_ARRAY;
+                return true;
             }
         }
-        return varType;
+        return false;
     }
 
-    private OzSymbols.Symbol declareNewVariable(int varType) throws Exception {
+    private OzSymbols.Symbol declareNewVariable(int varType, boolean isArray) throws Exception {
         if( scanner.symbol.lexeme  == OzScanner.lexVARNAME &&
             scanner.symbol.varType != OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined",
@@ -132,7 +136,7 @@ public class OzParser {
 
         // проверяем объявление имени переменной на дальнейшую квадратную скобку
         // доопределим массив
-        if( varType == OzScanner.VAR_TYPE_INT_ARRAY && scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+        if( isArray && scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
             defineArray();
         }
         return scanner.symbol;
