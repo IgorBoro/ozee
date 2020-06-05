@@ -199,17 +199,20 @@ public class OzParser {
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
             OzSymbols.Symbol rSymbol = getVariable();
             if( ( lSymbol.isArray == rSymbol.isArray ) && ( lSymbol.varType == rSymbol.varType ) ){
-
-                emit( OzVm.OPCODE_PUSH, rSymbol );
-                rSymbol.addRef( pc - 4 );
-                emit( OzVm.OPCODE_EVAL );
-                emit( OzVm.OPCODE_PUSH, lSymbol  );
-                lSymbol.addRef( pc - 4 );
-                emit( OzVm.OPCODE_ASGN );
+                assignArrayRightRefToLeftRef(lSymbol, rSymbol);
             } else {
                 OzCompileError.message(scanner, "incompatible types", loc);
             }
         }
+    }
+
+    private void assignArrayRightRefToLeftRef(OzSymbols.Symbol lSymbol, OzSymbols.Symbol rSymbol) {
+        emit( OzVm.OPCODE_PUSH, rSymbol );
+        rSymbol.addRef( pc - 4 );
+        emit( OzVm.OPCODE_EVAL );
+        emit( OzVm.OPCODE_PUSH, lSymbol  );
+        lSymbol.addRef( pc - 4 );
+        emit( OzVm.OPCODE_ASGN );
     }
 
     private void defineArray() throws Exception {
