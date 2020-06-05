@@ -46,36 +46,43 @@ public class OzParser {
             int varType = eatVarType();
             boolean isArray = checkArrayDeclaration(varType);
             OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
-            assignExpression(symbol);
+            assignExpressionToScalarValue(symbol);
         } else // если обнаружено имя переменной
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = eatVariable();
+
+            // проверяем переменную слева на элемент массива
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ) {
-                emit(OzVm.OPCODE_PUSH, symbol);
-                symbol.addRef( pc - 4 );
-
-                evaluateAddressOfArrayElement(symbol.sizeInBytes);
-
-                // едим знак равенства
-                match(OzScanner.lexASSIGN);
-                // теперь на верхушке стека находится адрес элемента массива
-
-                // вычисляем выражение
-                expression();
-
-                // теперь на верхушке стека находится значение которое надо положить
-                // в элемент массива, а под ним адрес элемента
-
-                // дальше по схеме
-                genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-                // меняем местами адрес и значение
-                emit(OzVm.OPCODE_SWAP);
-                // теперь адрес сверху адрес как и положено при сохранении в память                    
-                assignValue(symbol.varType);
+                assignExpressionToElementOfArray(symbol);
             } else {
-                assignExpression(symbol);
+                // просто переменная - не элемент массива
+                assignExpressionToScalarValue(symbol);
             }
         }
+    }
+
+    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
+        emit(OzVm.OPCODE_PUSH, symbol);
+        symbol.addRef( pc - 4 );
+
+        evaluateAddressOfArrayElement(symbol.sizeInBytes);
+
+        // едим знак равенства
+        match(OzScanner.lexASSIGN);
+        // теперь на верхушке стека находится адрес элемента массива
+
+        // вычисляем выражение
+        expression();
+
+        // теперь на верхушке стека находится значение которое надо положить
+        // в элемент массива, а под ним адрес элемента
+
+        // дальше по схеме
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+        // меняем местами адрес и значение
+        emit(OzVm.OPCODE_SWAP);
+        // теперь адрес сверху адрес как и положено при сохранении в память                    
+        assignValue(symbol.varType);
     }
 
     private void evaluateAddressOfArrayElement(int sizeOfElement) throws Exception {
@@ -102,7 +109,7 @@ public class OzParser {
         emitCommentListing("there is an element address on the stack");
     }
 
-    private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
+    private void assignExpressionToScalarValue(OzSymbols.Symbol symbol) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             if( symbol.arraySize != 0 ) {
                 OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
