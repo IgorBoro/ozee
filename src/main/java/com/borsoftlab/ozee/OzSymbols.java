@@ -53,7 +53,7 @@ public class OzSymbols {
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
                 System.out.print(String.format("%-24s %-12s %d  addr:0x%08X val:[0x%08X]",
-                    sym.name, sType, sym.sizeInBytes, sym.allocAddress, sym.value));
+                    sym.name, sType, sym.sizeInBytes, sym.allocAddress, sym.refValue));
                 System.out.print(" refs:{ ");
                 for (Integer ref : sym.refList) {
                     System.out.print(String.format("0x%08X", ref));
@@ -78,7 +78,7 @@ public class OzSymbols {
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
                 System.out.print(String.format("0x%08X: %-24s %-12s %d val:[0x%08X]",
-                    sym.allocAddress, sym.name, sType, sym.sizeInBytes, sym.value));
+                    sym.allocAddress, sym.name, sType, sym.sizeInBytes, sym.refValue));
                 System.out.print(" refs:{ ");
                 for (Integer ref : sym.refList) {
                     System.out.print(String.format("0x%08X", ref));
@@ -142,7 +142,7 @@ public class OzSymbols {
         int varType;
         int allocAddress;
         int sizeInBytes;
-        int value;
+        int refValue;
         boolean isArray = false;
         int arraySize;
 
@@ -171,7 +171,7 @@ public class OzSymbols {
 
         public void allocateArray(int arraySize) {
             this.arraySize = arraySize;
-            value = usedMemory;
+            refValue = usedMemory;
             usedMemory += 4 + this.arraySize * sizeInBytes;
         }
 

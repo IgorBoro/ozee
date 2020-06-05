@@ -51,19 +51,26 @@ public class OzLinker {
 
                        // редактируем значение ссылочного типа (массив)
                         if( symbol.isArray ){
-                            symbol.value += codeSegmentSize;      
-                            OzUtils.storeIntToByteArray(image, symbol.value, symbol.arraySize);                     
+                            symbol.refValue += codeSegmentSize;      
+                            /*
+                             * Проверяем есть ли у массива размер и размер массива записываем только
+                             * когда он не равен нулю.
+                             * Потому-что переменная создана, но память под массив может быть не распределена!
+                             */
+                            if( symbol.arraySize != 0 ){
+                                    OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
+                            }
                         }
                                 
                         switch(symbol.sizeInBytes){
                             case 4:
-                                OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.value);        
+                                OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.refValue);        
                                 break;
                             case 2:
-                                OzUtils.storeShortToByteArray(image, symbol.allocAddress, symbol.value);        
+                                OzUtils.storeShortToByteArray(image, symbol.allocAddress, symbol.refValue);        
                                 break;
                             case 1:
-                                OzUtils.storeByteToByteArray (image, symbol.allocAddress, symbol.value);        
+                                OzUtils.storeByteToByteArray (image, symbol.allocAddress, symbol.refValue);        
                                 break;
                         }
                     

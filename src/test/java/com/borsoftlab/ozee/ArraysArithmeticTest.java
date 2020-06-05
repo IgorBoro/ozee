@@ -121,12 +121,15 @@ public class ArraysArithmeticTest {
                 vm.loadProgram(programImage);
                 System.out.println("\noZee virtual machine started...");
                 long startMillis = System.currentTimeMillis();
+                OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length );
                 vm.execute();
                 long execTime = System.currentTimeMillis() - startMillis;
                 System.out.println("oZee virtual machine stopped");
                 System.out.println("Execution time: " + execTime + " ms");
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, programImage.length );
+                scanner.symbolTable.dumpSymbolTableByName();
+
                 OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
                 if( symbol != null ){
                     int valueAddr = symbol.allocAddress;
@@ -284,15 +287,15 @@ public class ArraysArithmeticTest {
 
     private static Stream<Arguments> floatArgumentProvider() {
         return Stream.of(
-//            Arguments.of( program0, expect0 ),
-//            Arguments.of( program1, expect1 ),
-//            Arguments.of( program2, expect2 ),
-//            Arguments.of( program3, expect3 ),
-//            Arguments.of( program4, expect4 ),
-//            Arguments.of( program5, expect5 ),
-//            Arguments.of( program6, expect6 ),
-//            Arguments.of( program7, expect7 ),
-//            Arguments.of( program8, expect8 ),
+            Arguments.of( program0, expect0 ),
+            Arguments.of( program1, expect1 ),
+            Arguments.of( program2, expect2 ),
+            Arguments.of( program3, expect3 ),
+            Arguments.of( program4, expect4 ),
+            Arguments.of( program5, expect5 ),
+            Arguments.of( program6, expect6 ),
+            Arguments.of( program7, expect7 ),
+            Arguments.of( program8, expect8 ),
             Arguments.of( program9, expect9 )
 
         );
@@ -300,10 +303,10 @@ public class ArraysArithmeticTest {
 
     private static Stream<Arguments> stringArgumentProvider() {
         return Stream.of(
-//            Arguments.of( program110, expect110 ),
-//            Arguments.of( program111, expect111 ),
-//            Arguments.of( program112, expect112 ),
-//            Arguments.of( program113, expect113 ),
+            Arguments.of( program110, expect110 ),
+            Arguments.of( program111, expect111 ),
+            Arguments.of( program112, expect112 ),
+            Arguments.of( program113, expect113 ),
             Arguments.of( program114, expect114 )
             );
     }
