@@ -316,6 +316,11 @@ public class OzParser {
                     OzSymbols.Symbol symbol = getVariable();
                     emit(OzVm.OPCODE_PUSH, symbol);
                     symbol.addRef( pc - 4 );
+                    if( symbol.isArray ) {
+                        // определяем адрес массива
+                        evaluateAddressOfArrayElement(symbol.sizeInBytes);
+                        // на стеке адрес элемента массива
+                    }        
                     if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||
                         symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);
@@ -340,11 +345,6 @@ public class OzParser {
                             emit( OzVm.OPCODE_ASR );
                             emitCommentListing("-");
                         }
-                    } else
-                    if( symbol.isArray ) {
-                        // определяем адрес массива
-                        evaluateAddressOfArrayElement(symbol.sizeInBytes);
-                        emit(OzVm.OPCODE_EVAL);
                     } else {
                         emit(OzVm.OPCODE_EVAL);
                     }

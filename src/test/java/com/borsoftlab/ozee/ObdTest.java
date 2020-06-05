@@ -100,23 +100,38 @@ public class ObdTest {
         }
         assertEquals(expect, value);
     }
-
     
     // -----------------------------------------------------------------------                        
 
     static String program0
-            = "int[] ari[16];"       + "\n"
-            + "ari[7] = 1234567890;" + "\n" 
-            + "int v = ari[7];";
+            = "ubyte[] buffer[8];" + "\n"
+            + "buffer[0] = 231;"   + "\n" 
+            + "buffer[1] = 9;"     + "\n" 
+            + "buffer[2] = 35;"    + "\n" 
+            + "buffer[3] = 17;"    + "\n" 
+            + "buffer[4] = 121;"   + "\n" 
+            + "buffer[5] = 55;"    + "\n" 
+            + "buffer[6] = 247;"   + "\n" 
+            + "buffer[7] = 63;"    + "\n" 
+            + "float v = buffer[0] * ( buffer[3] + buffer[6]) ;";
     static float expect0 
-            = 1234567890;
+            = 60984.0f;
+
+    static String program01_04
+            = "ubyte[] buffer[8];"     + "\n"
+            + "buffer[0] = 178;"       + "\n" 
+            + "float v = buffer[0] * 100.0/255.0;";
+    static float expect01_04 
+            = 69.803925f;
+
 
 
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> floatArgumentProvider() {
         return Stream.of(
-            Arguments.of( program0, expect0 )
+            Arguments.of( program0, expect0 ),
+            Arguments.of( program01_04, expect01_04 )
         );
     }
 
