@@ -237,6 +237,24 @@ public class ArraysArithmeticTest {
     static float expect9 
             = 2517;
 
+  
+  
+    static String program10
+            = "ubyte[] buffer[8];" + "\n"
+            + "buffer[0] = 231;"   + "\n" 
+            + "buffer[1] = 9;"     + "\n" 
+            + "buffer[2] = 35;"    + "\n" 
+            + "buffer[3] = 17;"    + "\n" 
+            + "buffer[4] = 121;"   + "\n" 
+            + "buffer[5] = 55;"    + "\n" 
+            + "buffer[6] = 247;"   + "\n" 
+            + "buffer[7] = 63;"    + "\n" 
+            + "float v = buffer[0] * ( buffer[3] + buffer[6]) ;";
+    static float expect10 
+            = 60984.0f;
+
+    // ------------------------------
+  
     static String program110
             = "float[] arf[4];"       + "\n"
             + "arf[3.4] = 1234;"      + "\n"
@@ -308,8 +326,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program6, expect6 ),
             Arguments.of( program7, expect7 ),
             Arguments.of( program8, expect8 ),
-            Arguments.of( program9, expect9 )
-
+            Arguments.of( program9, expect9 ),
+            Arguments.of( program10, expect10 )
         );
     }
 
