@@ -270,29 +270,41 @@ public class ArraysArithmeticTest {
     static String expect113 
             = "Ok";
 
+    static String program114
+            = "float[] arf[4];"+ "\n"
+            + "float[] b;"     + "\n"
+            + "arf[3] = 78902;" + "\n"
+            + "int a = 3;"     + "\n"
+            + "b = arf;"       + "\n"
+            + "float v = b[a];";
+    static String expect114 
+            = "Ok";
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> floatArgumentProvider() {
         return Stream.of(
-            Arguments.of( program0, expect0 ),
-            Arguments.of( program1, expect1 ),
-            Arguments.of( program2, expect2 ),
-            Arguments.of( program3, expect3 ),
-            Arguments.of( program4, expect4 ),
-            Arguments.of( program5, expect5 ),
-            Arguments.of( program6, expect6 ),
-            Arguments.of( program7, expect7 ),
-            Arguments.of( program8, expect8 ),
+//            Arguments.of( program0, expect0 ),
+//            Arguments.of( program1, expect1 ),
+//            Arguments.of( program2, expect2 ),
+//            Arguments.of( program3, expect3 ),
+//            Arguments.of( program4, expect4 ),
+//            Arguments.of( program5, expect5 ),
+//            Arguments.of( program6, expect6 ),
+//            Arguments.of( program7, expect7 ),
+//            Arguments.of( program8, expect8 ),
             Arguments.of( program9, expect9 )
+
         );
     }
 
     private static Stream<Arguments> stringArgumentProvider() {
         return Stream.of(
-            Arguments.of( program110, expect110 ),
-            Arguments.of( program111, expect111 ),
-            Arguments.of( program112, expect112 ),
-            Arguments.of( program113, expect113 )
+//            Arguments.of( program110, expect110 ),
+//            Arguments.of( program111, expect111 ),
+//            Arguments.of( program112, expect112 ),
+//            Arguments.of( program113, expect113 ),
+            Arguments.of( program114, expect114 )
             );
     }
 

@@ -105,10 +105,16 @@ public class OzParser {
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             match(OzScanner.lexASSIGN, "'='");
-            if( symbol.isArray ){
+            if( symbol.isArray && scanner.lookAheadLexeme == OzScanner.lexVARTYPE ){
                 assignArrayDefinition(symbol);
-            } else {
+            } else
+            if(symbol.isArray && scanner.lookAheadLexeme == OzScanner.lexVARNAME){
+                assignArrayDefinition(symbol);
+            } else
+            if( !symbol.isArray ) {
                 assignArithmeticExpression(symbol);
+            } else {
+                match(OzScanner.lexVARTYPE, "array definition");
             }
        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
                // empty
@@ -170,16 +176,28 @@ public class OzParser {
         assignValue(symbol.varType);
     }
 
-    private void assignArrayDefinition(OzSymbols.Symbol symbol) throws Exception {
+    private void assignArrayDefinition(OzSymbols.Symbol lSymbol) throws Exception {
         OzLocation loc = new OzLocation(scanner.loc);
-        int varType = varType();
-
-        if( symbol.isArray && symbol.varType == varType ){
-            if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
-                defineArray();
-            }    
-        } else {
-            OzCompileError.message(scanner, "incompatible array types", loc);
+        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE ){
+            int varType = varType();
+            if( lSymbol.isArray && lSymbol.varType == varType ){
+                if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+                    defineArray();
+                }    
+            } else {
+                OzCompileError.message(scanner, "incompatible array types", loc);
+            }
+        } else
+        if( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
+            OzSymbols.Symbol rSymbol = variable();
+            if( ( lSymbol.isArray == rSymbol.isArray ) &&  ( lSymbol.varType == rSymbol.varType ) ){
+                emit( OzVm.OPCODE_PUSH, rSymbol );
+                rSymbol.addRef( pc - 4 );
+                emit( OzVm.OPCODE_EVAL );
+                emit( OzVm.OPCODE_PUSH, lSymbol  );
+                lSymbol.addRef( pc - 4 );
+                emit( OzVm.OPCODE_ASGN );
+            }
         }
     }
 

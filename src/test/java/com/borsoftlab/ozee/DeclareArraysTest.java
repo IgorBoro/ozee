@@ -51,7 +51,7 @@ public class DeclareArraysTest {
     final static String message4
                         = "int[] i = 15;" + "\n"
                         + "          ^"   + "\n"
-                        + "Error in line 1: expected var type definition" + "\n";
+                        + "Error in line 1: expected array definition" + "\n";
 
     final static String program5
                         = "int[] i;" + "\n"
