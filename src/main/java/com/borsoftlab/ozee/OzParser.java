@@ -43,13 +43,13 @@ public class OzParser {
     void stmt() throws Exception {
         // если обнаружено объявление типа
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            int varType = eatVarType();
+            int varType = getVarType();
             boolean isArray = checkArrayDeclaration(varType);
             OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
             assignExpressionToScalarValue(symbol);
         } else // если обнаружено имя переменной
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            OzSymbols.Symbol symbol = eatVariable();
+            OzSymbols.Symbol symbol = getVariable();
 
             // проверяем переменную слева на элемент массива
             if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ) {
@@ -134,7 +134,7 @@ public class OzParser {
         }
     }
 
-    private int eatVarType() throws Exception {
+    private int getVarType() throws Exception {
         match(OzScanner.lexVARTYPE, "var type definition");
         int varType = scanner.varType;
         return varType;
@@ -167,7 +167,7 @@ public class OzParser {
         return scanner.symbol;
     }
 
-    private OzSymbols.Symbol eatVariable() throws Exception {
+    private OzSymbols.Symbol getVariable() throws Exception {
         if( scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined",
             scanner.loc);
@@ -187,7 +187,7 @@ public class OzParser {
     private void assignArrayDefinition(OzSymbols.Symbol lSymbol) throws Exception {
         OzLocation loc = new OzLocation(scanner.loc);
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE ){
-            int varType = eatVarType();
+            int varType = getVarType();
             if( lSymbol.isArray && lSymbol.varType == varType ){
                 if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
                     defineArray();
@@ -197,7 +197,7 @@ public class OzParser {
             }
         } else
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
-            OzSymbols.Symbol rSymbol = eatVariable();
+            OzSymbols.Symbol rSymbol = getVariable();
             if( ( lSymbol.isArray == rSymbol.isArray ) && ( lSymbol.varType == rSymbol.varType ) ){
 
                 emit( OzVm.OPCODE_PUSH, rSymbol );
@@ -310,7 +310,7 @@ public class OzParser {
                     }
                     break;
                 case OzScanner.lexVARNAME:
-                    OzSymbols.Symbol symbol = eatVariable();
+                    OzSymbols.Symbol symbol = getVariable();
                     emit(OzVm.OPCODE_PUSH, symbol);
                     symbol.addRef( pc - 4 );
                     if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||
