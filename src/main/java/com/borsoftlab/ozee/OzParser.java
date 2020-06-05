@@ -104,26 +104,27 @@ public class OzParser {
 
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            match(OzScanner.lexASSIGN, "'='");
-            if( symbol.isArray && scanner.lookAheadLexeme == OzScanner.lexVARTYPE ){
-                assignArrayDefinition(symbol);
-            } else
-            if(symbol.isArray && scanner.lookAheadLexeme == OzScanner.lexVARNAME){
-                assignArrayDefinition(symbol);
-            } else
-            if( !symbol.isArray ) {
-                assignArithmeticExpression(symbol);
-            } else {
-                match(OzScanner.lexVARTYPE, "array definition");
+            if( symbol.arraySize != 0 ) {
+                OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
             }
-       } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
-               // empty
-       } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
-           OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
-       } else {
-           OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
-       }
-
+            match(OzScanner.lexASSIGN, "'='");
+            if( symbol.isArray && 
+                ( scanner.lookAheadLexeme == OzScanner.lexVARTYPE || scanner.lookAheadLexeme == OzScanner.lexVARNAME )  ){
+                assignArrayDefinition(symbol);
+            } else {
+                if( !symbol.isArray ) {
+                    assignArithmeticExpression(symbol);
+                } else {
+                    match(OzScanner.lexVARTYPE, "array definition");
+                }
+            }
+        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
+        // empty
+        } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+        } else {
+            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+        }
     }
 
     private int varType() throws Exception {
@@ -190,13 +191,16 @@ public class OzParser {
         } else
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
             OzSymbols.Symbol rSymbol = variable();
-            if( ( lSymbol.isArray == rSymbol.isArray ) &&  ( lSymbol.varType == rSymbol.varType ) ){
+            if( ( lSymbol.isArray == rSymbol.isArray ) && ( lSymbol.varType == rSymbol.varType ) ){
+
                 emit( OzVm.OPCODE_PUSH, rSymbol );
                 rSymbol.addRef( pc - 4 );
                 emit( OzVm.OPCODE_EVAL );
                 emit( OzVm.OPCODE_PUSH, lSymbol  );
                 lSymbol.addRef( pc - 4 );
                 emit( OzVm.OPCODE_ASGN );
+            } else {
+                OzCompileError.message(scanner, "incompatible types", loc);
             }
         }
     }

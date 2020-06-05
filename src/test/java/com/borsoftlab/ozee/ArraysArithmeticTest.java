@@ -283,6 +283,18 @@ public class ArraysArithmeticTest {
     static String expect114 
             = "Ok";
 
+    static String program115
+            = "float[] arf[4];"+ "\n"
+            + "float[] b[4];"     + "\n"
+            + "arf[3] = 78902;" + "\n"
+            + "int a = 3;"     + "\n"
+            + "b = arf;"       + "\n"
+            + "float v = b[a];";
+    static String expect115 
+            = "b = arf;" + "\n"
+            + "  ^"      + "\n"
+            + "Error in line 5:  array 'b' already defined" + "\n";
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> floatArgumentProvider() {
@@ -307,7 +319,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program111, expect111 ),
             Arguments.of( program112, expect112 ),
             Arguments.of( program113, expect113 ),
-            Arguments.of( program114, expect114 )
+            Arguments.of( program114, expect114 ),
+            Arguments.of( program115, expect115 )
             );
     }
 
