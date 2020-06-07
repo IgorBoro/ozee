@@ -65,7 +65,7 @@ public class OzParser {
         emit(OzVm.OPCODE_PUSH, symbol);
         symbol.addRef( pc - 4 );
 
-        evaluateAddressOfArrayElement(symbol.sizeInBytes);
+        evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
 
         // едим знак равенства
         match(OzScanner.lexASSIGN);
@@ -213,6 +213,7 @@ public class OzParser {
         emit( OzVm.OPCODE_PUSH, lSymbol  );
         lSymbol.addRef( pc - 4 );
         emit( OzVm.OPCODE_ASGN );
+        lSymbol.refValue = rSymbol.refValue;
     }
 
     private void defineArray() throws Exception {
@@ -318,7 +319,7 @@ public class OzParser {
                     symbol.addRef( pc - 4 );
                     if( symbol.isArray ) {
                         // определяем адрес массива
-                        evaluateAddressOfArrayElement(symbol.sizeInBytes);
+                        evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
                         // на стеке адрес элемента массива
                     }        
                     if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||

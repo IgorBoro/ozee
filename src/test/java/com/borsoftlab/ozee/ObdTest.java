@@ -73,6 +73,7 @@ public class ObdTest {
                 System.out.println("Execution time: " + execTime + " ms");
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, execImage.length );
+                scanner.symbolTable.dumpSymbolTableByName();
                 OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
                 if( symbol != null ){
                     int valueAddr = symbol.allocAddress;
@@ -136,9 +137,9 @@ public class ObdTest {
 
     private static Stream<Arguments> floatArgumentProvider() {
         return Stream.of(
-            Arguments.of( program0, expect0 ),
-            Arguments.of( program01_04, expect01_04 ),
-            Arguments.of( program01_05, expect01_05 )
+            Arguments.of( program0, expect0 )
+//            Arguments.of( program01_04, expect01_04 )
+//            Arguments.of( program01_05, expect01_05 )
         );
     }
 

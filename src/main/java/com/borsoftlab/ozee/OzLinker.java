@@ -75,8 +75,10 @@ public class OzLinker {
                         }
                     
                         List<Integer> refList = symbol.refList;
-                        for (Integer ref : refList) {
-                            OzUtils.storeIntToByteArray(image, codeOriginAddress + ref, symbol.allocAddress);        
+                        for( int i = 0; i < refList.size(); i++){
+                            int ref = codeOriginAddress + refList.get(i);
+                            OzUtils.storeIntToByteArray(image, ref, symbol.allocAddress);        
+                            refList.set(i, ref);
                         }
                     }
                 }
