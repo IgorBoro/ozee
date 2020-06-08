@@ -64,7 +64,7 @@ public class OzVm{
     /*
      * Flow control commands
      */
-    public static final byte OPCODE_JUMP = (byte) 0x40;
+    public static final byte OPCODE_JUMP = (byte) 0x40;         //        c ->     |  pc = c
     public static final byte OPCODE_IFEQ = (byte) 0x41;
     public static final byte OPCODE_IFNE = (byte) 0x42;
     public static final byte OPCODE_IFLE = (byte) 0x43;
