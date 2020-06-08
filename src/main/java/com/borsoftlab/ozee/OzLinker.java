@@ -48,6 +48,9 @@ public class OzLinker {
                 // набор модифицированных ссылок ==
                 Set<Integer> modSymbolRefs = new TreeSet<Integer>();
 
+                // здесь заполняется новый модифицированный список
+
+                // сперва в новый список добавляем модифицированные ссылки на размер смещения сегмента кода
                 for (Integer ref : symbolTable.symbolRefs) {
                     modSymbolRefs.add(ref + codeOriginAddress);
                 }
@@ -66,28 +69,30 @@ public class OzLinker {
                              * когда он не равен нулю.
                              * Потому-что переменная создана, но память под массив может быть не распределена!
                              */
-                            if( symbol.arraySize != 0 ){
-                                    OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
-                            }
+//                            if( symbol.arraySize != 0 ){
+//                                OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
+//                            }
 
-
+                            // для массива добавляем две ссылки относящиеся к сегменту данных
+                            // 
                             modSymbolRefs.add(symbol.allocAddress);
-                            modSymbolRefs.add(symbol.refValue);
+//                            modSymbolRefs.add(symbol.refValue);
 
-                        }
-                                
-                        switch(symbol.sizeInBytes){
-                            case 4:
+                            /*
+                            switch(symbol.sizeInBytes){
+                                case 4:
                                 OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.refValue);        
                                 break;
-                            case 2:
+                                case 2:
                                 OzUtils.storeShortToByteArray(image, symbol.allocAddress, symbol.refValue);        
                                 break;
-                            case 1:
+                                case 1:
                                 OzUtils.storeByteToByteArray (image, symbol.allocAddress, symbol.refValue);        
                                 break;
+                            }
+                            */
                         }
-                    
+  
                         /*
                         List<Integer> refList = symbol.refList;
                         for( int i = 0; i < refList.size(); i++){

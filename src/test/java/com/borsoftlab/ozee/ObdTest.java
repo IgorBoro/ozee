@@ -127,7 +127,7 @@ public class ObdTest {
             = 69.803925f;
 
     static String program01_05
-            = "ubyte[] buffer[8];"     + "\n"
+            = "ubyte[] buffer[8];"    + "\n"
             + "buffer[0] = 24;"       + "\n" 
             + "float v = buffer[0] - 40;";
     static float expect01_05 
@@ -139,8 +139,8 @@ public class ObdTest {
     private static Stream<Arguments> floatArgumentProvider() {
         return Stream.of(
             Arguments.of( program0, expect0 )
-//            Arguments.of( program01_04, expect01_04 )
-//            Arguments.of( program01_05, expect01_05 )
+//            ,Arguments.of( program01_04, expect01_04 )
+//            ,Arguments.of( program01_05, expect01_05 )
         );
     }
 

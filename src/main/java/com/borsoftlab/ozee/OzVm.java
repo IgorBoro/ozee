@@ -79,7 +79,7 @@ public class OzVm{
     public static final int STEP_OPTIONAL_ARGUMENT  = 2;
 
     byte[] ram;  // little-endian
-    int ramSizeInBytes = 1024;
+    int ramSizeInBytes = 4096;
 
     int[] stack;
     int stackSizeInWords = 32;
