@@ -73,8 +73,8 @@ public class OzLinker {
                                 OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
                             }
 
-                            // для массива добавляем две ссылки относящиеся к сегменту данных
-                            // 
+//                            // для массива добавляем две ссылки относящиеся к сегменту данных
+//                            // 
 //                            modSymbolRefs.add(symbol.allocAddress);
 //                            modSymbolRefs.add(symbol.refValue);
                             OzUtils.storeIntToByteArray(image, symbol.allocAddress, symbol.refValue);                     
