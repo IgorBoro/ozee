@@ -42,7 +42,7 @@ public class OzLinker {
                 for (int targetImageAddress = codeOriginAddress;
                          targetImageAddress < codeOriginAddress + progSize;
                          targetImageAddress++) {
-                        image[targetImageAddress] = program[targetImageAddress - codeOriginAddress];
+                    image[targetImageAddress] = program[targetImageAddress - codeOriginAddress];
                 }
 
                 // набор модифицированных ссылок ==
@@ -107,7 +107,7 @@ public class OzLinker {
 
                 symbolTable.symbolRefs = modSymbolRefs;
 
-                // получили новый список модифицированных ссылок - правим память
+                // получили новый список модифицированных ссылок на сегмент данных- правим память
                 for (Integer ref : symbolTable.symbolRefs) {
                     int val = OzUtils.fetchIntFromByteArray(image, ref) + codeSegmentSize;
                     // модифицируем содержимое памяти по ссылкам
