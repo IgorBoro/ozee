@@ -193,6 +193,20 @@ public class OzSymbols {
             symbolRefs.add(ref);
         }
 
-    }    
+    }
+    
+    public class Reference{
 
+        static final int REFTYPE_DATA  = 0;
+        static final int REFTYPE_LABEL = 1;
+
+
+        int refType;
+        int refValue;
+
+        public Reference(int type, int  value){
+            refType = type;
+            refValue = value;
+        }
+    }
 }
