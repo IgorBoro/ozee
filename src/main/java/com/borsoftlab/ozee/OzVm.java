@@ -230,6 +230,9 @@ public class OzVm{
                     shift = stack[--sp];
                     stack[sp-1] = (stack[sp-1] >> shift);
                     break;
+                case OPCODE_JUMP:
+                    pc = stack[--sp];
+                    break;
                 default:
                     throw new Exception(String.format("OzVm RTE: unknown opcode - 0x%08X", cmd));
             }
