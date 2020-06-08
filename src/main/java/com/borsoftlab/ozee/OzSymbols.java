@@ -58,14 +58,14 @@ public class OzSymbols {
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
-                System.out.print(String.format("%-24s %-12s %d  addr:0x%08X val:[0x%08X]",
+                System.out.println(String.format("%-24s %-12s %d  addr:0x%08X refVal:[0x%08X]",
                     sym.name, sType, sym.sizeInBytes, sym.allocAddress, sym.refValue));
-                System.out.print(" refs:{ ");
+            //    System.out.print(" refs:{ ");
             //    for (Integer ref : sym.refList) {
             //        System.out.print(String.format("0x%08X", ref));
             //        System.out.print(" ");
             //    }
-                System.out.println("}");
+            //    System.out.println("}");
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY NAME END  =============");
@@ -83,7 +83,7 @@ public class OzSymbols {
             Symbol sym = entry.getValue();
             if( sym.lexeme == OzScanner.lexVARNAME){
                 String sType = getVarTypeName(sym);
-                System.out.print(String.format("0x%08X: %-24s %-12s %d val:[0x%08X]",
+                System.out.println(String.format("0x%08X: %-24s %-12s %d refVal:[0x%08X]",
                     sym.allocAddress, sym.name, sType, sym.sizeInBytes, sym.refValue));
 //                System.out.print(" refs:{ ");
 //                for (Integer ref : sym.refList) {

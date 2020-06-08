@@ -107,6 +107,7 @@ public class OzLinker {
 
                 symbolTable.symbolRefs = modSymbolRefs;
 
+                // получили новый список модифицированных ссылок - правим память
                 for (Integer ref : symbolTable.symbolRefs) {
                     int val = OzUtils.fetchIntFromByteArray(image, ref) + codeSegmentSize;
                     // модифицируем содержимое памяти по ссылкам
