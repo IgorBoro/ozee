@@ -69,14 +69,15 @@ public class OzLinker {
                              * когда он не равен нулю.
                              * Потому-что переменная создана, но память под массив может быть не распределена!
                              */
-//                            if( symbol.arraySize != 0 ){
-//                                OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
-//                            }
+                            if( symbol.arraySize != 0 ){
+                                OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
+                            }
 
                             // для массива добавляем две ссылки относящиеся к сегменту данных
                             // 
-                            modSymbolRefs.add(symbol.allocAddress);
+//                            modSymbolRefs.add(symbol.allocAddress);
 //                            modSymbolRefs.add(symbol.refValue);
+                            OzUtils.storeIntToByteArray(image, symbol.allocAddress, symbol.refValue);                     
 
                             /*
                             switch(symbol.sizeInBytes){
