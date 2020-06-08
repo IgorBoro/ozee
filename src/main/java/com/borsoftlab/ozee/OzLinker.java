@@ -1,5 +1,6 @@
 package com.borsoftlab.ozee;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -46,13 +47,20 @@ public class OzLinker {
                 }
 
                 // набор модифицированных ссылок ==
-                Set<Integer> modSymbolRefs = new TreeSet<Integer>();
+                Set<Reference> modSymbolRefs = new TreeSet<Reference>(new Comparator<Reference>() {
+
+                    @Override
+                    public int compare(Reference o1, Reference o2) {
+                        return o1.refValue - o2.refValue;
+                    }
+            
+                });
 
                 // здесь заполняется новый модифицированный список
 
                 // сперва в новый список добавляем модифицированные ссылки на размер смещения сегмента кода
-                for (Integer ref : symbolTable.symbolRefs) {
-                    modSymbolRefs.add(ref + codeOriginAddress);
+                for (Reference ref : symbolTable.symbolRefs) {
+                    modSymbolRefs.add(new Reference(Reference.REFTYPE_DATA, ref.refValue + codeOriginAddress));
                 }
 
                 // initialize the data section
@@ -108,10 +116,10 @@ public class OzLinker {
                 symbolTable.symbolRefs = modSymbolRefs;
 
                 // получили новый список модифицированных ссылок на сегмент данных- правим память
-                for (Integer ref : symbolTable.symbolRefs) {
-                    int val = OzUtils.fetchIntFromByteArray(image, ref) + codeSegmentSize;
+                for (Reference ref : symbolTable.symbolRefs) {
+                    int val = OzUtils.fetchIntFromByteArray(image, ref.refValue) + codeSegmentSize;
                     // модифицируем содержимое памяти по ссылкам
-                    OzUtils.storeIntToByteArray(image, ref, val);        
+                    OzUtils.storeIntToByteArray(image, ref.refValue, val);        
                 }
 
                 // ==

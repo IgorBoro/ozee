@@ -1,6 +1,7 @@
 package com.borsoftlab.ozee;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,7 +16,14 @@ public class OzSymbols {
     private Map<String, Symbol> map = new HashMap<>();
 
 
-    public Set<Integer> symbolRefs = new TreeSet<Integer>();
+    public Set<Reference> symbolRefs = new TreeSet<Reference>(new Comparator<Reference>() {
+
+        @Override
+        public int compare(Reference o1, Reference o2) {
+            return o1.refValue - o2.refValue;
+        }
+
+    });
 
     int usedMemory = 0;
 
@@ -143,8 +151,8 @@ public class OzSymbols {
     }
 
     public void dumpRefList(){
-        for (Integer integer : symbolRefs) {
-            System.out.printf("0x%08X ", integer);
+        for (Reference ref : symbolRefs) {
+            System.out.printf("0x%08X ", ref.refValue);
         }
         System.out.println();
     }
@@ -190,23 +198,9 @@ public class OzSymbols {
 
         public void addRef(int ref){
 //            refList.add(ref);
-            symbolRefs.add(ref);
+            symbolRefs.add(new Reference(Reference.REFTYPE_DATA, ref));
         }
 
     }
-    
-    public class Reference{
 
-        static final int REFTYPE_DATA  = 0;
-        static final int REFTYPE_LABEL = 1;
-
-
-        int refType;
-        int refValue;
-
-        public Reference(int type, int  value){
-            refType = type;
-            refValue = value;
-        }
-    }
 }
