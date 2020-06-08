@@ -5,12 +5,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class OzSymbols {
 
     private Map<String, Symbol> map = new HashMap<>();
+
+
+    public Set<Integer> symbolRefs = new TreeSet<Integer>();
+
     int usedMemory = 0;
 
     public Symbol lookup(String key){
@@ -136,6 +142,13 @@ public class OzSymbols {
         return list;
     }
 
+    public void dumpRefList(){
+        for (Integer integer : symbolRefs) {
+            System.out.printf("0x%08X ", integer);
+        }
+        System.out.println();
+    }
+
     public class Symbol{
         String name;
         int lexeme;
@@ -146,7 +159,7 @@ public class OzSymbols {
         boolean isArray = false;
         int arraySize;
 
-        List<Integer> refList = new ArrayList<>();
+        List<Integer> refList = new ArrayList<Integer>();
 
         public Symbol(String name, int lexeme, int varType){
             this.name = name;
@@ -177,6 +190,7 @@ public class OzSymbols {
 
         public void addRef(int ref){
             refList.add(ref);
+            symbolRefs.add(ref);
         }
 
     }    

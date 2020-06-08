@@ -59,9 +59,9 @@ public class ObdTest {
 
                 byte[] compiledProgram = parser.getProgramImage();
                 System.out.println(compiledProgram.length + " bytes program image");
+                scanner.symbolTable.dumpSymbolTableByName();
                 byte[] execImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
                 System.out.println(execImage.length + " bytes execution image");
-                scanner.symbolTable.dumpSymbolTableByName();
                 final OzVm vm = new OzVm();
                 vm.setDebugListener(debugListener);
                 vm.loadProgram(execImage);
@@ -74,6 +74,7 @@ public class ObdTest {
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, execImage.length );
                 scanner.symbolTable.dumpSymbolTableByName();
+                scanner.symbolTable.dumpRefList();
                 OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
                 if( symbol != null ){
                     int valueAddr = symbol.allocAddress;
@@ -87,7 +88,7 @@ public class ObdTest {
                 }
 
             } catch (final Exception e) {
-                // e.printStackTrace();
+                e.printStackTrace();
             } finally {
                 System.out.println(OzCompileError.messageString);
                 try {

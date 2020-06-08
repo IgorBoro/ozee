@@ -1,6 +1,8 @@
 package com.borsoftlab.ozee;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.borsoftlab.ozee.OzSymbols.Symbol;
 
@@ -43,6 +45,13 @@ public class OzLinker {
                         image[targetImageAddress] = program[targetImageAddress - codeOriginAddress];
                 }
 
+                // набор модифицированных ссылок ==
+                Set<Integer> modSymbolRefs = new TreeSet<Integer>();
+
+                for (Integer ref : symbolTable.symbolRefs) {
+                    modSymbolRefs.add(ref + codeOriginAddress);
+                }
+
                 // initialize the data section
                               
                 // re-binding refs
@@ -60,6 +69,11 @@ public class OzLinker {
                             if( symbol.arraySize != 0 ){
                                     OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
                             }
+
+
+                            modSymbolRefs.add(symbol.allocAddress);
+                            modSymbolRefs.add(symbol.refValue);
+
                         }
                                 
                         switch(symbol.sizeInBytes){
@@ -82,6 +96,11 @@ public class OzLinker {
                         }
                     }
                 }
+
+                symbolTable.symbolRefs = modSymbolRefs;
+                // ==
+
+
                 return image;
         }
 
