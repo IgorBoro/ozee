@@ -88,16 +88,25 @@ public class OzLinker {
                                 break;
                         }
                     
+                        /*
                         List<Integer> refList = symbol.refList;
                         for( int i = 0; i < refList.size(); i++){
                             int ref = codeOriginAddress + refList.get(i);
                             OzUtils.storeIntToByteArray(image, ref, symbol.allocAddress);        
                             refList.set(i, ref);
                         }
+                        */
                     }
                 }
 
                 symbolTable.symbolRefs = modSymbolRefs;
+
+                for (Integer ref : symbolTable.symbolRefs) {
+                    int val = OzUtils.fetchIntFromByteArray(image, ref) + codeSegmentSize;
+                    // модифицируем содержимое памяти по ссылкам
+                    OzUtils.storeIntToByteArray(image, ref, val);        
+                }
+
                 // ==
 
 

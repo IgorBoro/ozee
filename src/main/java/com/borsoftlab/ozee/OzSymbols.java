@@ -61,10 +61,10 @@ public class OzSymbols {
                 System.out.print(String.format("%-24s %-12s %d  addr:0x%08X val:[0x%08X]",
                     sym.name, sType, sym.sizeInBytes, sym.allocAddress, sym.refValue));
                 System.out.print(" refs:{ ");
-                for (Integer ref : sym.refList) {
-                    System.out.print(String.format("0x%08X", ref));
-                    System.out.print(" ");
-                }
+            //    for (Integer ref : sym.refList) {
+            //        System.out.print(String.format("0x%08X", ref));
+            //        System.out.print(" ");
+            //    }
                 System.out.println("}");
             }
         }
@@ -85,12 +85,12 @@ public class OzSymbols {
                 String sType = getVarTypeName(sym);
                 System.out.print(String.format("0x%08X: %-24s %-12s %d val:[0x%08X]",
                     sym.allocAddress, sym.name, sType, sym.sizeInBytes, sym.refValue));
-                System.out.print(" refs:{ ");
-                for (Integer ref : sym.refList) {
-                    System.out.print(String.format("0x%08X", ref));
-                    System.out.print(" ");
-                }
-                System.out.println("}");
+//                System.out.print(" refs:{ ");
+//                for (Integer ref : sym.refList) {
+//                    System.out.print(String.format("0x%08X", ref));
+//                    System.out.print(" ");
+//                }
+//                System.out.println("}");
             }
         }
         System.out.println("; ============  SYMBOL TABLE DUMP BY ADDR END  =============");
@@ -159,7 +159,7 @@ public class OzSymbols {
         boolean isArray = false;
         int arraySize;
 
-        List<Integer> refList = new ArrayList<Integer>();
+//        List<Integer> refList = new ArrayList<Integer>();
 
         public Symbol(String name, int lexeme, int varType){
             this.name = name;
@@ -189,7 +189,7 @@ public class OzSymbols {
         }
 
         public void addRef(int ref){
-            refList.add(ref);
+//            refList.add(ref);
             symbolRefs.add(ref);
         }
 
