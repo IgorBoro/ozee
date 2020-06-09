@@ -8,116 +8,80 @@ import com.borsoftlab.ozee.OzSymbols.Symbol;
 
 public class OzLinker {
 
-        public static byte[] linkImage(final byte[] program, final OzSymbols symbolTable){
+    public static byte[] linkImage(final byte[] program, final OzSymbols symbolTable){
 
-                // a header of image is empty
-                int headerSize = 0;
-                int codeOriginAddress = /*4 + */headerSize;
+        int codeSegmentOriginAddress = 0;
+        int progSize = program.length;     
+        int dataSegmentSize = symbolTable.usedMemory;
 
-                int progSize = program.length;     
-                int dataSegmentSize = symbolTable.usedMemory;
+        List<Symbol> symbols = symbolTable.getTableOrderedByAddr();
+        int codeSegmentSize = codeSegmentOriginAddress + progSize;
+        int dataSegmentOriginAddress = codeSegmentSize;
 
-                List<Symbol> symbols = symbolTable.getTableOrderedByAddr();
-                int codeSegmentSize = codeOriginAddress + progSize;
-                // calculate image size
-                for (Symbol symbol : symbols) {
-                        if( symbol.lexeme == OzScanner.lexVARNAME) {
-                            symbol.allocAddress += codeSegmentSize;    
-                        }
-                       
-                        /*
-                         * does not take into account the size of arrays    
-                         * dataSectionSize += symbol.sizeInBytes;
-                         */
-                }
-                int imageSize = codeSegmentSize + dataSegmentSize;
+        int imageSize = codeSegmentSize + dataSegmentSize;
 
-                // create the empty image
-                byte[] image = new byte[imageSize];
-
-                // put the start address at the beginning of the image
-                OzUtils.storeIntToByteArray(image, 0, codeOriginAddress);
-
-                // copy the program to the image
-                for (int targetImageAddress = codeOriginAddress;
-                         targetImageAddress < codeOriginAddress + progSize;
-                         targetImageAddress++) {
-                    image[targetImageAddress] = program[targetImageAddress - codeOriginAddress];
-                }
-
-                // набор модифицированных ссылок ==
-                Set<Integer> modDataSegmentRefs = new TreeSet<Integer>();
-
-                // здесь заполняется новый модифицированный список
-
-                // сперва в новый список добавляем модифицированные ссылки на размер смещения сегмента кода
-                for (Integer ref : symbolTable.dataSegmentRefs) {
-                    modDataSegmentRefs.add(ref + codeOriginAddress);
-                }
-
-                // initialize the data section
-                              
-                // re-binding refs
-                for (Symbol symbol : symbols) {
-                    if( symbol.lexeme == OzScanner.lexVARNAME) {
-
-                       // редактируем значение ссылочного типа (массив)
-                        if( symbol.isArray ){
-                            symbol.refValue += codeSegmentSize;      
-                            /*
-                             * Проверяем есть ли у массива размер и размер массива записываем только
-                             * когда он не равен нулю.
-                             * Потому-что переменная создана, но память под массив может быть не распределена!
-                             */
-                            if( symbol.arraySize != 0 ){
-                                OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
-                            }
-
-//                            // для массива добавляем две ссылки относящиеся к сегменту данных
-//                            // 
-//                            modSymbolRefs.add(symbol.allocAddress);
-//                            modSymbolRefs.add(symbol.refValue);
-                            OzUtils.storeIntToByteArray(image, symbol.allocAddress, symbol.refValue);                     
-
-                            /*
-                            switch(symbol.sizeInBytes){
-                                case 4:
-                                OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.refValue);        
-                                break;
-                                case 2:
-                                OzUtils.storeShortToByteArray(image, symbol.allocAddress, symbol.refValue);        
-                                break;
-                                case 1:
-                                OzUtils.storeByteToByteArray (image, symbol.allocAddress, symbol.refValue);        
-                                break;
-                            }
-                            */
-                        }
-  
-                        /*
-                        List<Integer> refList = symbol.refList;
-                        for( int i = 0; i < refList.size(); i++){
-                            int ref = codeOriginAddress + refList.get(i);
-                            OzUtils.storeIntToByteArray(image, ref, symbol.allocAddress);        
-                            refList.set(i, ref);
-                        }
-                        */
-                    }
-                }
-
-                symbolTable.dataSegmentRefs = modDataSegmentRefs;
-
-                // получили новый список модифицированных ссылок на сегмент данных- правим память
-                for (Integer ref : symbolTable.dataSegmentRefs) {
-                    int val = OzUtils.fetchIntFromByteArray(image, ref) + codeSegmentSize;
-                    // модифицируем содержимое памяти по ссылкам
-                    OzUtils.storeIntToByteArray(image, ref, val);        
-                }
-
-                // ==
-
-
-                return image;
+        // в каждой записи таблицы символов меняем адрес переменной на новый с учетом
+        // смещения сегмента данных - это нужно только для того, чтобы после выполнения
+        // программы найти нужную переменную и ее адрес соответствовал реальному
+        // размещению переменной после перемещения сегмента данных
+        // в будущем этот кусок кода уйдет!!!!!!!!
+        for (Symbol symbol : symbols) {
+            if( symbol.lexeme == OzScanner.lexVARNAME) {
+                symbol.allocAddress += dataSegmentOriginAddress;    
+            }
         }
 
+        // create the empty image
+        byte[] image = new byte[imageSize];
+        // копируем программу в образ
+        System.arraycopy(program, 0, image, 0, program.length);
+
+        // модифицируем ссылки
+        Set<Integer> modDataSegmentRefs = new TreeSet<Integer>();
+
+        // здесь заполняется новый модифицированный список
+        // сперва в новый список добавляем модифицированные ссылки на размер смещения сегмента кода
+
+        for (Integer ref : symbolTable.dataSegmentRefs) {
+            modDataSegmentRefs.add(ref + codeSegmentOriginAddress);
+        }
+
+        symbolTable.dataSegmentRefs = modDataSegmentRefs;
+
+        // получили новый список модифицированных ссылок на сегмент данных- правим память
+        for (Integer ref : symbolTable.dataSegmentRefs) {
+            int value = dataSegmentOriginAddress + OzUtils.fetchIntFromByteArray(image, ref);
+            // модифицируем содержимое памяти по ссылкам
+            OzUtils.storeIntToByteArray(image, ref, value);        
+        }
+
+        // модифицируем память по ссылкам
+        for (Symbol symbol : symbols) {
+            if( symbol.lexeme == OzScanner.lexVARNAME) {
+                // редактируем значение ссылочного типа (массив)
+                if( symbol.isArray ) {
+                    symbol.refValue += codeSegmentSize;      
+                    // Проверяем есть ли у массива размер и размер массива записываем только
+                    // когда он не равен нулю.
+                    // Потому-что переменная создана, но память под массив может быть не распределена!
+                    if( symbol.arraySize != 0 ) {
+                        OzUtils.storeIntToByteArray(image, symbol.refValue, symbol.arraySize);                     
+                    }
+                    // запись константы в память переменной
+                    switch(symbol.sizeInBytes){
+                        case 4:
+                            OzUtils.storeIntToByteArray  (image, symbol.allocAddress, symbol.refValue);        
+                            break;
+                        case 2:
+                            OzUtils.storeShortToByteArray(image, symbol.allocAddress, symbol.refValue);        
+                            break;
+                        case 1:
+                            OzUtils.storeByteToByteArray (image, symbol.allocAddress, symbol.refValue);        
+                            break;
+                    }
+                }
+            }
+        }
+        return image;
+    }
 }
