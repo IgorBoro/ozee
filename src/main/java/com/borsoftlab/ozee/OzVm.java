@@ -117,9 +117,8 @@ public class OzVm{
         pc = 0; // starts from 0
         sp = 0; // the stack is growing up
 
-        byte cmd = ram[pc];
+        byte cmd = ram[pc++];
         while( cmd != OPCODE_STOP){
-            pc++;
             int valueAddr, int_value, l_int_value, r_int_value;
             float  l_flt_value, r_flt_value;
             if( debugListener != null ){
@@ -233,7 +232,7 @@ public class OzVm{
             if( debugListener != null ){
                 debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, pc, cmd, stack, sp);
             }
-            cmd = ram[pc];
+            cmd = ram[pc++];
         }
         if( debugListener != null ){
             debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
