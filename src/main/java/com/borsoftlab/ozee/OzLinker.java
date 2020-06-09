@@ -20,6 +20,9 @@ public class OzLinker {
 
         int imageSize = codeSegmentSize + dataSegmentSize;
 
+
+        // ссылки на сегмент кода не модифицируем здесь, так как сегмент кода начинается с нуля!
+
         // в каждой записи таблицы символов меняем адрес переменной на новый с учетом
         // смещения сегмента данных - это нужно только для того, чтобы после выполнения
         // программы найти нужную переменную и ее адрес соответствовал реальному
@@ -35,6 +38,9 @@ public class OzLinker {
         byte[] image = new byte[imageSize];
         // копируем программу в образ
         System.arraycopy(program, 0, image, 0, program.length);
+
+        // пропишем адрес секции метаданных - пока метаданных нет размер образа прежний
+        OzUtils.storeIntToByteArray(image, 6, imageSize);        
 
         // модифицируем ссылки
         Set<Integer> modDataSegmentRefs = new TreeSet<Integer>();
