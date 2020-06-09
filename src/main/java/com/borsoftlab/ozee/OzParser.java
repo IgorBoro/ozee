@@ -166,13 +166,15 @@ public class OzParser {
     }
 
     private OzSymbols.Symbol declareNewVariable(int varType, boolean isArray) throws Exception {
+        boolean isExport = checkNameExportAttribute();
         if( scanner.symbol.lexeme  == OzScanner.lexVARNAME &&
             scanner.symbol.varType != OzScanner.VAR_TYPE_UNDEF ){
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined",
             scanner.loc);
         }
         match(OzScanner.lexVARNAME, "variable name");
-        scanner.symbol.isArray = isArray;
+        scanner.symbol.isExport = isExport;
+        scanner.symbol.isArray  = isArray;
         scanner.symbol.allocateVariable(varType);
 
         // проверяем объявление имени переменной на дальнейшую квадратную скобку
@@ -181,6 +183,14 @@ public class OzParser {
             defineArray();
         }
         return scanner.symbol;
+    }
+
+    private boolean checkNameExportAttribute() throws Exception {
+        if( scanner.lookAheadLexeme == OzScanner.lexMUL){
+            match(OzScanner.lexMUL);
+            return true;
+        }
+        return false;
     }
 
     private OzSymbols.Symbol getVariable() throws Exception {

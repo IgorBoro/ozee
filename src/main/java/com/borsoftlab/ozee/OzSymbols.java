@@ -174,6 +174,7 @@ public class OzSymbols {
         int refValue;
         boolean isArray = false;
         int arraySize;
+        boolean isExport;
 
 //        List<Integer> refList = new ArrayList<Integer>();
 

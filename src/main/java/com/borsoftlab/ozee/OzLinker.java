@@ -88,6 +88,33 @@ public class OzLinker {
                 }
             }
         }
+
+        // отладочный вывод модификаторов ссылок
+        for (Integer ref : symbolTable.codeSegmentRefs) {
+            System.out.printf("M0x%08X ", ref);
+        }
+
+        for (Integer ref : symbolTable.dataSegmentRefs) {
+            System.out.printf("M0x%08X ", ref);
+        }
+        System.out.println();
+
+        for (Symbol symbol : symbols) {
+            if( symbol.lexeme == OzScanner.lexVARNAME) {
+                if( symbol.isExport ){
+                    System.out.printf("E0x%08X %s %d ", symbol.allocAddress, symbol.name, symbol.varType);
+                    if( symbol.isArray){
+                        System.out.print("A ");
+                    } else {
+                        System.out.print("  ");
+                    }
+                    System.out.print("V  ");
+                }
+            }
+        }
+        System.out.println();
+        
+
         return image;
     }
 }
