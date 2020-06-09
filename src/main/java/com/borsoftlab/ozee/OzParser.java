@@ -63,7 +63,7 @@ public class OzParser {
 
     private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
         emit(OzVm.OPCODE_PUSH, symbol);
-        symbol.addRef( pc - 4 );
+        symbol.addDataSegmentRef( pc - 4 );
 
         evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
 
@@ -180,7 +180,7 @@ public class OzParser {
         expression();
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
-        symbol.addRef( pc - 4 );
+        symbol.addDataSegmentRef( pc - 4 );
         assignValue(symbol.varType);
     }
 
@@ -208,10 +208,10 @@ public class OzParser {
 
     private void assignArrayRightRefToLeftRef(OzSymbols.Symbol lSymbol, OzSymbols.Symbol rSymbol) {
         emit( OzVm.OPCODE_PUSH, rSymbol );
-        rSymbol.addRef( pc - 4 );
+        rSymbol.addDataSegmentRef( pc - 4 );
         emit( OzVm.OPCODE_EVAL );
         emit( OzVm.OPCODE_PUSH, lSymbol  );
-        lSymbol.addRef( pc - 4 );
+        lSymbol.addDataSegmentRef( pc - 4 );
         emit( OzVm.OPCODE_ASGN );
         lSymbol.refValue = rSymbol.refValue;
     }
@@ -316,7 +316,7 @@ public class OzParser {
                 case OzScanner.lexVARNAME:
                     OzSymbols.Symbol symbol = getVariable();
                     emit(OzVm.OPCODE_PUSH, symbol);
-                    symbol.addRef( pc - 4 );
+                    symbol.addDataSegmentRef( pc - 4 );
                     if( symbol.isArray ) {
                         // определяем адрес массива
                         evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
