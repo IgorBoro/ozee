@@ -79,7 +79,6 @@ public class OzVm{
     public static final int STEP_OPTIONAL_ARGUMENT  = 2;
 
     byte[] ram;  // little-endian
-    int ramSizeInBytes = 4096;
 
     int[] stack;
     int stackSizeInWords = 32;
@@ -89,11 +88,6 @@ public class OzVm{
     int sp;
 
     public OzVm(){
-        init();
-    }
-
-    public OzVm(final int ramSize){
-        this.ramSizeInBytes = ramSize;
         init();
     }
 
@@ -111,7 +105,7 @@ public class OzVm{
     }
     
 	public void loadProgram(byte[] image) {
-        ram = new byte[ramSizeInBytes];
+        ram = new byte[image.length];
         System.arraycopy(image, 0, ram, 0, image.length);
 	}
 

@@ -43,7 +43,6 @@ public class ObdTest {
         }
     };
 
-
     @ParameterizedTest(name="{index}")
     @MethodSource("floatArgumentProvider")
     public void testFloat(String program, float expect) {
@@ -74,8 +73,9 @@ public class ObdTest {
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, execImage.length );
                 scanner.symbolTable.dumpSymbolTableByName();
+                System.out.println("code refs:");
                 scanner.symbolTable.dumpCodeSegmentRefList();
-                System.out.println();
+                System.out.println("data refs:");
                 scanner.symbolTable.dumpDataSegmentRefList();
                 OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
                 if( symbol != null ){
