@@ -24,6 +24,22 @@ public class OzParser {
         this.scanner = scanner;
         OzCompileError.reset();
         pc = 0;
+
+        emitCommentListing("unconditional jump");
+        emit(OzVm.OPCODE_PUSH, 0x0);
+        int label = pc - 4;
+        scanner.symbolTable.addCodeSegmentRef(label);
+
+        // jump over 4 bytes
+        emit(OzVm.OPCODE_JUMP);
+        // address for metadata
+        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_STOP);
+        // store jump address to push command saved in label
+        OzUtils.storeIntToByteArray(mem.mem, label, pc);
+
         scanner.nextLexeme();
         stmtList();
         emit(OzVm.OPCODE_STOP);
@@ -63,7 +79,7 @@ public class OzParser {
 
     private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
         emit(OzVm.OPCODE_PUSH, symbol);
-        symbol.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( pc - 4 );
 
         evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
 
@@ -180,7 +196,7 @@ public class OzParser {
         expression();
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
-        symbol.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( pc - 4 );
         assignValue(symbol.varType);
     }
 
@@ -208,10 +224,10 @@ public class OzParser {
 
     private void assignArrayRightRefToLeftRef(OzSymbols.Symbol lSymbol, OzSymbols.Symbol rSymbol) {
         emit( OzVm.OPCODE_PUSH, rSymbol );
-        rSymbol.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( pc - 4 );
         emit( OzVm.OPCODE_EVAL );
         emit( OzVm.OPCODE_PUSH, lSymbol  );
-        lSymbol.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( pc - 4 );
         emit( OzVm.OPCODE_ASGN );
         lSymbol.refValue = rSymbol.refValue;
     }
@@ -316,7 +332,7 @@ public class OzParser {
                 case OzScanner.lexVARNAME:
                     OzSymbols.Symbol symbol = getVariable();
                     emit(OzVm.OPCODE_PUSH, symbol);
-                    symbol.addDataSegmentRef( pc - 4 );
+                    scanner.symbolTable.addDataSegmentRef( pc - 4 );
                     if( symbol.isArray ) {
                         // определяем адрес массива
                         evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));

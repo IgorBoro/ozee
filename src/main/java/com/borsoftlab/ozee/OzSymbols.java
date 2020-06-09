@@ -143,11 +143,26 @@ public class OzSymbols {
         return list;
     }
 
-    public void dumpRefList(){
+    public void dumpDataSegmentRefList(){
         for (Integer ref : dataSegmentRefs) {
             System.out.printf("0x%08X ", ref);
         }
         System.out.println();
+    }
+
+    public void dumpCodeSegmentRefList(){
+        for (Integer ref : codeSegmentRefs) {
+            System.out.printf("0x%08X ", ref);
+        }
+        System.out.println();
+    }
+
+    public void addCodeSegmentRef(int ref){
+        codeSegmentRefs.add(ref);
+    }
+
+    public void addDataSegmentRef(int ref){
+        dataSegmentRefs.add(ref);
     }
 
     public class Symbol{
@@ -187,10 +202,6 @@ public class OzSymbols {
             this.arraySize = arraySize;
             refValue = usedMemory;
             usedMemory += 4 + this.arraySize * sizeInBytes;
-        }
-
-        public void addDataSegmentRef(int ref){
-            dataSegmentRefs.add(ref);
         }
 
     }

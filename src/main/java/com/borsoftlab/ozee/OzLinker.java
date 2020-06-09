@@ -12,7 +12,7 @@ public class OzLinker {
 
                 // a header of image is empty
                 int headerSize = 0;
-                int codeOriginAddress = 4 + headerSize;
+                int codeOriginAddress = /*4 + */headerSize;
 
                 int progSize = program.length;     
                 int dataSegmentSize = symbolTable.usedMemory;

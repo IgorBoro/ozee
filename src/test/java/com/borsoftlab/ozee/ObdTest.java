@@ -74,7 +74,9 @@ public class ObdTest {
         
                 OzUtils.printMemoryDump(vm.getRam(), 0, execImage.length );
                 scanner.symbolTable.dumpSymbolTableByName();
-                scanner.symbolTable.dumpRefList();
+                scanner.symbolTable.dumpCodeSegmentRefList();
+                System.out.println();
+                scanner.symbolTable.dumpDataSegmentRefList();
                 OzSymbols.Symbol symbol = scanner.symbolTable.lookup("v");
                 if( symbol != null ){
                     int valueAddr = symbol.allocAddress;
