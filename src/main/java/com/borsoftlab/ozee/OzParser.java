@@ -62,7 +62,7 @@ public class OzParser {
             int varType = getVarType();
             boolean isArray = checkArrayDeclaration(varType);
             OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
-            assignValue(symbol);
+            assignExpression(symbol);
         } else // если обнаружено имя переменной
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = getVariable();
@@ -72,7 +72,7 @@ public class OzParser {
                 assignExpressionToElementOfArray(symbol);
             } else {
                 // просто переменная - не элемент массива
-                assignValue(symbol);
+                assignExpression(symbol);
             }
         }
     }
@@ -125,7 +125,7 @@ public class OzParser {
         assignValue(symbol.varType);
     }
 
-    private void assignValue(OzSymbols.Symbol symbol) throws Exception {
+    private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             if( symbol.arraySize != 0 ) {
                 OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
