@@ -62,7 +62,7 @@ public class OzParser {
             int varType = getVarType();
             boolean isArray = checkArrayDeclaration(varType);
             OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
-            assignExpressionToScalarValue(symbol);
+            assignValue(symbol);
         } else // если обнаружено имя переменной
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = getVariable();
@@ -72,33 +72,9 @@ public class OzParser {
                 assignExpressionToElementOfArray(symbol);
             } else {
                 // просто переменная - не элемент массива
-                assignExpressionToScalarValue(symbol);
+                assignValue(symbol);
             }
         }
-    }
-
-    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
-        emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef( pc - 4 );
-
-        evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
-
-        // едим знак равенства
-        match(OzScanner.lexASSIGN);
-        // теперь на верхушке стека находится адрес элемента массива
-
-        // вычисляем выражение
-        expression();
-
-        // теперь на верхушке стека находится значение которое надо положить
-        // в элемент массива, а под ним адрес элемента
-
-        // дальше по схеме
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-        // меняем местами адрес и значение
-        emit(OzVm.OPCODE_SWAP);
-        // теперь адрес сверху адрес как и положено при сохранении в память                    
-        assignValue(symbol.varType);
     }
 
     private void evaluateAddressOfArrayElement(int sizeOfElement) throws Exception {
@@ -125,7 +101,31 @@ public class OzParser {
         emitCommentListing("there is an element address on the stack");
     }
 
-    private void assignExpressionToScalarValue(OzSymbols.Symbol symbol) throws Exception {
+    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
+        emit(OzVm.OPCODE_PUSH, symbol);
+        scanner.symbolTable.addDataSegmentRef( pc - 4 );
+
+        evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
+
+        // едим знак равенства
+        match(OzScanner.lexASSIGN);
+        // теперь на верхушке стека находится адрес элемента массива
+
+        // вычисляем выражение
+        expression();
+
+        // теперь на верхушке стека находится значение которое надо положить
+        // в элемент массива, а под ним адрес элемента
+
+        // дальше по схеме
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+        // меняем местами адрес и значение
+        emit(OzVm.OPCODE_SWAP);
+        // теперь адрес сверху адрес как и положено при сохранении в память                    
+        assignValue(symbol.varType);
+    }
+
+    private void assignValue(OzSymbols.Symbol symbol) throws Exception {
         if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
             if( symbol.arraySize != 0 ) {
                 OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
