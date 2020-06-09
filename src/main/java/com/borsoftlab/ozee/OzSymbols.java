@@ -16,6 +16,7 @@ public class OzSymbols {
 
 
     public Set<Integer> dataSegmentRefs = new TreeSet<Integer>();
+    public Set<Integer> codeSegmentRefs = new TreeSet<Integer>();
 
     int usedMemory = 0;
 
