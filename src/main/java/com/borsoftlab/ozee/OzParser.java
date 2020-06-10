@@ -122,7 +122,7 @@ public class OzParser {
         // меняем местами адрес и значение
         emit(OzVm.OPCODE_SWAP);
         // теперь адрес сверху адрес как и положено при сохранении в память                    
-        assignValue(symbol.varType);
+        genCodeAssign(symbol.varType);
     }
 
     private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
@@ -207,7 +207,7 @@ public class OzParser {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef( pc - 4 );
-        assignValue(symbol.varType);
+        genCodeAssign(symbol.varType);
     }
 
     private void assignArrayDefinition(OzSymbols.Symbol lSymbol) throws Exception {
@@ -225,14 +225,14 @@ public class OzParser {
         if( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
             OzSymbols.Symbol rSymbol = getVariable();
             if( ( lSymbol.isArray == rSymbol.isArray ) && ( lSymbol.varType == rSymbol.varType ) ){
-                assignArrayRightRefToLeftRef(lSymbol, rSymbol);
+                genCodeArrayAssign(lSymbol, rSymbol);
             } else {
                 OzCompileError.message(scanner, "incompatible types", loc);
             }
         }
     }
 
-    private void assignArrayRightRefToLeftRef(OzSymbols.Symbol lSymbol, OzSymbols.Symbol rSymbol) {
+    private void genCodeArrayAssign(OzSymbols.Symbol lSymbol, OzSymbols.Symbol rSymbol) {
         emit( OzVm.OPCODE_PUSH, rSymbol );
         scanner.symbolTable.addDataSegmentRef( pc - 4 );
         emit( OzVm.OPCODE_EVAL );
@@ -261,7 +261,7 @@ public class OzParser {
         }
     }
 
-    private void assignValue(int varType) throws Exception {
+    private void genCodeAssign(int varType) throws Exception {
         switch(varType){
             case OzScanner.VAR_TYPE_INT:
             case OzScanner.VAR_TYPE_FLOAT:
