@@ -41,10 +41,12 @@ public class OzLinker {
                 }
             }
         }
+        /*
         if( exportCount > 0 ){
             // добавляем завершающий секцию экспорта 0
             sizeOfExportArea += 1;
         }
+        */
 
         // размер одной записи модификатора = 5 байтов
         int sizeOfModArea = 5 * (symbolTable.codeSegmentRefs.size() + symbolTable.dataSegmentRefs.size() );
@@ -155,7 +157,7 @@ public class OzLinker {
                 }   
             }
             // завершающий 0
-            OzUtils.storeByteToByteArray(image, modPtr, (byte)0);  modPtr++;
+            // OzUtils.storeByteToByteArray(image, modPtr, (byte)0);  modPtr++;
         }
 
         System.out.println();
