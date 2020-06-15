@@ -105,34 +105,54 @@ public class OzLinker {
         // отладочный вывод модификаторов ссылок
         for (Integer ref : symbolTable.codeSegmentRefs) {
             System.out.printf("M0x%08X ", ref);
-            OzUtils.storeByteToByteArray(image, modPtr, 'M');
-            modPtr++;
-            OzUtils.storeIntToByteArray(image, modPtr, ref);
-            modPtr += 4;
+            OzUtils.storeByteToByteArray(image, modPtr, 'M'); modPtr++;
+            OzUtils.storeIntToByteArray(image, modPtr, ref);  modPtr += 4;
         }
 
         for (Integer ref : symbolTable.dataSegmentRefs) {
             System.out.printf("M0x%08X ", ref);
-            OzUtils.storeByteToByteArray(image, modPtr, 'M');
-            modPtr++;
-            OzUtils.storeIntToByteArray(image, modPtr, ref);
-            modPtr += 4;
+            OzUtils.storeByteToByteArray(image, modPtr, 'M'); modPtr++;
+            OzUtils.storeIntToByteArray(image, modPtr, ref);  modPtr += 4;
         }
         System.out.println();
 
-        for (Symbol symbol : symbols) {
-            if( symbol.lexeme == OzScanner.lexVARNAME) {
-                if( symbol.isExport ){
-                    System.out.printf("E0x%08X %s %d ", symbol.allocAddress, symbol.name, symbol.varType);
-                    if( symbol.isArray){
-                        System.out.print("A ");
-                    } else {
-                        System.out.print("  ");
+        if( exportCount > 0 ) {
+            for (Symbol symbol : symbols) {
+                if( symbol.lexeme == OzScanner.lexVARNAME) {
+                    if( symbol.isExport ){
+                        System.out.printf("E0x%08X %s %d ", symbol.allocAddress, symbol.name, symbol.varType);
+                        if( symbol.isArray){
+                            System.out.print("A ");
+                        } else {
+                            System.out.print("  ");
+                        }
+
+                        OzUtils.storeByteToByteArray(image, modPtr, 'E');                 modPtr++;
+                        OzUtils.storeIntToByteArray(image, modPtr, symbol.allocAddress);  modPtr += 4;
+
+                        // имя
+                        for (char c : symbol.name.toCharArray()) {
+                            OzUtils.storeByteToByteArray(image, modPtr, (byte)c);  modPtr++;
+                        }
+                        // завершающий имя 0
+                        OzUtils.storeByteToByteArray(image, modPtr, (byte)0);  modPtr++;
+                        // тип переменной
+                        OzUtils.storeByteToByteArray(image, modPtr, symbol.varType);  modPtr++;
+
+                        // массив или нет
+                        if( symbol.isArray){
+                            OzUtils.storeByteToByteArray(image, modPtr, 'A');  modPtr++;
+                        } else {
+                            OzUtils.storeByteToByteArray(image, modPtr, ' ');  modPtr++;
+                        }
+
                     }
-                    System.out.print("V  ");
-                }
+                }   
             }
+            // завершающий 0
+            OzUtils.storeByteToByteArray(image, modPtr, (byte)0);  modPtr++;
         }
+
         System.out.println();
         
 
