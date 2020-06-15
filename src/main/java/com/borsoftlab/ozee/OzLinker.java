@@ -27,10 +27,18 @@ public class OzLinker {
         // смещения сегмента данных - это нужно только для того, чтобы после выполнения
         // программы найти нужную переменную и ее адрес соответствовал реальному
         // размещению переменной после перемещения сегмента данных
-        // 
+        // заодно определимся с записями экспорта
+        int exportCount = 0;
+        int sizeOfExportArea = 0;
         for (Symbol symbol : symbols) {
             if( symbol.lexeme == OzScanner.lexVARNAME) {
                 symbol.allocAddress += dataSegmentOriginAddress;    
+
+                if( symbol.isExport ) {
+                    exportCount++;
+                    sizeOfExportArea += 9;
+                    sizeOfExportArea += symbol.name.length();
+                }
             }
         }
 
@@ -38,7 +46,7 @@ public class OzLinker {
         int sizeOfModArea = 5 * (symbolTable.codeSegmentRefs.size() + symbolTable.dataSegmentRefs.size() );
 
         // create the empty image
-        byte[] image = new byte[imageSize + sizeOfModArea];
+        byte[] image = new byte[imageSize + sizeOfModArea + sizeOfExportArea];
         // копируем программу в образ
         System.arraycopy(program, 0, image, 0, program.length);
 
