@@ -87,27 +87,58 @@ public class OzUtils {
     }
 
     public static void printMemoryDump(final byte[] mem, int from, int length){
+        StringBuffer sb = new StringBuffer();
+
         if( from % 16 == 0){
             System.out.print(String.format("0x%08X: 0x%02X", from, mem[from]));
+            if( Character.isLetterOrDigit(mem[from])) {
+                sb.append((char)mem[from]);
+            } else {
+                sb.append('.');
+            }
         } else {
             int start = 16 * (from / 16);
             System.out.print(String.format("0x%08X:", start));
             for( int ptr = start; ptr < from; ptr ++ ){
                 System.out.print("     ");
+                sb.append(' ');
             }
             System.out.print(String.format(" 0x%02X", mem[from]));
-
+            if( Character.isLetterOrDigit(mem[from])) {
+                sb.append((char)mem[from]);
+            } else {
+                sb.append('.');
+            }
         }
         from++;
         int rightBorder = Math.min(length, mem.length);
-        for (int ptr = from; ptr < rightBorder; ptr++){
+        int ptr;
+        for (ptr = from; ptr < rightBorder; ptr++){
             if( ptr % 16 == 0){
+                System.out.printf("   %s", sb.toString());
+                sb.setLength(0);
                 System.out.println();                
                 System.out.print(String.format("0x%08X: 0x%02X", ptr, mem[ptr]));
+                if( Character.isLetterOrDigit(mem[ptr])) {
+                    sb.append((char)mem[ptr]);
+                } else {
+                    sb.append('.');
+                }
             } else {
                 System.out.print(String.format(" 0x%02X", mem[ptr]));
+                if( Character.isLetterOrDigit(mem[ptr])) {
+                    sb.append((char)mem[ptr]);
+                } else {
+                    sb.append('.');
+                }
             }
         }
+        int spaceCount =  16 - ptr % 16;
+        for( int i = 0; i < spaceCount; i++ ){
+            System.out.print("     ");
+        }
+        System.out.printf("   %s", sb.toString());
+        sb.setLength(0);
         System.out.println();                
     }
 
