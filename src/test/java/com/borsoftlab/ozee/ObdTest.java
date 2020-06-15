@@ -140,9 +140,9 @@ public class ObdTest {
 
     private static Stream<Arguments> floatArgumentProvider() {
         return Stream.of(
-//            Arguments.of( program0, expect0 )
-//            ,Arguments.of( program01_04, expect01_04 )
-            Arguments.of( program01_05, expect01_05 )
+            Arguments.of( program0, expect0 )
+           ,Arguments.of( program01_04, expect01_04 )
+           ,Arguments.of( program01_05, expect01_05 )
         );
     }
 

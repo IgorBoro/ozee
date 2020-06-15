@@ -18,7 +18,7 @@ public class OzLinker {
         int codeSegmentSize = codeSegmentOriginAddress + progSize;
         int dataSegmentOriginAddress = codeSegmentSize;
 
-        int imageSize = codeSegmentSize + dataSegmentSize;
+        int progImageSize = codeSegmentSize + dataSegmentSize;
 
 
         // ссылки на сегмент кода не модифицируем здесь, так как сегмент кода начинается с нуля!
@@ -29,15 +29,26 @@ public class OzLinker {
         // размещению переменной после перемещения сегмента данных
         // заодно определимся с записями экспорта
         int exportCount = 0;
-        int sizeOfExportArea = 0;
+        int sizeOfExpArea = 0;
         for (Symbol symbol : symbols) {
             if( symbol.lexeme == OzScanner.lexVARNAME) {
                 symbol.allocAddress += dataSegmentOriginAddress;    
 
                 if( symbol.isExport ) {
                     exportCount++;
-                    sizeOfExportArea += 9;
-                    sizeOfExportArea += symbol.name.length();
+                    /*
+                     * 1 байт  - символ 'E'
+                     * 4 байта - адрес переменной
+                     * x байт  - имя переменной
+                     * 1 байт  - завершающий строку имени 0
+                     * 1 байт  - тип переменной или элемента массива
+                     * 1 байт  - признак массива 'A' или ' ' - пробел
+                     * 1 байт  - завершающий 0
+                     * ===============================================
+                     * (9 + x) байтов - результирующий размер записи
+                     */
+                    sizeOfExpArea += 9; 
+                    sizeOfExpArea += symbol.name.length();
                 }
             }
         }
@@ -48,16 +59,16 @@ public class OzLinker {
         }
         */
 
-        // размер одной записи модификатора = 5 байтов
-        int sizeOfModArea = 5 * (symbolTable.codeSegmentRefs.size() + symbolTable.dataSegmentRefs.size() );
+        // размер одной записи модификатора = 5 байтов, 'M' + address
+        int sizeOfRefArea = 5 * (symbolTable.codeSegmentRefs.size() + symbolTable.dataSegmentRefs.size() );
 
         // create the empty image
-        byte[] image = new byte[imageSize + sizeOfModArea + sizeOfExportArea];
+        byte[] image = new byte[progImageSize + sizeOfRefArea + sizeOfExpArea];
         // копируем программу в образ
         System.arraycopy(program, 0, image, 0, program.length);
 
         // пропишем адрес секции метаданных - пока метаданных нет размер образа прежний
-        OzUtils.storeIntToByteArray(image, 6, imageSize);        
+        OzUtils.storeIntToByteArray(image, 6, progImageSize);        
 
         // модифицируем ссылки
         Set<Integer> modDataSegmentRefs = new TreeSet<Integer>();
@@ -106,7 +117,7 @@ public class OzLinker {
             }
         }
 
-        int modPtr = imageSize;
+        int modPtr = progImageSize;
 
         // отладочный вывод модификаторов ссылок
         for (Integer ref : symbolTable.codeSegmentRefs) {
