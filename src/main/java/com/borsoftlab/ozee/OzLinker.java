@@ -27,15 +27,18 @@ public class OzLinker {
         // смещения сегмента данных - это нужно только для того, чтобы после выполнения
         // программы найти нужную переменную и ее адрес соответствовал реальному
         // размещению переменной после перемещения сегмента данных
-        // в будущем этот кусок кода уйдет!!!!!!!!
+        // 
         for (Symbol symbol : symbols) {
             if( symbol.lexeme == OzScanner.lexVARNAME) {
                 symbol.allocAddress += dataSegmentOriginAddress;    
             }
         }
 
+        // размер одной записи модификатора = 5 байтов
+        int sizeOfModArea = 5 * (symbolTable.codeSegmentRefs.size() + symbolTable.dataSegmentRefs.size() );
+
         // create the empty image
-        byte[] image = new byte[imageSize];
+        byte[] image = new byte[imageSize + sizeOfModArea];
         // копируем программу в образ
         System.arraycopy(program, 0, image, 0, program.length);
 
@@ -89,13 +92,23 @@ public class OzLinker {
             }
         }
 
+        int modPtr = imageSize;
+
         // отладочный вывод модификаторов ссылок
         for (Integer ref : symbolTable.codeSegmentRefs) {
             System.out.printf("M0x%08X ", ref);
+            OzUtils.storeByteToByteArray(image, modPtr, 'M');
+            modPtr++;
+            OzUtils.storeIntToByteArray(image, modPtr, ref);
+            modPtr += 4;
         }
 
         for (Integer ref : symbolTable.dataSegmentRefs) {
             System.out.printf("M0x%08X ", ref);
+            OzUtils.storeByteToByteArray(image, modPtr, 'M');
+            modPtr++;
+            OzUtils.storeIntToByteArray(image, modPtr, ref);
+            modPtr += 4;
         }
         System.out.println();
 
