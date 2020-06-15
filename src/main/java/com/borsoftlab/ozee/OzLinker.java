@@ -21,15 +21,17 @@ public class OzLinker {
         int progImageSize = codeSegmentSize + dataSegmentSize;
 
 
-        // ссылки на сегмент кода не модифицируем здесь, так как сегмент кода начинается с нуля!
-
-        // в каждой записи таблицы символов меняем адрес переменной на новый с учетом
-        // смещения сегмента данных - это нужно только для того, чтобы после выполнения
-        // программы найти нужную переменную и ее адрес соответствовал реальному
-        // размещению переменной после перемещения сегмента данных
-        // заодно определимся с записями экспорта
+        /*
+         * ссылки на сегмент кода не модифицируем здесь, так как сегмент кода начинается с нуля!
+         *   
+         * в каждой записи таблицы символов меняем адрес переменной на новый с учетом
+         * смещения сегмента данных - это нужно только для того, чтобы после выполнения
+         * программы найти нужную переменную и ее адрес соответствовал реальному
+         * размещению переменной после перемещения сегмента данных
+         * заодно определимся с записями экспорта
+         */
         int exportCount = 0;
-        int sizeOfExpArea = 0;
+        int exportAreaSize = 0;
         for (Symbol symbol : symbols) {
             if( symbol.lexeme == OzScanner.lexVARNAME) {
                 symbol.allocAddress += dataSegmentOriginAddress;    
@@ -47,8 +49,8 @@ public class OzLinker {
                      * ===============================================
                      * (9 + x) байтов - результирующий размер записи
                      */
-                    sizeOfExpArea += 9; 
-                    sizeOfExpArea += symbol.name.length();
+                    exportAreaSize += 9; 
+                    exportAreaSize += symbol.name.length();
                 }
             }
         }
@@ -60,10 +62,10 @@ public class OzLinker {
         */
 
         // размер одной записи модификатора = 5 байтов, 'M' + address
-        int sizeOfRefArea = 5 * (symbolTable.codeSegmentRefs.size() + symbolTable.dataSegmentRefs.size() );
+        int refersAreaSize = 5 * (symbolTable.codeSegmentRefs.size() + symbolTable.dataSegmentRefs.size() );
 
         // create the empty image
-        byte[] image = new byte[progImageSize + sizeOfRefArea + sizeOfExpArea];
+        byte[] image = new byte[progImageSize + refersAreaSize + exportAreaSize];
         // копируем программу в образ
         System.arraycopy(program, 0, image, 0, program.length);
 
