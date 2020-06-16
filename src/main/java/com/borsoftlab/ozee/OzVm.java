@@ -74,15 +74,15 @@ public class OzVm{
     public static final byte OPCODE_RET  = (byte) 0x47;
 
 
-    public static final int STEP_BEFORE_EXECUTING   = 0;
-    public static final int STEP_AFTER_EXECUTING    = 1;
-    public static final int STEP_OPTIONAL_ARGUMENT  = 2;
+    public static final int EVENT_BEFORE_EXECUTING   = 0;
+    public static final int EVENT_AFTER_EXECUTING    = 1;
+    public static final int EVENT_OPTIONAL_ARGUMENT  = 2;
 
     byte[] ram;  // little-endian
 
     int[] stack;
     int stackSizeInWords = 32;
-    OnOzVmDebugListener debugListener;
+    OnOzVmSupervisingListener supervisor;
 
     int pc;
     int sp;
@@ -95,9 +95,9 @@ public class OzVm{
         stack = new int[stackSizeInWords];
     }
 
-    public void setDebugListener(OnOzVmDebugListener debugListener){
-        if (debugListener instanceof OnOzVmDebugListener) {
-            this.debugListener = (OnOzVmDebugListener) debugListener;
+    public void setDebugListener(OnOzVmSupervisingListener debugListener){
+        if (debugListener instanceof OnOzVmSupervisingListener) {
+            this.supervisor = (OnOzVmSupervisingListener) debugListener;
         } else {
             throw new RuntimeException(debugListener.toString()
                     + " must implement OnOzVmDebugListener interface");
@@ -121,16 +121,16 @@ public class OzVm{
         while( cmd != OPCODE_STOP){
             int valueAddr, int_value, l_int_value, r_int_value;
             float  l_flt_value, r_flt_value;
-            if( debugListener != null ){
-                debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
+            if( supervisor != null ){
+                supervisor.onEventInterceptor(EVENT_BEFORE_EXECUTING, pc, cmd, stack, sp);
             }
             switch(cmd){
                 case OPCODE_PUSH:   // push const to stack - expensive operation
                     int_value = OzUtils.fetchIntFromByteArray(ram, pc);
                     stack[sp++] = int_value;
                     pc += 4; // skip const in memory
-                    if( debugListener != null ){
-                        debugListener.onExecutingCommand(STEP_OPTIONAL_ARGUMENT, pc, int_value, stack, sp);
+                    if( supervisor != null ){
+                        supervisor.onEventInterceptor(EVENT_OPTIONAL_ARGUMENT, pc, int_value, stack, sp);
                     }
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
@@ -229,20 +229,20 @@ public class OzVm{
                 default:
                     throw new Exception(String.format("OzVm RTE: unknown opcode - 0x%08X", cmd));
             }
-            if( debugListener != null ){
-                debugListener.onExecutingCommand(STEP_AFTER_EXECUTING, pc, cmd, stack, sp);
+            if( supervisor != null ){
+                supervisor.onEventInterceptor(EVENT_AFTER_EXECUTING, pc, cmd, stack, sp);
             }
             cmd = ram[pc++];
         }
-        if( debugListener != null ){
-            debugListener.onExecutingCommand(STEP_BEFORE_EXECUTING, pc, cmd, stack, sp);
+        if( supervisor != null ){
+            supervisor.onEventInterceptor(EVENT_BEFORE_EXECUTING, pc, cmd, stack, sp);
             pc = 0;
             sp = 0;
-            debugListener.onExecutingCommand(STEP_AFTER_EXECUTING,  pc, cmd, stack, sp);
+            supervisor.onEventInterceptor(EVENT_AFTER_EXECUTING,  pc, cmd, stack, sp);
         }
     }
 
-    public interface OnOzVmDebugListener{
-        public void onExecutingCommand(int step, int pc, int cmd, int[] stack, int sp);
+    public interface OnOzVmSupervisingListener{
+        public void onEventInterceptor(int event, int pc, int cmd, int[] stack, int sp);
     }
 }

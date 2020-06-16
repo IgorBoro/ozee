@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.stream.Stream;
 
-import com.borsoftlab.ozee.OzVm.OnOzVmDebugListener;
+import com.borsoftlab.ozee.OzVm.OnOzVmSupervisingListener;
 
 @Nested
 @DisplayName("Test class")
@@ -21,15 +21,15 @@ public class FloatArithmeticTest {
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
-    OnOzVmDebugListener debugListener = new OnOzVmDebugListener(){
+    OnOzVmSupervisingListener debugListener = new OnOzVmSupervisingListener(){
     
         @Override
-        public void onExecutingCommand(int step, int pc, int cmd, int[] stack, int sp) {
-            if( step == OzVm.STEP_BEFORE_EXECUTING ){
+        public void onEventInterceptor(int step, int pc, int cmd, int[] stack, int sp) {
+            if( step == OzVm.EVENT_BEFORE_EXECUTING ){
                 System.out.print(OzAsm.getInstance().getMnemonic(cmd));
-            } else if( step == OzVm.STEP_OPTIONAL_ARGUMENT ){
+            } else if( step == OzVm.EVENT_OPTIONAL_ARGUMENT ){
                 System.out.print( String.format(" 0x%08X", cmd) );
-            } else if( step == OzVm.STEP_AFTER_EXECUTING ){
+            } else if( step == OzVm.EVENT_AFTER_EXECUTING ){
                 System.out.println();                
 
                 System.out.print("[ ");
