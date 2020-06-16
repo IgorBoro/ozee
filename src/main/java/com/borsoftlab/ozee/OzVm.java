@@ -77,6 +77,7 @@ public class OzVm{
     public static final int EVENT_BEFORE_EXECUTING   = 0;
     public static final int EVENT_AFTER_EXECUTING    = 1;
     public static final int EVENT_OPTIONAL_ARGUMENT  = 2;
+    public static final int EVENT_UNKNOWN_OPCODE     = 3;
 
     byte[] ram;  // little-endian
 
@@ -227,7 +228,7 @@ public class OzVm{
                     pc = stack[--sp];
                     break;
                 default:
-                    throw new Exception(String.format("OzVm RTE: unknown opcode - 0x%08X", cmd));
+                    supervisor.onEventInterceptor(EVENT_UNKNOWN_OPCODE, pc, cmd, stack, sp);
             }
             if( supervisor != null ){
                 supervisor.onEventInterceptor(EVENT_AFTER_EXECUTING, pc, cmd, stack, sp);

@@ -25,12 +25,12 @@ public class ArraysArithmeticTest {
     OnOzVmSupervisingListener debugListener = new OnOzVmSupervisingListener(){
     
         @Override
-        public void onEventInterceptor(int step, int pc, int cmd, int[] stack, int sp) {
-            if( step == OzVm.EVENT_BEFORE_EXECUTING ){
+        public void onEventInterceptor(int event, int pc, int cmd, int[] stack, int sp) {
+            if( event == OzVm.EVENT_BEFORE_EXECUTING ){
                 System.out.print(OzAsm.getInstance().getMnemonic(cmd));
-            } else if( step == OzVm.EVENT_OPTIONAL_ARGUMENT ){
+            } else if( event == OzVm.EVENT_OPTIONAL_ARGUMENT ){
                 System.out.print( String.format(" 0x%08X", cmd) );
-            } else if( step == OzVm.EVENT_AFTER_EXECUTING ){
+            } else if( event == OzVm.EVENT_AFTER_EXECUTING ){
                 System.out.println();                
 
                 System.out.print("[ ");
@@ -39,6 +39,8 @@ public class ArraysArithmeticTest {
                     System.out.print(String.format("0x%08X ", value));
                 }
                 System.out.println("] <- top");
+            } else if( event == OzVm.EVENT_UNKNOWN_OPCODE){
+                System.out.printf("OzVm RTE: unknown opcode - 0x%08X\n", cmd);
             }
         }
     };
