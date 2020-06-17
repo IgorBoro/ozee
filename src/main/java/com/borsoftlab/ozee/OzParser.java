@@ -8,7 +8,7 @@ public class OzParser {
 
     OzScanner scanner;
     int aheadLexeme = 0;
-    ByteArray mem = new ByteArray();
+    ByteArrayBuffer outputBuffer = new ByteArrayBuffer();
 
     /*
     * Type support stack
@@ -21,7 +21,7 @@ public class OzParser {
     public void compile(final OzScanner scanner) throws Exception {
         this.scanner = scanner;
         OzCompileError.reset();
-        mem.clean();
+        outputBuffer.clean();
         prologCode(scanner);
         scanner.nextLexeme();
         stmtList();
@@ -31,7 +31,7 @@ public class OzParser {
     private void prologCode(final OzScanner scanner) {
         emitCommentListing("unconditional jump");
         emit(OzVm.OPCODE_PUSH, 0x0);
-        final int label = mem.used - 4;
+        final int label = outputBuffer.used - 4;
         scanner.symbolTable.addCodeSegmentRef(label);
 
         // jump over 4 bytes
@@ -41,7 +41,7 @@ public class OzParser {
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         // store jump address to push command saved in label
-        OzUtils.storeIntToByteArray(mem.mem, label, mem.used);
+        OzUtils.storeIntToByteArray(outputBuffer.buffer, label, outputBuffer.used);
     }
 
     private void epilogCode() {
@@ -119,7 +119,7 @@ public class OzParser {
 
     private void assignExpressionToElementOfArray(final OzSymbols.Symbol symbol) throws Exception {
         emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
 
         evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
 
@@ -219,7 +219,7 @@ public class OzParser {
         expression();
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
         genCodeAssign(symbol.varType);
     }
 
@@ -246,10 +246,10 @@ public class OzParser {
 
     private void genCodeArrayAssign(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
         emit(OzVm.OPCODE_PUSH, rSymbol);
-        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
         emit(OzVm.OPCODE_EVAL);
         emit(OzVm.OPCODE_PUSH, lSymbol);
-        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
         emit(OzVm.OPCODE_ASGN);
         lSymbol.refValue = rSymbol.refValue;
     }
@@ -354,7 +354,7 @@ public class OzParser {
                 case OzScanner.lexVARNAME:
                     final OzSymbols.Symbol symbol = getVariable();
                     emit(OzVm.OPCODE_PUSH, symbol);
-                    scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+                    scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
                     if (symbol.isArray) {
                         // определяем адрес массива
                         evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
@@ -504,7 +504,7 @@ public class OzParser {
     }
 
     private void emitHexListing(final byte opcode) {
-        System.out.print(String.format("0x%04X: 0x%02X", mem.used, opcode));
+        System.out.print(String.format("0x%04X: 0x%02X", outputBuffer.used, opcode));
     }
 
     private void emitListing(final byte opcode) {
@@ -544,12 +544,12 @@ public class OzParser {
     }
 
     private void emitMem(final byte opcode) {
-        mem.add(opcode);
+        outputBuffer.add(opcode);
     }
 
     private void emitMem(final byte opcode, final int arg) {
         emitMem(opcode);
-        mem.add(arg);
+        outputBuffer.add(arg);
     }
 
     private void emitMem(final byte opcode, final float arg) {
@@ -561,7 +561,7 @@ public class OzParser {
     }
 
     public byte[] getProgramImage() {
-        return mem.cut();
+        return outputBuffer.cut();
     }
 
     private void match(final int lexeme, final String msg) throws Exception {
@@ -621,28 +621,28 @@ public class OzParser {
         return typeOfTop;
     }
 
-    public class ByteArray {
+    public class ByteArrayBuffer {
 
         final static int CHUNK_SIZE = 64;
-        byte[] mem = new byte[CHUNK_SIZE];
+        byte[] buffer = new byte[CHUNK_SIZE];
         int used = 0;
 
-        ByteArray() {
+        ByteArrayBuffer() {
             clean();
         }
 
         void clean() {
-            mem = new byte[CHUNK_SIZE];
+            buffer = new byte[CHUNK_SIZE];
             used = 0;
         }
 
         void add(final byte b) {
-            if (used > mem.length - 1) {
-                final byte[] tmp = new byte[mem.length + CHUNK_SIZE];
-                System.arraycopy(mem, 0, tmp, 0, mem.length);
-                mem = tmp;
+            if (used > buffer.length - 1) {
+                final byte[] tmp = new byte[buffer.length + CHUNK_SIZE];
+                System.arraycopy(buffer, 0, tmp, 0, buffer.length);
+                buffer = tmp;
             }
-            mem[used++] = b;
+            buffer[used++] = b;
         }
 
         void add(final int i) {
@@ -652,9 +652,9 @@ public class OzParser {
             add((byte) ((i & 0xFF000000) >> 24));
         }
 
-        byte[] cut() {
+        final byte[] cut() {
             final byte[] tmp = new byte[used];
-            System.arraycopy(mem, 0, tmp, 0, used);
+            System.arraycopy(buffer, 0, tmp, 0, used);
             return tmp;
         }
     }

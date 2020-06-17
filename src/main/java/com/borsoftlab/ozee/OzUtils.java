@@ -2,7 +2,7 @@ package com.borsoftlab.ozee;
 
 import java.util.List;
 
-import com.borsoftlab.ozee.OzParser.ByteArray;
+import com.borsoftlab.ozee.OzParser.ByteArrayBuffer;
 
 public class OzUtils {
 
@@ -26,7 +26,7 @@ public class OzUtils {
         mem[addr + 1] = (byte) (( value & 0x0000FF00 ) >>  8 );
     }
 
-    static public void addIntToByteArray(final ByteArray mem, final int value){
+    static public void addIntToByteArray(final ByteArrayBuffer mem, final int value){
         // little-endian
         mem.add( (byte)  ( value & 0x000000FF         ));
         mem.add( (byte) (( value & 0x0000FF00 ) >>  8 ));
