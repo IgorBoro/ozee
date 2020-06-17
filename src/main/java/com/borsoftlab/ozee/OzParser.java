@@ -232,19 +232,19 @@ public class OzParser {
         } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             final OzSymbols.Symbol rSymbol = getVariable();
             if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
-                genCodeArrayAssign(lSymbol, rSymbol);
+                genArrayAssignCode(lSymbol, rSymbol);
             } else {
                 OzCompileError.message(scanner, "incompatible types", loc);
             }
         }
     }
 
-    private void genCodeArrayAssign(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
+    private void genArrayAssignCode(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
         emit(OzVm.OPCODE_PUSH, rSymbol);
-        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+        scanner.symbolTable.addDataSegmentRef( outputBuffer.used - 4 );
         emit(OzVm.OPCODE_EVAL);
         emit(OzVm.OPCODE_PUSH, lSymbol);
-        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+        scanner.symbolTable.addDataSegmentRef( outputBuffer.used - 4 );
         emit(OzVm.OPCODE_ASGN);
         lSymbol.refValue = rSymbol.refValue;
     }
