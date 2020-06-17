@@ -133,7 +133,7 @@ public class OzParser {
         // меняем местами адрес и значение
         emit(OzVm.OPCODE_SWAP);
         // теперь адрес сверху адрес как и положено при сохранении в память
-        genCodeAssign(symbol.varType);
+        genAssignCode(symbol.varType);
     }
 
     private void assignExpression(final OzSymbols.Symbol symbol) throws Exception {
@@ -215,7 +215,7 @@ public class OzParser {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-        genCodeAssign(symbol.varType);
+        genAssignCode(symbol.varType);
     }
 
     private void assignArrayDefinition(final OzSymbols.Symbol lSymbol) throws Exception {
@@ -267,7 +267,7 @@ public class OzParser {
         }
     }
 
-    private void genCodeAssign(final int varType) throws Exception {
+    private void genAssignCode(final int varType) throws Exception {
         switch (varType) {
             case OzScanner.VAR_TYPE_INT:
             case OzScanner.VAR_TYPE_FLOAT:
