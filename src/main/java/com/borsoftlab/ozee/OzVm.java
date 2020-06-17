@@ -79,6 +79,7 @@ public class OzVm{
     public static final int EVENT_AFTER_EXECUTING    = 1;
     public static final int EVENT_OPTIONAL_ARGUMENT  = 2;
     public static final int EVENT_UNKNOWN_OPCODE     = 3;
+    public static final int EVENT_INDEX_OUT_OF_RANGE = 4;
 
     byte[] ram;  // little-endian
 
@@ -141,7 +142,12 @@ public class OzVm{
                 case OPCODE_EVALA:
                     int index         = stack[--sp];
                     int sizeOfElement = stack[--sp];
-                    int array_ptr     = stack[--sp];
+                    int array_var     = stack[--sp];
+                    int array_ptr     = OzUtils.fetchIntFromByteArray(ram, array_var);
+                    int sizeOfArray   = OzUtils.fetchIntFromByteArray(ram, array_ptr);
+                    if( index < 0 || index >= sizeOfArray ){
+                        supervisor.onEventInterceptor(EVENT_INDEX_OUT_OF_RANGE, pc, cmd, stack, sp);
+                    }
                     int element_ptr = array_ptr + 4 + index * sizeOfElement;
                     stack[sp++] = element_ptr;
                     break;
