@@ -561,7 +561,7 @@ public class OzParser {
     private void emitMem(byte opcode, int arg){
         emitMem(opcode);
         mem.add(arg);
-        pc += 4;
+        pc = mem.used; //+= 4;
     }
 
     private void emitMem(byte opcode, float arg){
