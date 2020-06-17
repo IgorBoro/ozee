@@ -22,13 +22,13 @@ public class OzParser {
         this.scanner = scanner;
         OzCompileError.reset();
         outputBuffer.clean();
-        prologCode(scanner);
+        prologCode();
         scanner.nextLexeme();
         stmtList();
         epilogCode();
     }
 
-    private void prologCode(final OzScanner scanner) {
+    private void prologCode() {
         emitCommentListing("unconditional jump");
         emit(OzVm.OPCODE_PUSH, 0x0);
         final int label = outputBuffer.used - 4;
