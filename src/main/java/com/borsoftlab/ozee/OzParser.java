@@ -146,10 +146,10 @@ public class OzParser {
                     || scanner.lookAheadLexeme == OzScanner.lexVARNAME)) {
                 assignArrayDefinition(symbol);
             } else {
-                if (!symbol.isArray) {
-                    assignArithmeticExpression(symbol);
-                } else {
+                if (symbol.isArray) {
                     match(OzScanner.lexVARTYPE, "array definition");
+                } else {
+                    assignArithmeticExpression(symbol);
                 }
             }
         } else if (scanner.lookAheadLexeme == OzScanner.lexSEMICOLON) {
