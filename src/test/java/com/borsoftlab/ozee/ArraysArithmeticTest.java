@@ -40,7 +40,9 @@ public class ArraysArithmeticTest {
                 }
                 System.out.println("] <- top");
             } else if( event == OzVm.EVENT_UNKNOWN_OPCODE){
-                System.out.printf("OzVm RTE: unknown opcode - 0x%08X\n", cmd);
+                System.out.printf("\nOzVm RTE: unknown opcode - 0x%08X\n", cmd);
+            } else if( event == OzVm.EVENT_INDEX_OUT_OF_RANGE){
+                System.out.printf("\nOzVm RTE: index out of range\n");
             }
         }
     };
@@ -265,6 +267,16 @@ public class ArraysArithmeticTest {
     static float expect11 
             = 197255.0f;
 
+    static String program12
+            = "float[] arf[4];"+ "\n"
+            + "float[] b[4];"     + "\n"
+            + "arf[3] = 78902;" + "\n"
+            + "b[2] = arf[3];"     + "\n"
+            + "int a = 18;"       + "\n"
+            + "float *v = 2.5 * b[a-6];";
+    static float expect12 
+            = 197255.0f;
+
 
     // ------------------------------
   
@@ -350,8 +362,9 @@ public class ArraysArithmeticTest {
 //            Arguments.of( program7, expect7 ),
 //            Arguments.of( program8, expect8 ),
 //            Arguments.of( program9, expect9 ),
-            Arguments.of( program10, expect10 )
-//            Arguments.of( program11, expect11 )
+//            Arguments.of( program10, expect10 ),
+//            Arguments.of( program11, expect11 ),
+            Arguments.of( program12, expect12 )
         );
     }
 
