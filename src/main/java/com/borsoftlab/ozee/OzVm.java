@@ -41,17 +41,18 @@ public class OzVm{
     public static final byte OPCODE_EVAL  = (byte) 0x21;    //       A -> M[A] | 
     public static final byte OPCODE_EVALB = (byte) 0x22;
     public static final byte OPCODE_EVALS = (byte) 0x23;
-    public static final byte OPCODE_ASGN  = (byte) 0x24;    //    x, A ->      |   M[A+3], M[A+2], M[A+1], M[A] = x
-    public static final byte OPCODE_ASGNB = (byte) 0x25;
-    public static final byte OPCODE_ASGNS = (byte) 0x26;
+    public static final byte OPCODE_EVALA = (byte) 0x24;
+    public static final byte OPCODE_ASGN  = (byte) 0x25;    //    x, A ->      |   M[A+3], M[A+2], M[A+1], M[A] = x
+    public static final byte OPCODE_ASGNB = (byte) 0x26;
+    public static final byte OPCODE_ASGNS = (byte) 0x27;
 
     /*
      *
      */
-    public static final byte OPCODE_PUSHFP = (byte) 0x27;
-    public static final byte OPCODE_POPFP  = (byte) 0x28;
-    public static final byte OPCODE_PUSHPC = (byte) 0x29;
-    public static final byte OPCODE_POPPC  = (byte) 0x2A;
+    public static final byte OPCODE_PUSHFP = (byte) 0x28;
+    public static final byte OPCODE_POPFP  = (byte) 0x29;
+    public static final byte OPCODE_PUSHPC = (byte) 0x2A;
+    public static final byte OPCODE_POPPC  = (byte) 0x2B;
 
     /*
      * Stack operations
@@ -136,6 +137,13 @@ public class OzVm{
                     break;
                 case OPCODE_EVAL: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchIntFromByteArray(ram, stack[sp - 1]);
+                    break;
+                case OPCODE_EVALA:
+                    int index         = stack[--sp];
+                    int sizeOfElement = stack[--sp];
+                    int array_ptr     = stack[--sp];
+                    int element_ptr = array_ptr + 4 + index * sizeOfElement;
+                    stack[sp++] = element_ptr;
                     break;
                 case OPCODE_EVALB: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchByteFromByteArray(ram, stack[sp - 1]);

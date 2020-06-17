@@ -101,11 +101,25 @@ public class OzParser {
         emitCommentListing("there is an element address on the stack");
     }
 
+    private void evaluateAddressOfArrayElement2(int sizeOfElement) throws Exception {
+        emit(OzVm.OPCODE_PUSH, sizeOfElement);
+        match(OzScanner.lexLSQUARE);
+        emitCommentListing("evaluate the offset the element inside the array");
+        OzLocation loc = new OzLocation(scanner.loc);
+        expression(); // put on the stack the index of the element
+        int type = tsStack.pop();
+        if( type != OzScanner.VAR_TYPE_INT ){
+            OzCompileError.expected(scanner, "integer value", loc);
+        }
+        match(OzScanner.lexRSQUARE);
+        emit(OzVm.OPCODE_EVALA);
+    }
+
     private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef( pc - 4 );
 
-        evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
+        evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
 
         // едим знак равенства
         match(OzScanner.lexASSIGN);
@@ -345,7 +359,7 @@ public class OzParser {
                     scanner.symbolTable.addDataSegmentRef( pc - 4 );
                     if( symbol.isArray ) {
                         // определяем адрес массива
-                        evaluateAddressOfArrayElement(OzSymbols.sizeOfType(symbol.varType));
+                        evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
                         // на стеке адрес элемента массива
                     }        
                     if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||

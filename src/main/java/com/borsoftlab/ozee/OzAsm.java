@@ -46,6 +46,7 @@ public class OzAsm {
 
         install(OzVm.OPCODE_PUSH,  "PUSH");
         install(OzVm.OPCODE_EVAL,  "EVAL");
+        install(OzVm.OPCODE_EVAL,  "EVALA");
         install(OzVm.OPCODE_EVALB, "EVALB");
         install(OzVm.OPCODE_EVALS, "EVALS");
         install(OzVm.OPCODE_ASGN,  "ASGN");
