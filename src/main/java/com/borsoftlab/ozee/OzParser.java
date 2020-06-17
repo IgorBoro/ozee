@@ -55,22 +55,25 @@ public class OzParser {
 
     void stmt() throws Exception {
         // если обнаружено объявление типа
-        if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            final int varType = getVarType();
-            final boolean isArray = checkArrayDeclaration(varType);
-            final OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
-            assignExpression(symbol);
-        } else // если обнаружено имя переменной
-        if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            final OzSymbols.Symbol symbol = getVariable();
 
-            // проверяем переменную слева на элемент массива
-            if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                assignExpressionToElementOfArray(symbol);
-            } else {
-                // просто переменная - не элемент массива
-                assignExpression(symbol);
+        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE ||
+            scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
+
+            OzSymbols.Symbol symbol = null;
+            if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+                final int varType = getVarType();
+                final boolean isArray = checkArrayDeclaration(varType);
+                symbol = declareNewVariable(varType, isArray);
+            } else // если обнаружено имя переменной
+            if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+                symbol = getVariable();
+
+                // проверяем переменную слева на элемент массива
+                if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
+                    assignExpressionToElementOfArray(symbol);
+                }
             }
+            assign(symbol);
         }
     }
 
@@ -136,7 +139,7 @@ public class OzParser {
         genAssignCode(symbol.varType);
     }
 
-    private void assignExpression(final OzSymbols.Symbol symbol) throws Exception {
+    private void assign(final OzSymbols.Symbol symbol) throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
             if (symbol.arraySize != 0) {
                 OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
