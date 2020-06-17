@@ -149,7 +149,8 @@ public class OzParser {
                 if (symbol.isArray) {
                     match(OzScanner.lexVARTYPE, "array definition");
                 } else {
-                    assignArithmeticExpression(symbol);
+                    expression();
+                    assignValue(symbol);
                 }
             }
         } else if (scanner.lookAheadLexeme == OzScanner.lexSEMICOLON) {
@@ -210,8 +211,7 @@ public class OzParser {
         return scanner.symbol;
     }
 
-    private void assignArithmeticExpression(final OzSymbols.Symbol symbol) throws Exception {
-        expression();
+    private void assignValue(final OzSymbols.Symbol symbol) throws Exception {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
