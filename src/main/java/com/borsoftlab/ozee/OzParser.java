@@ -9,7 +9,7 @@ public class OzParser {
     OzScanner scanner;
     int aheadLexeme = 0;
     ByteArray mem = new ByteArray();
-    int pc = 0;
+    //    int pc = 0;
 
     /*
     * Type support stack
@@ -23,7 +23,7 @@ public class OzParser {
 	public void compile(final OzScanner scanner) throws Exception {
         this.scanner = scanner;
         OzCompileError.reset();
-        pc = 0;
+//        pc = 0;
         mem.clean();
         prologCode(scanner);
         scanner.nextLexeme();
@@ -34,7 +34,7 @@ public class OzParser {
     private void prologCode(final OzScanner scanner) {
         emitCommentListing("unconditional jump");
         emit(OzVm.OPCODE_PUSH, 0x0);
-        int label = pc - 4;
+        int label = mem.used - 4; //pc - 4;
         scanner.symbolTable.addCodeSegmentRef(label);
 
         // jump over 4 bytes
@@ -44,7 +44,7 @@ public class OzParser {
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         // store jump address to push command saved in label
-        OzUtils.storeIntToByteArray(mem.mem, label, pc);
+        OzUtils.storeIntToByteArray(mem.mem, label, mem.used /*pc*/);
     }
 
     private void epilogCode() {
@@ -123,7 +123,7 @@ public class OzParser {
 
     private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
         emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
 
         evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
 
@@ -226,7 +226,7 @@ public class OzParser {
         expression();
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
         genCodeAssign(symbol.varType);
     }
 
@@ -254,10 +254,10 @@ public class OzParser {
 
     private void genCodeArrayAssign(OzSymbols.Symbol lSymbol, OzSymbols.Symbol rSymbol) {
         emit( OzVm.OPCODE_PUSH, rSymbol );
-        scanner.symbolTable.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
         emit( OzVm.OPCODE_EVAL );
         emit( OzVm.OPCODE_PUSH, lSymbol  );
-        scanner.symbolTable.addDataSegmentRef( pc - 4 );
+        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
         emit( OzVm.OPCODE_ASGN );
         lSymbol.refValue = rSymbol.refValue;
     }
@@ -362,7 +362,7 @@ public class OzParser {
                 case OzScanner.lexVARNAME:
                     OzSymbols.Symbol symbol = getVariable();
                     emit(OzVm.OPCODE_PUSH, symbol);
-                    scanner.symbolTable.addDataSegmentRef( pc - 4 );
+                    scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
                     if( symbol.isArray ) {
                         // определяем адрес массива
                         evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
@@ -515,7 +515,7 @@ public class OzParser {
     }
 
     private void emitHexListing(byte opcode){
-        System.out.print(String.format("0x%04X: 0x%02X", pc, opcode));
+        System.out.print(String.format("0x%04X: 0x%02X", /*pc*/ mem.used, opcode));
     }
 
     private void emitListing(byte opcode) {
@@ -556,13 +556,13 @@ public class OzParser {
 
     private void emitMem(byte opcode){
         mem.add(opcode);
-        pc++;
+//        pc++;
     }
 
     private void emitMem(byte opcode, int arg){
         emitMem(opcode);
         mem.add(arg);
-        pc = mem.used; //+= 4;
+//        pc = mem.used; //+= 4;
     }
 
     private void emitMem(byte opcode, float arg){
