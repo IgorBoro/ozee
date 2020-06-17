@@ -560,7 +560,7 @@ public class OzParser {
 
     private void emitMem(byte opcode, int arg){
         emitMem(opcode);
-        OzUtils.addIntToByteArray(mem, arg);
+        mem.add(arg);
         pc += 4;
     }
 
@@ -643,13 +643,20 @@ public class OzParser {
         int used = 0;
 
         void add(byte b){
-            if( used == mem.length ){
+            if( used > mem.length - 1 ){
                 byte[] tmp = new byte[mem.length + CHUNK_SIZE];
                 System.arraycopy(mem, 0, tmp, 0, mem.length);
                 mem = tmp;
             }
             mem[used++] = b;
         }
+
+        void add(int i){
+            add( (byte)  ( i & 0x000000FF         ));
+            add( (byte) (( i & 0x0000FF00 ) >>  8 ));
+            add( (byte) (( i & 0x00FF0000 ) >> 16 ));
+            add( (byte) (( i & 0xFF000000 ) >> 24 ));
+       }
 
         byte[] cut(){
             byte[] tmp = new byte[used];
