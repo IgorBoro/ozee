@@ -24,6 +24,7 @@ public class OzParser {
         this.scanner = scanner;
         OzCompileError.reset();
         pc = 0;
+        mem.clean();
         prologCode(scanner);
         scanner.nextLexeme();
         stmtList();
@@ -641,6 +642,15 @@ public class OzParser {
         final static int CHUNK_SIZE = 64;
         byte[] mem = new byte[CHUNK_SIZE];
         int used = 0;
+
+        ByteArray(){
+            clean();
+        }
+
+        void clean(){
+            mem = new byte[CHUNK_SIZE];
+            used = 0;
+        }
 
         void add(byte b){
             if( used > mem.length - 1 ){
