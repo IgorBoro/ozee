@@ -89,6 +89,7 @@ public class OzVm{
 
     int pc;
     int sp;
+    boolean interrupted;
 
     public OzVm(){
         init();
@@ -119,7 +120,7 @@ public class OzVm{
     public void execute() throws Exception {
         pc = 0; // starts from 0
         sp = 0; // the stack is growing up
-
+        interrupted = false;
         byte cmd = ram[pc++];
         while( cmd != OPCODE_STOP){
             int valueAddr, int_value, l_int_value, r_int_value;
@@ -147,9 +148,10 @@ public class OzVm{
                     int sizeOfArray   = OzUtils.fetchIntFromByteArray(ram, array_ptr);
                     if( index < 0 || index >= sizeOfArray ){
                         supervisor.onEventInterceptor(EVENT_INDEX_OUT_OF_RANGE, pc, cmd, stack, sp);
+                    } else {
+                        int element_ptr = array_ptr + 4 + index * sizeOfElement;
+                        stack[sp++] = element_ptr;
                     }
-                    int element_ptr = array_ptr + 4 + index * sizeOfElement;
-                    stack[sp++] = element_ptr;
                     break;
                 case OPCODE_EVALB: // push value to stack expensive operation
                     stack[sp - 1] = OzUtils.fetchByteFromByteArray(ram, stack[sp - 1]);
@@ -246,6 +248,9 @@ public class OzVm{
             }
             if( supervisor != null ){
                 supervisor.onEventInterceptor(EVENT_AFTER_EXECUTING, pc, cmd, stack, sp);
+            }
+            if( interrupted ){
+                break;
             }
             cmd = ram[pc++];
         }

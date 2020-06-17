@@ -19,8 +19,9 @@ import com.borsoftlab.ozee.OzVm.OnOzVmSupervisingListener;
 @DisplayName("Test class")
 public class ArraysArithmeticTest {
 
-    OzParser parser   = new OzParser();
-    OzScanner scanner = new OzScanner();
+    final OzParser parser   = new OzParser();
+    final OzScanner scanner = new OzScanner();
+    final OzVm vm = new OzVm();
 
     OnOzVmSupervisingListener debugListener = new OnOzVmSupervisingListener(){
     
@@ -43,10 +44,10 @@ public class ArraysArithmeticTest {
                 System.out.printf("\nOzVm RTE: unknown opcode - 0x%08X\n", cmd);
             } else if( event == OzVm.EVENT_INDEX_OUT_OF_RANGE){
                 System.out.printf("\nOzVm RTE: index out of range\n");
+                vm.interrupted = true;
             }
         }
     };
-
 
     @ParameterizedTest(name="{index}")
     @MethodSource("floatArgumentProvider")
@@ -66,7 +67,6 @@ public class ArraysArithmeticTest {
                 byte[] execImage = OzLinker.linkImage(compiledProgram, scanner.symbolTable);
                 System.out.println(execImage.length + " bytes execution image");
                 scanner.symbolTable.dumpSymbolTableByName();
-                final OzVm vm = new OzVm();
                 vm.setDebugListener(debugListener);
                 vm.loadProgram(execImage);
                 System.out.println("\noZee virtual machine started...");
@@ -88,7 +88,6 @@ public class ArraysArithmeticTest {
                         System.out.println("v = " + value);
                     }
                 }
-
             } catch (final Exception e) {
                 // e.printStackTrace();
             } finally {
@@ -102,7 +101,11 @@ public class ArraysArithmeticTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        assertEquals(expect, value);
+        if( vm.interrupted ){
+            assertEquals(expect, 10000);
+        } else {
+            assertEquals(expect, value);
+        }       
     }
 
     @ParameterizedTest(name="{index}")
@@ -275,7 +278,7 @@ public class ArraysArithmeticTest {
             + "int a = 18;"       + "\n"
             + "float *v = 2.5 * b[a-6];";
     static float expect12 
-            = 197255.0f;
+            = 10000f;
 
 
     // ------------------------------
