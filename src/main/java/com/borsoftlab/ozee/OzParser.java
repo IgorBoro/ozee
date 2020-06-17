@@ -41,7 +41,8 @@ public class OzParser {
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         // store jump address to push command saved in label
-        OzUtils.storeIntToByteArray(outputBuffer.buffer, label, outputBuffer.used);
+        outputBuffer.store(label, outputBuffer.used);
+      //  OzUtils.storeIntToByteArray(outputBuffer.buffer, label, outputBuffer.used);
     }
 
     private void epilogCode() {
@@ -651,6 +652,16 @@ public class OzParser {
             add((byte) ((i & 0x00FF0000) >> 16));
             add((byte) ((i & 0xFF000000) >> 24));
         }
+
+        void store(int address, int value){
+            if( (used + 4) >  buffer.length - 1  ){
+                final byte[] tmp = new byte[buffer.length + CHUNK_SIZE];
+                System.arraycopy(buffer, 0, tmp, 0, buffer.length);
+                buffer = tmp;
+            }
+            OzUtils.storeIntToByteArray(buffer, address, value);
+        }
+
 
         final byte[] cut() {
             final byte[] tmp = new byte[used];
