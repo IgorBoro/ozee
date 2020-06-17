@@ -143,14 +143,15 @@ public class OzVm{
                 case OPCODE_EVALA:
                     int index         = stack[--sp];
                     int sizeOfElement = stack[--sp];
-                    int array_var     = stack[--sp];
-                    int array_ptr     = OzUtils.fetchIntFromByteArray(ram, array_var);
-                    int sizeOfArray   = OzUtils.fetchIntFromByteArray(ram, array_ptr);
+                    int arrayVarAddr  = stack[--sp];
+                    int arrayPtr      = OzUtils.fetchIntFromByteArray(ram, arrayVarAddr);
+                    int sizeOfArray   = OzUtils.fetchIntFromByteArray(ram, arrayPtr);
                     if( index < 0 || index >= sizeOfArray ){
                         supervisor.onEventInterceptor(EVENT_INDEX_OUT_OF_RANGE, pc, cmd, stack, sp);
                     } else {
-                        int element_ptr = array_ptr + 4 + index * sizeOfElement;
-                        stack[sp++] = element_ptr;
+                        // 4 is size of the word
+                        int elementPtr = arrayPtr + 4 + index * sizeOfElement;
+                        stack[sp++] = elementPtr;
                     }
                     break;
                 case OPCODE_EVALB: // push value to stack expensive operation
