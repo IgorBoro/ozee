@@ -70,7 +70,21 @@ public class OzParser {
 
                 // проверяем переменную слева на элемент массива
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                    assignExpressionToElementOfArray(symbol);
+                    match(OzScanner.lexLSQUARE);
+                    emit(OzVm.OPCODE_PUSH, symbol);
+                    scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+            
+                    evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
+                    match(OzScanner.lexRSQUARE);
+                    // едим знак равенства
+                    match(OzScanner.lexASSIGN);
+                    // теперь на верхушке стека находится адрес элемента массива
+            
+                    // вычисляем выражение
+                    expression();
+                    // теперь на верхушке стека находится значение которое надо положить
+                    // в элемент массива, а под ним адрес элемента
+                    assignValueToElementOfArray(symbol);
                 }
             }
             assign(symbol);
@@ -103,7 +117,6 @@ public class OzParser {
 
     private void evaluateAddressOfArrayElement2(final int sizeOfElement) throws Exception {
         emit(OzVm.OPCODE_PUSH, sizeOfElement);
-        match(OzScanner.lexLSQUARE);
         emitCommentListing("evaluate the offset the element inside the array");
         final OzLocation loc = new OzLocation(scanner.loc);
         expression(); // put on the stack the index of the element
@@ -111,26 +124,10 @@ public class OzParser {
         if (type != OzScanner.VAR_TYPE_INT) {
             OzCompileError.expected(scanner, "integer value", loc);
         }
-        match(OzScanner.lexRSQUARE);
         emit(OzVm.OPCODE_EVALA);
     }
 
-    private void assignExpressionToElementOfArray(final OzSymbols.Symbol symbol) throws Exception {
-        emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-
-        evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
-
-        // едим знак равенства
-        match(OzScanner.lexASSIGN);
-        // теперь на верхушке стека находится адрес элемента массива
-
-        // вычисляем выражение
-        expression();
-
-        // теперь на верхушке стека находится значение которое надо положить
-        // в элемент массива, а под ним адрес элемента
-
+    private void assignValueToElementOfArray(final OzSymbols.Symbol symbol) throws Exception {
         // дальше по схеме
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         // меняем местами адрес и значение
@@ -141,10 +138,10 @@ public class OzParser {
 
     private void assign(final OzSymbols.Symbol symbol) throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+            match(OzScanner.lexASSIGN);
             if (symbol.arraySize != 0) {
                 OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
             }
-            match(OzScanner.lexASSIGN, "'='");
             if (symbol.isArray && (scanner.lookAheadLexeme == OzScanner.lexVARTYPE
                     || scanner.lookAheadLexeme == OzScanner.lexVARNAME)) {
                 assignArrayDefinition(symbol);
@@ -153,16 +150,17 @@ public class OzParser {
                     match(OzScanner.lexVARTYPE, "array definition");
                 } else {
                     expression();
-                    assignValue(symbol);
+                    assignValueToVariable(symbol);
                 }
             }
-        } else if (scanner.lookAheadLexeme == OzScanner.lexSEMICOLON) {
-            // empty
-        } else if (scanner.lookAheadLexeme == OzScanner.lexEOF) {
-            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
-        } else {
-            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
         }
+//        else if (scanner.lookAheadLexeme == OzScanner.lexSEMICOLON) {
+//            // empty
+//        } else if (scanner.lookAheadLexeme == OzScanner.lexEOF) {
+//            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
+//        } else {
+//            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
+//        }
     }
 
     private int getVarType() throws Exception {
@@ -214,7 +212,7 @@ public class OzParser {
         return scanner.symbol;
     }
 
-    private void assignValue(final OzSymbols.Symbol symbol) throws Exception {
+    private void assignValueToVariable(final OzSymbols.Symbol symbol) throws Exception {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
@@ -355,7 +353,9 @@ public class OzParser {
                     scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
                     if (symbol.isArray) {
                         // определяем адрес массива
+                        match(OzScanner.lexLSQUARE);
                         evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
+                        match(OzScanner.lexRSQUARE);
                         // на стеке адрес элемента массива
                     }
                     if (symbol.varType == OzScanner.VAR_TYPE_BYTE || symbol.varType == OzScanner.VAR_TYPE_UBYTE) {

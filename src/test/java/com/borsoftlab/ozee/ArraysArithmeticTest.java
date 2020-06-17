@@ -273,7 +273,7 @@ public class ArraysArithmeticTest {
     static String program12
             = "float[] arf[4];"+ "\n"
             + "float[] b[4];"     + "\n"
-            + "arf[3] = 78902;" + "\n"
+            + "arf[1+2] = 78902;" + "\n"
             + "b[2] = arf[3];"     + "\n"
             + "int a = 18;"       + "\n"
             + "float *v = 2.5 * b[a-6];";
