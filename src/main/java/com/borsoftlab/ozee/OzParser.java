@@ -9,21 +9,18 @@ public class OzParser {
     OzScanner scanner;
     int aheadLexeme = 0;
     ByteArray mem = new ByteArray();
-    //    int pc = 0;
 
     /*
     * Type support stack
     */
-    private OzIntStack tsStack = new OzIntStack( 64 );
+    private final OzIntStack tsStack = new OzIntStack(64);
 
-
-    public OzParser(){
+    public OzParser() {
     }
-   
-	public void compile(final OzScanner scanner) throws Exception {
+
+    public void compile(final OzScanner scanner) throws Exception {
         this.scanner = scanner;
         OzCompileError.reset();
-//        pc = 0;
         mem.clean();
         prologCode(scanner);
         scanner.nextLexeme();
@@ -34,7 +31,7 @@ public class OzParser {
     private void prologCode(final OzScanner scanner) {
         emitCommentListing("unconditional jump");
         emit(OzVm.OPCODE_PUSH, 0x0);
-        int label = mem.used - 4; //pc - 4;
+        final int label = mem.used - 4;
         scanner.symbolTable.addCodeSegmentRef(label);
 
         // jump over 4 bytes
@@ -44,7 +41,7 @@ public class OzParser {
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         // store jump address to push command saved in label
-        OzUtils.storeIntToByteArray(mem.mem, label, mem.used /*pc*/);
+        OzUtils.storeIntToByteArray(mem.mem, label, mem.used);
     }
 
     private void epilogCode() {
@@ -52,9 +49,8 @@ public class OzParser {
     }
 
     void stmtList() throws Exception {
-        while( scanner.lookAheadLexeme != OzScanner.lexEOF ){
-            if( tsStack.size() != 0 )
-            {
+        while (scanner.lookAheadLexeme != OzScanner.lexEOF) {
+            if (tsStack.size() != 0) {
                 throw new Exception(String.format("Type stack size is wrong: %d", tsStack.size()));
             }
             stmt();
@@ -64,17 +60,17 @@ public class OzParser {
 
     void stmt() throws Exception {
         // если обнаружено объявление типа
-        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            int varType = getVarType();
-            boolean isArray = checkArrayDeclaration(varType);
-            OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
+        if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+            final int varType = getVarType();
+            final boolean isArray = checkArrayDeclaration(varType);
+            final OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
             assignExpression(symbol);
         } else // если обнаружено имя переменной
-        if( scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            OzSymbols.Symbol symbol = getVariable();
+        if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+            final OzSymbols.Symbol symbol = getVariable();
 
             // проверяем переменную слева на элемент массива
-            if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ) {
+            if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                 assignExpressionToElementOfArray(symbol);
             } else {
                 // просто переменная - не элемент массива
@@ -83,7 +79,7 @@ public class OzParser {
         }
     }
 
-    private void evaluateAddressOfArrayElement(int sizeOfElement) throws Exception {
+    private void evaluateAddressOfArrayElement(final int sizeOfElement) throws Exception {
         emitCommentListing("evaluate the address of the first element of the array");
         emit(OzVm.OPCODE_EVAL);
         emitCommentListing("skip four bytes of size of the array");
@@ -93,10 +89,10 @@ public class OzParser {
 
         match(OzScanner.lexLSQUARE);
         emitCommentListing("evaluate the offset the element inside the array");
-        OzLocation loc = new OzLocation(scanner.loc);
+        final OzLocation loc = new OzLocation(scanner.loc);
         expression();
-        int type = tsStack.pop();
-        if( type != OzScanner.VAR_TYPE_INT ){
+        final int type = tsStack.pop();
+        if (type != OzScanner.VAR_TYPE_INT) {
             OzCompileError.expected(scanner, "integer value", loc);
         }
         match(OzScanner.lexRSQUARE);
@@ -107,23 +103,23 @@ public class OzParser {
         emitCommentListing("there is an element address on the stack");
     }
 
-    private void evaluateAddressOfArrayElement2(int sizeOfElement) throws Exception {
+    private void evaluateAddressOfArrayElement2(final int sizeOfElement) throws Exception {
         emit(OzVm.OPCODE_PUSH, sizeOfElement);
         match(OzScanner.lexLSQUARE);
         emitCommentListing("evaluate the offset the element inside the array");
-        OzLocation loc = new OzLocation(scanner.loc);
+        final OzLocation loc = new OzLocation(scanner.loc);
         expression(); // put on the stack the index of the element
-        int type = tsStack.pop();
-        if( type != OzScanner.VAR_TYPE_INT ){
+        final int type = tsStack.pop();
+        if (type != OzScanner.VAR_TYPE_INT) {
             OzCompileError.expected(scanner, "integer value", loc);
         }
         match(OzScanner.lexRSQUARE);
         emit(OzVm.OPCODE_EVALA);
     }
 
-    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
+    private void assignExpressionToElementOfArray(final OzSymbols.Symbol symbol) throws Exception {
         emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
+        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
 
         evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
 
@@ -141,29 +137,29 @@ public class OzParser {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         // меняем местами адрес и значение
         emit(OzVm.OPCODE_SWAP);
-        // теперь адрес сверху адрес как и положено при сохранении в память                    
+        // теперь адрес сверху адрес как и положено при сохранении в память
         genCodeAssign(symbol.varType);
     }
 
-    private void assignExpression(OzSymbols.Symbol symbol) throws Exception {
-        if( scanner.lookAheadLexeme == OzScanner.lexASSIGN){
-            if( symbol.arraySize != 0 ) {
+    private void assignExpression(final OzSymbols.Symbol symbol) throws Exception {
+        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+            if (symbol.arraySize != 0) {
                 OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
             }
             match(OzScanner.lexASSIGN, "'='");
-            if( symbol.isArray && 
-                ( scanner.lookAheadLexeme == OzScanner.lexVARTYPE || scanner.lookAheadLexeme == OzScanner.lexVARNAME )  ){
+            if (symbol.isArray && (scanner.lookAheadLexeme == OzScanner.lexVARTYPE
+                    || scanner.lookAheadLexeme == OzScanner.lexVARNAME)) {
                 assignArrayDefinition(symbol);
             } else {
-                if( !symbol.isArray ) {
+                if (!symbol.isArray) {
                     assignArithmeticExpression(symbol);
                 } else {
                     match(OzScanner.lexVARTYPE, "array definition");
                 }
             }
-        } else if( scanner.lookAheadLexeme == OzScanner.lexSEMICOLON ) {
-        // empty
-        } else if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+        } else if (scanner.lookAheadLexeme == OzScanner.lexSEMICOLON) {
+            // empty
+        } else if (scanner.lookAheadLexeme == OzScanner.lexEOF) {
             OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
         } else {
             OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
@@ -172,12 +168,12 @@ public class OzParser {
 
     private int getVarType() throws Exception {
         match(OzScanner.lexVARTYPE, "var type definition");
-        int varType = scanner.varType;
+        final int varType = scanner.varType;
         return varType;
     }
 
-    private boolean checkArrayDeclaration(int varType) throws Exception {
-        if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+    private boolean checkArrayDeclaration(final int varType) throws Exception {
+        if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
             match(OzScanner.lexLSQUARE);
             match(OzScanner.lexRSQUARE);
             return true;
@@ -185,28 +181,26 @@ public class OzParser {
         return false;
     }
 
-    private OzSymbols.Symbol declareNewVariable(int varType, boolean isArray) throws Exception {
-        boolean isExport = checkNameExportAttribute();
-        if( scanner.symbol.lexeme  == OzScanner.lexVARNAME &&
-            scanner.symbol.varType != OzScanner.VAR_TYPE_UNDEF ){
-            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined",
-            scanner.loc);
+    private OzSymbols.Symbol declareNewVariable(final int varType, final boolean isArray) throws Exception {
+        final boolean isExport = checkNameExportAttribute();
+        if (scanner.symbol.lexeme == OzScanner.lexVARNAME && scanner.symbol.varType != OzScanner.VAR_TYPE_UNDEF) {
+            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined", scanner.loc);
         }
         match(OzScanner.lexVARNAME, "variable name");
         scanner.symbol.isExport = isExport;
-        scanner.symbol.isArray  = isArray;
+        scanner.symbol.isArray = isArray;
         scanner.symbol.allocateVariable(varType);
 
         // проверяем объявление имени переменной на дальнейшую квадратную скобку
         // доопределим массив
-        if( isArray && scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+        if (isArray && scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
             defineArray();
         }
         return scanner.symbol;
     }
 
     private boolean checkNameExportAttribute() throws Exception {
-        if( scanner.lookAheadLexeme == OzScanner.lexMUL){
+        if (scanner.lookAheadLexeme == OzScanner.lexMUL) {
             match(OzScanner.lexMUL);
             return true;
         }
@@ -214,37 +208,35 @@ public class OzParser {
     }
 
     private OzSymbols.Symbol getVariable() throws Exception {
-        if( scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF ){
-            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined",
-            scanner.loc);
+        if (scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF) {
+            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined", scanner.loc);
         }
         match(OzScanner.lexVARNAME, "variable name");
         return scanner.symbol;
     }
 
-    private void assignArithmeticExpression(OzSymbols.Symbol symbol) throws Exception {
+    private void assignArithmeticExpression(final OzSymbols.Symbol symbol) throws Exception {
         expression();
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
+        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
         genCodeAssign(symbol.varType);
     }
 
-    private void assignArrayDefinition(OzSymbols.Symbol lSymbol) throws Exception {
-        OzLocation loc = new OzLocation(scanner.loc);
-        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE ){
-            int varType = getVarType();
-            if( lSymbol.isArray && lSymbol.varType == varType ){
-                if( scanner.lookAheadLexeme == OzScanner.lexLSQUARE ){
+    private void assignArrayDefinition(final OzSymbols.Symbol lSymbol) throws Exception {
+        final OzLocation loc = new OzLocation(scanner.loc);
+        if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+            final int varType = getVarType();
+            if (lSymbol.isArray && lSymbol.varType == varType) {
+                if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                     defineArray();
-                }    
+                }
             } else {
                 OzCompileError.message(scanner, "incompatible array types", loc);
             }
-        } else
-        if( scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
-            OzSymbols.Symbol rSymbol = getVariable();
-            if( ( lSymbol.isArray == rSymbol.isArray ) && ( lSymbol.varType == rSymbol.varType ) ){
+        } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+            final OzSymbols.Symbol rSymbol = getVariable();
+            if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
                 genCodeArrayAssign(lSymbol, rSymbol);
             } else {
                 OzCompileError.message(scanner, "incompatible types", loc);
@@ -252,37 +244,36 @@ public class OzParser {
         }
     }
 
-    private void genCodeArrayAssign(OzSymbols.Symbol lSymbol, OzSymbols.Symbol rSymbol) {
-        emit( OzVm.OPCODE_PUSH, rSymbol );
-        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
-        emit( OzVm.OPCODE_EVAL );
-        emit( OzVm.OPCODE_PUSH, lSymbol  );
-        scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
-        emit( OzVm.OPCODE_ASGN );
+    private void genCodeArrayAssign(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
+        emit(OzVm.OPCODE_PUSH, rSymbol);
+        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+        emit(OzVm.OPCODE_EVAL);
+        emit(OzVm.OPCODE_PUSH, lSymbol);
+        scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+        emit(OzVm.OPCODE_ASGN);
         lSymbol.refValue = rSymbol.refValue;
     }
 
     private void defineArray() throws Exception {
         match(OzScanner.lexLSQUARE);
-        if( scanner.lookAheadLexeme != OzScanner.lexNUMBER ||
-            scanner.varType != OzScanner.VAR_TYPE_INT ) {
-                OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
+        if (scanner.lookAheadLexeme != OzScanner.lexNUMBER || scanner.varType != OzScanner.VAR_TYPE_INT) {
+            OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
         }
-        OzLocation loc = new OzLocation(scanner.loc);
+        final OzLocation loc = new OzLocation(scanner.loc);
         match(OzScanner.lexNUMBER);
-        if( scanner.intNumber <= 0 ) {
+        if (scanner.intNumber <= 0) {
             OzCompileError.expected(scanner, "an integer above zero for array size", loc);
         }
         match(OzScanner.lexRSQUARE);
         scanner.symbol.allocateArray(scanner.intNumber);
-        
-        if( scanner.lookAheadLexeme != OzScanner.lexSEMICOLON) {
+
+        if (scanner.lookAheadLexeme != OzScanner.lexSEMICOLON) {
             OzCompileError.expected(scanner, "';'", scanner.loc);
         }
     }
 
-    private void genCodeAssign(int varType) throws Exception {
-        switch(varType){
+    private void genCodeAssign(final int varType) throws Exception {
+        switch (varType) {
             case OzScanner.VAR_TYPE_INT:
             case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_ASGN);
@@ -296,14 +287,14 @@ public class OzParser {
                 emit(OzVm.OPCODE_ASGNS);
                 break;
             default:
-    			OzCompileError.message(scanner, "Compilation error: assignment type error", scanner.loc);
-	        }
+                OzCompileError.message(scanner, "Compilation error: assignment type error", scanner.loc);
+        }
     }
 
     public void expression() throws Exception {
         term();
-        while(true) {
-            switch( scanner.lookAheadLexeme ){
+        while (true) {
+            switch (scanner.lookAheadLexeme) {
                 case OzScanner.lexPLUS:
                     add();
                     break;
@@ -318,8 +309,8 @@ public class OzParser {
 
     private void term() throws Exception {
         factor();
-        while(true) {
-            switch( scanner.lookAheadLexeme ){
+        while (true) {
+            switch (scanner.lookAheadLexeme) {
                 case OzScanner.lexMUL:
                     mul();
                     break;
@@ -330,23 +321,24 @@ public class OzParser {
                     return;
             }
         }
-    }    
+    }
 
     private void factor() throws Exception {
         boolean unaryMinus = false;
-        if( scanner.lookAheadLexeme == OzScanner.lexMINUS){
+        if (scanner.lookAheadLexeme == OzScanner.lexMINUS) {
             match(OzScanner.lexMINUS, "unexpected lexeme");
             unaryMinus = true;
-        };
-        if( scanner.lookAheadLexeme == OzScanner.lexLPAREN){
+        }
+        ;
+        if (scanner.lookAheadLexeme == OzScanner.lexLPAREN) {
             match(OzScanner.lexLPAREN, "(");
             expression();
             match(OzScanner.lexRPAREN, ")");
         } else {
-            switch(scanner.lookAheadLexeme){
+            switch (scanner.lookAheadLexeme) {
                 case OzScanner.lexNUMBER:
                     match(OzScanner.lexNUMBER, "number");
-                    switch(scanner.varType ){
+                    switch (scanner.varType) {
                         case OzScanner.VAR_TYPE_INT:
                             emit(OzVm.OPCODE_PUSH, scanner.intNumber);
                             tsStack.push(OzScanner.VAR_TYPE_INT);
@@ -356,40 +348,37 @@ public class OzParser {
                             tsStack.push(OzScanner.VAR_TYPE_FLOAT);
                             break;
                         default:
-                            break;    
+                            break;
                     }
                     break;
                 case OzScanner.lexVARNAME:
-                    OzSymbols.Symbol symbol = getVariable();
+                    final OzSymbols.Symbol symbol = getVariable();
                     emit(OzVm.OPCODE_PUSH, symbol);
-                    scanner.symbolTable.addDataSegmentRef( /*pc*/ mem.used - 4 );
-                    if( symbol.isArray ) {
+                    scanner.symbolTable.addDataSegmentRef(mem.used - 4);
+                    if (symbol.isArray) {
                         // определяем адрес массива
                         evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
                         // на стеке адрес элемента массива
-                    }        
-                    if( symbol.varType == OzScanner.VAR_TYPE_BYTE ||
-                        symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
+                    }
+                    if (symbol.varType == OzScanner.VAR_TYPE_BYTE || symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);
-                        if( symbol.varType == OzScanner.VAR_TYPE_BYTE ){
+                        if (symbol.varType == OzScanner.VAR_TYPE_BYTE) {
                             emitCommentListing("a signed bit extension for byte");
-                            emit( OzVm.OPCODE_PUSH, 24 );
-                            emit( OzVm.OPCODE_LSL );
-                            emit( OzVm.OPCODE_PUSH, 24 );
-                            emit( OzVm.OPCODE_ASR );
+                            emit(OzVm.OPCODE_PUSH, 24);
+                            emit(OzVm.OPCODE_LSL);
+                            emit(OzVm.OPCODE_PUSH, 24);
+                            emit(OzVm.OPCODE_ASR);
                             emitCommentListing("-");
                         }
-                    } else
-                    if(
-                        symbol.varType == OzScanner.VAR_TYPE_SHORT ||
-                        symbol.varType == OzScanner.VAR_TYPE_USHORT) {
+                    } else if (symbol.varType == OzScanner.VAR_TYPE_SHORT
+                            || symbol.varType == OzScanner.VAR_TYPE_USHORT) {
                         emit(OzVm.OPCODE_EVALS);
-                        if( symbol.varType == OzScanner.VAR_TYPE_SHORT ) {
+                        if (symbol.varType == OzScanner.VAR_TYPE_SHORT) {
                             emitCommentListing("a signed bit extension for short");
-                            emit( OzVm.OPCODE_PUSH, 16 );
-                            emit( OzVm.OPCODE_LSL );
-                            emit( OzVm.OPCODE_PUSH, 16 );
-                            emit( OzVm.OPCODE_ASR );
+                            emit(OzVm.OPCODE_PUSH, 16);
+                            emit(OzVm.OPCODE_LSL);
+                            emit(OzVm.OPCODE_PUSH, 16);
+                            emit(OzVm.OPCODE_ASR);
                             emitCommentListing("-");
                         }
                     } else {
@@ -397,22 +386,22 @@ public class OzParser {
                     }
                     // теперь все стало VAR_TYPE_INT и далее, вплоть до присваивания будет
                     // или VAR_TYPE_INT или VAR_TYPE_FLOAT
-                    if( symbol.varType == OzScanner.VAR_TYPE_FLOAT) {
+                    if (symbol.varType == OzScanner.VAR_TYPE_FLOAT) {
                         tsStack.push(OzScanner.VAR_TYPE_FLOAT);
                     } else {
                         tsStack.push(OzScanner.VAR_TYPE_INT);
                     }
                     break;
                 case OzScanner.lexEOF:
-                break ;   
+                    break;
                 default:
-                    OzCompileError.expected(scanner, "scalar type", scanner.loc);    
+                    OzCompileError.expected(scanner, "scalar type", scanner.loc);
             }
         }
-        if( unaryMinus ) {
-            int type = tsStack.pop();
+        if (unaryMinus) {
+            final int type = tsStack.pop();
             // имеем право проверять только на VAR_TYPE_INT или VAR_TYPE_FLOAT
-            if( type == OzScanner.VAR_TYPE_INT) {
+            if (type == OzScanner.VAR_TYPE_INT) {
                 emit(OzVm.OPCODE_NEG);
             } else {
                 emit(OzVm.OPCODE_NEGF);
@@ -424,14 +413,14 @@ public class OzParser {
     private void add() throws Exception {
         match(OzScanner.lexPLUS, "'+'");
         term();
-        int resultType = genCodeConvertTypeBinOp();
-        switch ( resultType ){
+        final int resultType = genCodeConvertTypeBinOp();
+        switch (resultType) {
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_ADD);
                 break;
-            case OzScanner.VAR_TYPE_FLOAT:    
+            case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_ADDF);
-            break;
+                break;
             default:
         }
         tsStack.push(resultType);
@@ -440,14 +429,14 @@ public class OzParser {
     private void sub() throws Exception {
         match(OzScanner.lexMINUS, "'-'");
         term();
-        int resultType = genCodeConvertTypeBinOp();
-        switch (resultType){
+        final int resultType = genCodeConvertTypeBinOp();
+        switch (resultType) {
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_SUB);
                 break;
-            case OzScanner.VAR_TYPE_FLOAT:    
+            case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_SUBF);
-            break;
+                break;
             default:
         }
         tsStack.push(resultType);
@@ -456,69 +445,69 @@ public class OzParser {
     private void mul() throws Exception {
         match(OzScanner.lexMUL, "'*'");
         factor();
-        int resultType = genCodeConvertTypeBinOp();
-        switch ( resultType ){
+        final int resultType = genCodeConvertTypeBinOp();
+        switch (resultType) {
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_MUL);
                 break;
-            case OzScanner.VAR_TYPE_FLOAT:    
+            case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_MULF);
-            break;
+                break;
             default:
         }
-        tsStack.push( resultType );
+        tsStack.push(resultType);
     }
 
     private void div() throws Exception {
         match(OzScanner.lexDIV, "'/'");
         factor();
-        int resultType = genCodeConvertTypeBinOp();
-        switch ( resultType ){
+        final int resultType = genCodeConvertTypeBinOp();
+        switch (resultType) {
             case OzScanner.VAR_TYPE_INT:
                 emit(OzVm.OPCODE_DIV);
                 break;
-            case OzScanner.VAR_TYPE_FLOAT:    
+            case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_DIVF);
-            break;
+                break;
             default:
         }
-        tsStack.push( resultType );
+        tsStack.push(resultType);
     }
 
-    private void emit(byte opcode){
+    private void emit(final byte opcode) {
         emitListing(opcode);
         emitMem(opcode);
     }
 
-    private void emit(byte opcode, final int arg){
+    private void emit(final byte opcode, final int arg) {
         emitListing(opcode, arg);
         emitMem(opcode, arg);
     }
 
-    private void emit(byte opcode, final float arg){
+    private void emit(final byte opcode, final float arg) {
         emitListing(opcode, arg);
         emitMem(opcode, arg);
     }
 
-    private void emit(byte opcode, final Symbol symbol){
+    private void emit(final byte opcode, final Symbol symbol) {
         emitListing(opcode, symbol);
         emitMem(opcode, symbol);
     }
 
-    private void emitCommentListing(final String comment){
+    private void emitCommentListing(final String comment) {
         System.out.println(String.format("; %s", comment));
     }
 
-    private void emitMnemonicListing(byte opcode){
-        String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
+    private void emitMnemonicListing(final byte opcode) {
+        final String mnemonic = OzAsm.getInstance().getMnemonic(opcode);
         System.out.print(String.format("        %s", mnemonic));
     }
 
-    private void emitHexListing(byte opcode){
-        System.out.print(String.format("0x%04X: 0x%02X", /*pc*/ mem.used, opcode));
+    private void emitHexListing(final byte opcode) {
+        System.out.print(String.format("0x%04X: 0x%02X", mem.used, opcode));
     }
 
-    private void emitListing(byte opcode) {
+    private void emitListing(final byte opcode) {
         emitMnemonicListing(opcode);
         System.out.println();
 
@@ -526,7 +515,7 @@ public class OzParser {
         System.out.println();
     }
 
-    private void emitListing(byte opcode, final int arg) {
+    private void emitListing(final byte opcode, final int arg) {
         emitMnemonicListing(opcode);
         System.out.print(String.format(" %d", arg));
         System.out.println();
@@ -535,17 +524,17 @@ public class OzParser {
         System.out.println(String.format(" 0x%08X", arg));
     }
 
-    private void emitListing(byte opcode, final float arg) {
+    private void emitListing(final byte opcode, final float arg) {
         emitMnemonicListing(opcode);
         System.out.print(String.format(Locale.US, " %f", arg));
         System.out.println();
 
-        int i = Float.floatToIntBits(arg);
+        final int i = Float.floatToIntBits(arg);
         emitHexListing(opcode);
-        System.out.println(String.format(" 0x%08X",  i));
+        System.out.println(String.format(" 0x%08X", i));
     }
 
-    private void emitListing(byte opcode, final Symbol sym) {
+    private void emitListing(final byte opcode, final Symbol sym) {
         emitMnemonicListing(opcode);
         System.out.print(String.format(" %s", sym.name));
         System.out.println();
@@ -554,60 +543,55 @@ public class OzParser {
         System.out.println(String.format(" 0x%08X", sym.allocAddress));
     }
 
-    private void emitMem(byte opcode){
+    private void emitMem(final byte opcode) {
         mem.add(opcode);
-//        pc++;
     }
 
-    private void emitMem(byte opcode, int arg){
+    private void emitMem(final byte opcode, final int arg) {
         emitMem(opcode);
         mem.add(arg);
-//        pc = mem.used; //+= 4;
     }
 
-    private void emitMem(byte opcode, float arg){
+    private void emitMem(final byte opcode, final float arg) {
         emitMem(opcode, Float.floatToIntBits(arg));
     }
 
-    private void emitMem(byte opcode, final Symbol sym){
+    private void emitMem(final byte opcode, final Symbol sym) {
         emitMem(opcode, sym.allocAddress);
     }
 
-    public byte[] getProgramImage(){
+    public byte[] getProgramImage() {
         return mem.cut();
     }
 
     private void match(final int lexeme, final String msg) throws Exception {
-        if( scanner.lookAheadLexeme == lexeme ){
+        if (scanner.lookAheadLexeme == lexeme) {
             scanner.nextLexeme();
-        } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+        } else if (scanner.lookAheadLexeme == OzScanner.lexEOF) {
             OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
         } else {
             OzCompileError.expected(scanner, msg, scanner.loc);
         }
-    }     
+    }
 
     private void match(final int lexeme) throws Exception {
-        if( scanner.lookAheadLexeme == lexeme ){
+        if (scanner.lookAheadLexeme == lexeme) {
             scanner.nextLexeme();
-        } else  if( scanner.lookAheadLexeme == OzScanner.lexEOF ) {
+        } else if (scanner.lookAheadLexeme == OzScanner.lexEOF) {
             OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
         } else {
             OzCompileError.message(scanner, "unexpected lexeme", scanner.loc);
         }
-    }     
-    
-    private void genCodeConvertTypeAssign(int stackTopType, int varType){
-        if( stackTopType != varType ){
-            if( stackTopType == OzScanner.VAR_TYPE_INT && varType == OzScanner.VAR_TYPE_FLOAT ) {
+    }
+
+    private void genCodeConvertTypeAssign(final int stackTopType, final int varType) {
+        if (stackTopType != varType) {
+            if (stackTopType == OzScanner.VAR_TYPE_INT && varType == OzScanner.VAR_TYPE_FLOAT) {
                 emitCommentListing("convert stack operand for assign");
                 emit(OzVm.OPCODE_FLT);
                 emitCommentListing("-");
-            } else
-            if (( varType == OzScanner.VAR_TYPE_INT   ||
-                  varType == OzScanner.VAR_TYPE_SHORT ||
-                  varType == OzScanner.VAR_TYPE_BYTE ) &&
-                stackTopType == OzScanner.VAR_TYPE_FLOAT ) {
+            } else if ((varType == OzScanner.VAR_TYPE_INT || varType == OzScanner.VAR_TYPE_SHORT
+                    || varType == OzScanner.VAR_TYPE_BYTE) && stackTopType == OzScanner.VAR_TYPE_FLOAT) {
                 emitCommentListing("convert stack operand for assign");
                 emit(OzVm.OPCODE_INT);
                 emitCommentListing("-");
@@ -616,18 +600,18 @@ public class OzParser {
         }
     }
 
-    private int genCodeConvertTypeBinOp(){
-        int typeOfTop    = tsStack.pop();
-        int typeOfSubTop = tsStack.pop();
-        if( typeOfTop != typeOfSubTop ){
-            if( typeOfTop == OzScanner.VAR_TYPE_FLOAT ){
+    private int genCodeConvertTypeBinOp() {
+        final int typeOfTop = tsStack.pop();
+        final int typeOfSubTop = tsStack.pop();
+        if (typeOfTop != typeOfSubTop) {
+            if (typeOfTop == OzScanner.VAR_TYPE_FLOAT) {
                 emitCommentListing("convert a sub top stack operand for the binary operation");
                 emit(OzVm.OPCODE_SWAP);
                 emit(OzVm.OPCODE_FLT);
                 emit(OzVm.OPCODE_SWAP);
                 emitCommentListing("-");
                 return OzScanner.VAR_TYPE_FLOAT;
-            } else if ( typeOfSubTop == OzScanner.VAR_TYPE_FLOAT ){
+            } else if (typeOfSubTop == OzScanner.VAR_TYPE_FLOAT) {
                 emitCommentListing("convert a top stack operand for the binary operation");
                 emit(OzVm.OPCODE_FLT);
                 emitCommentListing("-");
@@ -637,39 +621,39 @@ public class OzParser {
         return typeOfTop;
     }
 
-    public class ByteArray{
-        
+    public class ByteArray {
+
         final static int CHUNK_SIZE = 64;
         byte[] mem = new byte[CHUNK_SIZE];
         int used = 0;
 
-        ByteArray(){
+        ByteArray() {
             clean();
         }
 
-        void clean(){
+        void clean() {
             mem = new byte[CHUNK_SIZE];
             used = 0;
         }
 
-        void add(byte b){
-            if( used > mem.length - 1 ){
-                byte[] tmp = new byte[mem.length + CHUNK_SIZE];
+        void add(final byte b) {
+            if (used > mem.length - 1) {
+                final byte[] tmp = new byte[mem.length + CHUNK_SIZE];
                 System.arraycopy(mem, 0, tmp, 0, mem.length);
                 mem = tmp;
             }
             mem[used++] = b;
         }
 
-        void add(int i){
-            add( (byte)  ( i & 0x000000FF         ));
-            add( (byte) (( i & 0x0000FF00 ) >>  8 ));
-            add( (byte) (( i & 0x00FF0000 ) >> 16 ));
-            add( (byte) (( i & 0xFF000000 ) >> 24 ));
-       }
+        void add(final int i) {
+            add((byte) (i & 0x000000FF));
+            add((byte) ((i & 0x0000FF00) >> 8));
+            add((byte) ((i & 0x00FF0000) >> 16));
+            add((byte) ((i & 0xFF000000) >> 24));
+        }
 
-        byte[] cut(){
-            byte[] tmp = new byte[used];
+        byte[] cut() {
+            final byte[] tmp = new byte[used];
             System.arraycopy(mem, 0, tmp, 0, used);
             return tmp;
         }
