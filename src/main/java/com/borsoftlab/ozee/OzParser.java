@@ -24,7 +24,13 @@ public class OzParser {
         this.scanner = scanner;
         OzCompileError.reset();
         pc = 0;
+        prologCode(scanner);
+        scanner.nextLexeme();
+        stmtList();
+        epilogCode();
+    }
 
+    private void prologCode(final OzScanner scanner) {
         emitCommentListing("unconditional jump");
         emit(OzVm.OPCODE_PUSH, 0x0);
         int label = pc - 4;
@@ -32,16 +38,15 @@ public class OzParser {
 
         // jump over 4 bytes
         emit(OzVm.OPCODE_JUMP);
-        // address for metadata
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         // store jump address to push command saved in label
         OzUtils.storeIntToByteArray(mem.mem, label, pc);
+    }
 
-        scanner.nextLexeme();
-        stmtList();
+    private void epilogCode() {
         emit(OzVm.OPCODE_STOP);
     }
 
