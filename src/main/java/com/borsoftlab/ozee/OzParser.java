@@ -33,13 +33,8 @@ public class OzParser {
         emit(OzVm.OPCODE_PUSH, 0x0);
         final int label = outputBuffer.used - 4;
         scanner.symbolTable.addCodeSegmentRef(label);
-
         // jump over 4 bytes
-        emit(OzVm.OPCODE_JUMP);
-        emit(OzVm.OPCODE_STOP);
-        emit(OzVm.OPCODE_STOP);
-        emit(OzVm.OPCODE_STOP);
-        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_JUMP, 0x0);
         // store jump address to push command saved in label
         outputBuffer.store(label, outputBuffer.used);
     }
