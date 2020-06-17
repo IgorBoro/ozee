@@ -190,7 +190,7 @@ public class OzParser {
         // проверяем объявление имени переменной на дальнейшую квадратную скобку
         // доопределим массив
         if (isArray && scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-            defineArray();
+            parseArrayDefinition();
         }
         return scanner.symbol;
     }
@@ -224,7 +224,7 @@ public class OzParser {
             final int varType = getVarType();
             if (lSymbol.isArray && lSymbol.varType == varType) {
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                    defineArray();
+                    parseArrayDefinition();
                 }
             } else {
                 OzCompileError.message(scanner, "incompatible array types", loc);
@@ -249,7 +249,7 @@ public class OzParser {
         lSymbol.refValue = rSymbol.refValue;
     }
 
-    private void defineArray() throws Exception {
+    private void parseArrayDefinition() throws Exception {
         match(OzScanner.lexLSQUARE);
         if (scanner.lookAheadLexeme != OzScanner.lexNUMBER || scanner.varType != OzScanner.VAR_TYPE_INT) {
             OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
