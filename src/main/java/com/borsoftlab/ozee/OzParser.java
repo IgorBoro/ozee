@@ -67,7 +67,8 @@ public class OzParser {
                     if( symbol.isArray ){
                         assignArrayDefinition(symbol);
                     } else {
-                        assignSymbol(symbol);
+                        match(OzScanner.lexASSIGN);
+                        expression();
                         assignRValue(symbol);
                     }
                 }
@@ -82,7 +83,8 @@ public class OzParser {
             
                     evaluateAddressOfArrayElement2(symbol);
                     if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-                        assignSymbol(symbol);
+                        match(OzScanner.lexASSIGN);
+                        expression();
                         assignExpressionToElementOfArray(symbol);
                     }
                 } else {
@@ -90,7 +92,8 @@ public class OzParser {
                         if( symbol.isArray ){
                             assignArrayDefinition(symbol);
                         } else {
-                            assignSymbol(symbol);
+                            match(OzScanner.lexASSIGN);
+                            expression();
                             assignRValue(symbol);
                         }
                     }
@@ -100,19 +103,15 @@ public class OzParser {
         }
     }
 
-    private void assignSymbol(OzSymbols.Symbol symbol) throws Exception {
-        match(OzScanner.lexASSIGN);
-        expression();
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-    }
-
     private void assignRValue(OzSymbols.Symbol symbol) throws Exception {
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
         genAssignCode(symbol.varType);
     }
 
     private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_SWAP);
         genAssignCode(symbol.varType);
     }
