@@ -54,16 +54,11 @@ public class OzParser {
     }
 
     void stmt() throws Exception {
-        // если обнаружено объявление типа
-
-        if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE ||
-            scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
-            if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-                varType();
-            } else // если обнаружено имя переменной
-            if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-                varName();
-            }
+        if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+            varType();
+        } else
+        if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+            varName();
         }
     }
 
