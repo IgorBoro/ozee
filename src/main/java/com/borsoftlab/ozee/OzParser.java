@@ -69,7 +69,7 @@ public class OzParser {
                     } else {
                         match(OzScanner.lexASSIGN);
                         expression();
-                        assignRValue(symbol);
+                        assignExpressionToValue(symbol);
                     }
                 }
             } else // если обнаружено имя переменной
@@ -94,7 +94,7 @@ public class OzParser {
                         } else {
                             match(OzScanner.lexASSIGN);
                             expression();
-                            assignRValue(symbol);
+                            assignExpressionToValue(symbol);
                         }
                     }
                 }
@@ -103,7 +103,7 @@ public class OzParser {
         }
     }
 
-    private void assignRValue(OzSymbols.Symbol symbol) throws Exception {
+    private void assignExpressionToValue(OzSymbols.Symbol symbol) throws Exception {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
