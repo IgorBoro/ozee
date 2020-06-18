@@ -125,30 +125,6 @@ public class OzParser {
         genAssignCode(symbol.varType);
     }
 
-    private void evaluateAddressOfArrayElement(final int sizeOfElement) throws Exception {
-        emitCommentListing("evaluate the address of the first element of the array");
-        emit(OzVm.OPCODE_EVAL);
-        emitCommentListing("skip four bytes of size of the array");
-
-        emit(OzVm.OPCODE_PUSH, 4);
-        emit(OzVm.OPCODE_ADD);
-
-//        match(OzScanner.lexLSQUARE);
-        emitCommentListing("evaluate the offset the element inside the array");
-        final OzLocation loc = new OzLocation(scanner.loc);
-        expression();
-        final int type = tsStack.pop();
-        if (type != OzScanner.VAR_TYPE_INT) {
-            OzCompileError.expected(scanner, "integer value", loc);
-        }
-//        match(OzScanner.lexRSQUARE);
-
-        emit(OzVm.OPCODE_PUSH, sizeOfElement);
-        emit(OzVm.OPCODE_MUL);
-        emit(OzVm.OPCODE_ADD);
-        emitCommentListing("there is an element address on the stack");
-    }
-
     private void evaluateAddressOfArrayElement2(final OzSymbols.Symbol symbol) throws Exception {
         if( !symbol.isArray ){
             OzCompileError.message(scanner, "unexpected symbol", scanner.loc);
@@ -358,10 +334,8 @@ public class OzParser {
                     emit(OzVm.OPCODE_PUSH, symbol);
                     scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
                     if (symbol.isArray) {
-                        // определяем адрес массива
-                    //    match(OzScanner.lexLSQUARE);
+                        // определяем адрес элемента массива
                         evaluateAddressOfArrayElement2(symbol);
-                    //    match(OzScanner.lexRSQUARE);
                         // на стеке адрес элемента массива
                     }
                     if (symbol.varType == OzScanner.VAR_TYPE_BYTE || symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
