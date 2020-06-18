@@ -67,6 +67,7 @@ public class OzParser {
                     if( symbol.isArray ){
                         assignArrayDefinition(symbol);
                     } else {
+                        assignSymbol(symbol);
                         assignRValue(symbol);
                     }
                 }
@@ -81,6 +82,7 @@ public class OzParser {
             
                     evaluateAddressOfArrayElement2(symbol);
                     if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+                        assignSymbol(symbol);
                         assignExpressionToElementOfArray(symbol);
                     }
                 } else {
@@ -88,6 +90,7 @@ public class OzParser {
                         if( symbol.isArray ){
                             assignArrayDefinition(symbol);
                         } else {
+                            assignSymbol(symbol);
                             assignRValue(symbol);
                         }
                     }
@@ -97,27 +100,20 @@ public class OzParser {
         }
     }
 
-    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
-        // едим знак равенства
+    private void assignSymbol(OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexASSIGN);
-        // вычисляем выражение
         expression();
-        // теперь на верхушке стека находится значение которое надо положить
-        // в элемент массива, а под ним адрес элемента
-        // дальше по схеме
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-        // меняем местами адрес и значение
-        emit(OzVm.OPCODE_SWAP);
-        // теперь адрес сверху адрес как и положено при сохранении в память
-        genAssignCode(symbol.varType);
     }
 
     private void assignRValue(OzSymbols.Symbol symbol) throws Exception {
-        match(OzScanner.lexASSIGN);
-        expression();
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+        genAssignCode(symbol.varType);
+    }
+
+    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
+        emit(OzVm.OPCODE_SWAP);
         genAssignCode(symbol.varType);
     }
 
