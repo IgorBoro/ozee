@@ -280,7 +280,6 @@ public class ArraysArithmeticTest {
     static float expect12 
             = 10000f;
 
-
     // ------------------------------
   
     static String program110
@@ -351,6 +350,16 @@ public class ArraysArithmeticTest {
     static String expect116 
             = "Ok";
 
+    static String program117
+            = "float val;"+ "\n"
+            + "val[4] = 7;"     + "\n"
+            + "float *v = a[4];";
+    static String expect117 
+            = "val[4] = 7;"     + "\n"
+            + "^"      + "\n"
+            + "Error in line 2: expected array variable" + "\n";
+
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> floatArgumentProvider() {
@@ -379,7 +388,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program113, expect113 ),
             Arguments.of( program114, expect114 ),
             Arguments.of( program115, expect115 ),
-            Arguments.of( program116, expect116 )
+            Arguments.of( program116, expect116 ),
+            Arguments.of( program117, expect117 )
             );
     }
 

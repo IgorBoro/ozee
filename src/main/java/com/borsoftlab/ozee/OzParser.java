@@ -66,11 +66,15 @@ public class OzParser {
                 symbol = declareNewVariable(varType, isArray);
             } else // если обнаружено имя переменной
             if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+                OzLocation loc = new OzLocation(scanner.loc);
                 symbol = getVariable();
 
                 // проверяем переменную слева на элемент массива
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                     match(OzScanner.lexLSQUARE);
+                    if( !symbol.isArray ){
+                        OzCompileError.expected(scanner, "array variable", loc);
+                    }
                     emit(OzVm.OPCODE_PUSH, symbol);
                     scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
             
@@ -84,7 +88,7 @@ public class OzParser {
                     expression();
                     // теперь на верхушке стека находится значение которое надо положить
                     // в элемент массива, а под ним адрес элемента
-                    assignValueToElementOfArray(symbol);
+                    evalItemAddress(symbol);
                 }
             }
             assign(symbol);
@@ -99,7 +103,7 @@ public class OzParser {
         emit(OzVm.OPCODE_PUSH, 4);
         emit(OzVm.OPCODE_ADD);
 
-        match(OzScanner.lexLSQUARE);
+//        match(OzScanner.lexLSQUARE);
         emitCommentListing("evaluate the offset the element inside the array");
         final OzLocation loc = new OzLocation(scanner.loc);
         expression();
@@ -107,7 +111,7 @@ public class OzParser {
         if (type != OzScanner.VAR_TYPE_INT) {
             OzCompileError.expected(scanner, "integer value", loc);
         }
-        match(OzScanner.lexRSQUARE);
+//        match(OzScanner.lexRSQUARE);
 
         emit(OzVm.OPCODE_PUSH, sizeOfElement);
         emit(OzVm.OPCODE_MUL);
@@ -127,7 +131,7 @@ public class OzParser {
         emit(OzVm.OPCODE_EVALA);
     }
 
-    private void assignValueToElementOfArray(final OzSymbols.Symbol symbol) throws Exception {
+    private void evalItemAddress(final OzSymbols.Symbol symbol) throws Exception {
         // дальше по схеме
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         // меняем местами адрес и значение
@@ -154,13 +158,6 @@ public class OzParser {
                 }
             }
         }
-//        else if (scanner.lookAheadLexeme == OzScanner.lexSEMICOLON) {
-//            // empty
-//        } else if (scanner.lookAheadLexeme == OzScanner.lexEOF) {
-//            OzCompileError.message(scanner, "unexpected EOF", scanner.text.loc);
-//        } else {
-//            OzCompileError.expected(scanner, "'=' or ';'", scanner.loc);
-//        }
     }
 
     private int getVarType() throws Exception {
