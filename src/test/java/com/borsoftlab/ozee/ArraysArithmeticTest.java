@@ -356,8 +356,16 @@ public class ArraysArithmeticTest {
             + "float *v = a[4];";
     static String expect117 
             = "val[4] = 7;"     + "\n"
-            + "^"      + "\n"
-            + "Error in line 2: expected array variable" + "\n";
+            + "   ^"      + "\n"
+            + "Error in line 2: unexpected symbol" + "\n";
+
+    static String program118
+            = "float val = 7;"+ "\n"
+            + "float k = val[6];";
+    static String expect118 
+            = "float k = val[6];"   + "\n"
+            + "             ^"      + "\n"
+            + "Error in line 2: unexpected lexeme" + "\n";
 
 
     // -----------------------------------------------------------------------                        
@@ -389,7 +397,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program114, expect114 ),
             Arguments.of( program115, expect115 ),
             Arguments.of( program116, expect116 ),
-            Arguments.of( program117, expect117 )
+            Arguments.of( program117, expect117 ),
+            Arguments.of( program118, expect118 )
             );
     }
 

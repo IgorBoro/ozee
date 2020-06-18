@@ -76,18 +76,7 @@ public class OzParser {
 
                 // проверяем переменную слева на элемент массива
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                    match(OzScanner.lexLSQUARE);
-                    if( !symbol.isArray ){
-                        OzCompileError.expected(scanner, "array variable", loc);
-                    }
-                    emit(OzVm.OPCODE_PUSH, symbol);
-                    scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-            
-                    evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
-                    match(OzScanner.lexRSQUARE);
-                    if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-                        assignExpressionToElementOfArray(symbol);
-                    }
+                    evaluateAddressOfArrayElement2(symbol);
                 } else {
                     if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
 //                        if (symbol.arraySize != 0) {
@@ -160,8 +149,16 @@ public class OzParser {
         emitCommentListing("there is an element address on the stack");
     }
 
-    private void evaluateAddressOfArrayElement2(final int sizeOfElement) throws Exception {
-        emit(OzVm.OPCODE_PUSH, sizeOfElement);
+    private void evaluateAddressOfArrayElement2(final OzSymbols.Symbol symbol) throws Exception {
+        if( !symbol.isArray ){
+            OzCompileError.message(scanner, "unexpected symbol", scanner.loc);
+        }
+        match(OzScanner.lexLSQUARE);
+        emit(OzVm.OPCODE_PUSH, symbol);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+
+
+        emit(OzVm.OPCODE_PUSH, OzSymbols.sizeOfType(symbol.varType));
         emitCommentListing("evaluate the offset the element inside the array");
         final OzLocation loc = new OzLocation(scanner.loc);
         expression(); // put on the stack the index of the element
@@ -170,6 +167,10 @@ public class OzParser {
             OzCompileError.expected(scanner, "integer value", loc);
         }
         emit(OzVm.OPCODE_EVALA);
+        match(OzScanner.lexRSQUARE);
+        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+            assignExpressionToElementOfArray(symbol);
+        }
     }
 
     private int getVarType() throws Exception {
@@ -358,9 +359,9 @@ public class OzParser {
                     scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
                     if (symbol.isArray) {
                         // определяем адрес массива
-                        match(OzScanner.lexLSQUARE);
-                        evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
-                        match(OzScanner.lexRSQUARE);
+                    //    match(OzScanner.lexLSQUARE);
+                        evaluateAddressOfArrayElement2(symbol);
+                    //    match(OzScanner.lexRSQUARE);
                         // на стеке адрес элемента массива
                     }
                     if (symbol.varType == OzScanner.VAR_TYPE_BYTE || symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
