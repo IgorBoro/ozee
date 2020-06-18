@@ -59,15 +59,20 @@ public class OzParser {
         if( scanner.lookAheadLexeme == OzScanner.lexVARTYPE ||
             scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
 
-            OzSymbols.Symbol symbol = null;
             if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
                 final int varType = getVarType();
                 final boolean isArray = checkArrayDeclaration(varType);
-                symbol = declareNewVariable(varType, isArray);
+                OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
+                if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+                    if (symbol.arraySize != 0) {
+                        OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
+                    }
+                    assignExpression(symbol);
+                }
             } else // если обнаружено имя переменной
             if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
                 OzLocation loc = new OzLocation(scanner.loc);
-                symbol = getVariable();
+                OzSymbols.Symbol symbol = getVariable();
 
                 // проверяем переменную слева на элемент массива
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
@@ -80,19 +85,55 @@ public class OzParser {
             
                     evaluateAddressOfArrayElement2(OzSymbols.sizeOfType(symbol.varType));
                     match(OzScanner.lexRSQUARE);
-                    // едим знак равенства
-                    match(OzScanner.lexASSIGN);
-                    // теперь на верхушке стека находится адрес элемента массива
-            
-                    // вычисляем выражение
-                    expression();
-                    // теперь на верхушке стека находится значение которое надо положить
-                    // в элемент массива, а под ним адрес элемента
-                    evalItemAddress(symbol);
+                    if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+                        assignExpressionToElementOfArray(symbol);
+                    }
+                } else {
+                    if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+                        if (symbol.arraySize != 0) {
+                            OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
+                        }
+                        assignExpression(symbol);
+                    }
                 }
             }
-            assign(symbol);
         }
+    }
+
+    private void assignExpression(final OzSymbols.Symbol symbol) throws Exception {
+        match(OzScanner.lexASSIGN);
+        if( symbol.isArray ){
+            if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE || scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+                assignArrayDefinition(symbol);
+            } else {
+                OzCompileError.expected(scanner, "array definition", scanner.loc);
+            }
+        } else {
+            expression();
+            assignValueToVariable(symbol);
+        }
+    }
+
+    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
+        // едим знак равенства
+        match(OzScanner.lexASSIGN);
+        // вычисляем выражение
+        expression();
+        // теперь на верхушке стека находится значение которое надо положить
+        // в элемент массива, а под ним адрес элемента
+        // дальше по схеме
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+        // меняем местами адрес и значение
+        emit(OzVm.OPCODE_SWAP);
+        // теперь адрес сверху адрес как и положено при сохранении в память
+        genAssignCode(symbol.varType);
+    }
+
+    private void assignValueToVariable(final OzSymbols.Symbol symbol) throws Exception {
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+        emit(OzVm.OPCODE_PUSH, symbol);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+        genAssignCode(symbol.varType);
     }
 
     private void evaluateAddressOfArrayElement(final int sizeOfElement) throws Exception {
@@ -129,35 +170,6 @@ public class OzParser {
             OzCompileError.expected(scanner, "integer value", loc);
         }
         emit(OzVm.OPCODE_EVALA);
-    }
-
-    private void evalItemAddress(final OzSymbols.Symbol symbol) throws Exception {
-        // дальше по схеме
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-        // меняем местами адрес и значение
-        emit(OzVm.OPCODE_SWAP);
-        // теперь адрес сверху адрес как и положено при сохранении в память
-        genAssignCode(symbol.varType);
-    }
-
-    private void assign(final OzSymbols.Symbol symbol) throws Exception {
-        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-            match(OzScanner.lexASSIGN);
-            if (symbol.arraySize != 0) {
-                OzCompileError.message(scanner, " array '" + symbol.name + "' already defined", scanner.loc);
-            }
-            if (symbol.isArray && (scanner.lookAheadLexeme == OzScanner.lexVARTYPE
-                    || scanner.lookAheadLexeme == OzScanner.lexVARNAME)) {
-                assignArrayDefinition(symbol);
-            } else {
-                if (symbol.isArray) {
-                    match(OzScanner.lexVARTYPE, "array definition");
-                } else {
-                    expression();
-                    assignValueToVariable(symbol);
-                }
-            }
-        }
     }
 
     private int getVarType() throws Exception {
@@ -207,13 +219,6 @@ public class OzParser {
         }
         match(OzScanner.lexVARNAME, "variable name");
         return scanner.symbol;
-    }
-
-    private void assignValueToVariable(final OzSymbols.Symbol symbol) throws Exception {
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-        emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-        genAssignCode(symbol.varType);
     }
 
     private void assignArrayDefinition(final OzSymbols.Symbol lSymbol) throws Exception {
