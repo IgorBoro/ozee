@@ -92,12 +92,29 @@ public class OzParser {
                 assignArrayDefinition(symbol);
             }
         } else {
-            if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-                match(OzScanner.lexASSIGN);
-                expression();
-                assignExpressionToValue(symbol);
-            }
+            match(OzScanner.lexASSIGN);
+            expression();
+            assignExpressionToValue(symbol);
         }   
+        /*
+        if( symbol.isArray ){
+            if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
+                evaluateAddressOfArrayElement2(symbol);
+                if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+                    match(OzScanner.lexASSIGN);
+                    expression();
+                    assignExpressionToElementOfArray(symbol);
+                }
+            } else {
+                match(OzScanner.lexASSIGN);
+                assignArrayDefinition(symbol);
+            }
+        } else {
+            match(OzScanner.lexASSIGN);
+            expression();
+            assignExpressionToValue(symbol);
+        }
+        */
     }
 
     private void assignExpressionToValue(OzSymbols.Symbol symbol) throws Exception {
