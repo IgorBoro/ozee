@@ -67,10 +67,10 @@ public class OzParser {
         final boolean isArray = checkArrayDeclaration(varType);
         OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
         if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+            match(OzScanner.lexASSIGN);
             if( symbol.isArray ){
                 assignArrayDefinition(symbol);
             } else {
-                match(OzScanner.lexASSIGN);
                 expression();
                 assignExpressionToValue(symbol);
             }
@@ -88,13 +88,16 @@ public class OzParser {
                     assignExpressionToElementOfArray(symbol);
                 }
             } else {
+                match(OzScanner.lexASSIGN);
                 assignArrayDefinition(symbol);
             }
         } else {
-            match(OzScanner.lexASSIGN);
-            expression();
-            assignExpressionToValue(symbol);
-        }
+            if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+                match(OzScanner.lexASSIGN);
+                expression();
+                assignExpressionToValue(symbol);
+            }
+        }   
     }
 
     private void assignExpressionToValue(OzSymbols.Symbol symbol) throws Exception {
@@ -177,7 +180,6 @@ public class OzParser {
     }
 
     private void assignArrayDefinition(final OzSymbols.Symbol lSymbol) throws Exception {
-        match(OzScanner.lexASSIGN);
         if ( scanner.lookAheadLexeme == OzScanner.lexVARTYPE || scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
         final OzLocation loc = new OzLocation(scanner.loc);
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
