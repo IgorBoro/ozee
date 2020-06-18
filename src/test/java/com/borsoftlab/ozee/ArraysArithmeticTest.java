@@ -382,14 +382,14 @@ public class ArraysArithmeticTest {
 
     private static Stream<Arguments> stringArgumentProvider() {
         return Stream.of(
-//            Arguments.of( program110, expect110 ),
-//            Arguments.of( program111, expect111 ),
-//            Arguments.of( program112, expect112 ),
-//            Arguments.of( program113, expect113 ),
-//            Arguments.of( program114, expect114 ),
-            Arguments.of( program115, expect115 )
-//            Arguments.of( program116, expect116 ),
-//            Arguments.of( program117, expect117 )
+            Arguments.of( program110, expect110 ),
+            Arguments.of( program111, expect111 ),
+            Arguments.of( program112, expect112 ),
+            Arguments.of( program113, expect113 ),
+            Arguments.of( program114, expect114 ),
+            Arguments.of( program115, expect115 ),
+            Arguments.of( program116, expect116 ),
+            Arguments.of( program117, expect117 )
             );
     }
 

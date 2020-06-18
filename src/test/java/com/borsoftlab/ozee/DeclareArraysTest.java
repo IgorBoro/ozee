@@ -132,6 +132,41 @@ public class DeclareArraysTest {
     final static String message16
                         = "Ok";
 
+    final static String program17
+                        = "int[] i[16];" + "\n"
+                        + "int[] j[16];" + "\n"
+                        + "i = j;";
+    final static String message17
+                        = "i = j;" + "\n"
+                        + "  ^"    + "\n"
+                        + "Error in line 3:  array 'i' already defined" + "\n";
+
+    final static String program18
+                        = "int[] i[16];" + "\n"
+                        + "int[] j = i;";
+    final static String message18
+                        = "Ok";
+
+
+    final static String program19
+                        = "int[] i[16];" + "\n"
+                        + "int[] j;"     + "\n"
+                        + "i = j;";
+    final static String message19
+                        = "i = j;" + "\n"
+                        + "  ^"    + "\n"
+                        + "Error in line 3:  array 'i' already defined" + "\n";
+
+    final static String program20
+                        = "int[] i;" + "\n"
+                        + "int[] j;"     + "\n"
+                        + "i = j;";
+    final static String message20
+                        = "i = j;" + "\n"
+                        + "    ^"    + "\n"
+                        + "Error in line 3: array 'j' undefined" + "\n";
+
+
 // -----------------------------------------------------------------------                        
 
 
@@ -182,7 +217,11 @@ public class DeclareArraysTest {
             Arguments.of( program13, message13 ),
             Arguments.of( program14, message14 ),
             Arguments.of( program15, message15 ),
-            Arguments.of( program16, message16 )
+            Arguments.of( program16, message16 ),
+            Arguments.of( program17, message17 ),
+            Arguments.of( program18, message18 ),
+            Arguments.of( program19, message19 ),
+            Arguments.of( program20, message20 )
         );
     }
 }   
