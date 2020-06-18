@@ -55,26 +55,36 @@ public class OzParser {
 
     void stmt() throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            varType();
+            OzSymbols.Symbol symbol = varType();
+            if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+                match(OzScanner.lexASSIGN);
+                if( symbol.isArray ){
+                    assignArrayDefinition(symbol);
+                } else {
+                    expression();
+                    assignExpressionToValue(symbol);
+                }
+            }
         } else
         if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             varName();
         }
     }
 
-    private void varType() throws Exception {
+    private OzSymbols.Symbol varType() throws Exception {
         final int varType = getVarType();
         final boolean isArray = checkArrayDeclaration(varType);
         OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
-        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-            match(OzScanner.lexASSIGN);
-            if( symbol.isArray ){
-                assignArrayDefinition(symbol);
-            } else {
-                expression();
-                assignExpressionToValue(symbol);
-            }
-        }
+        return symbol;
+//        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+//            match(OzScanner.lexASSIGN);
+//            if( symbol.isArray ){
+//                assignArrayDefinition(symbol);
+//            } else {
+//                expression();
+//                assignExpressionToValue(symbol);
+//            }
+//        }
     }
 
     private void varName() throws Exception {
