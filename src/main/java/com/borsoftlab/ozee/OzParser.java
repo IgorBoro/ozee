@@ -98,6 +98,14 @@ public class OzParser {
         return symbol;
     }
 
+    private OzSymbols.Symbol varName() throws Exception {
+        if (scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF) {
+            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined", scanner.loc);
+        }
+        match(OzScanner.lexVARNAME, "variable name");
+        return scanner.symbol;
+    }
+
     private void evaluateAddressOfVariable(OzSymbols.Symbol symbol) {
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
@@ -123,14 +131,6 @@ public class OzParser {
         genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
         emit(OzVm.OPCODE_SWAP);
         genAssignCode(symbol.varType);
-    }
-
-    private OzSymbols.Symbol varName() throws Exception {
-        if (scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF) {
-            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined", scanner.loc);
-        }
-        match(OzScanner.lexVARNAME, "variable name");
-        return scanner.symbol;
     }
 
     private boolean checkArrayDeclaration(final int varType) throws Exception {
