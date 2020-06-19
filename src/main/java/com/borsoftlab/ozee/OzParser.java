@@ -65,6 +65,8 @@ public class OzParser {
                     expression();
                     assignValue(symbol);
                 }
+            } else {
+                // empty - expected ';'
             }
         } else
         if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
@@ -82,21 +84,21 @@ public class OzParser {
 
     private void varName() throws Exception {
         OzSymbols.Symbol symbol = getVariable();
-        if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-            evaluateAddressOfArrayElement(symbol);
-            match(OzScanner.lexASSIGN);
-            expression();
-            assignValue(symbol);
-        } else {
-            if( symbol.isArray ){
-                match(OzScanner.lexASSIGN);
-                assignArrayDefinition(symbol);
-            } else {
-                evaluateAddressOfVariable(symbol);
+        if( symbol.isArray ) {
+            if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
+                evaluateAddressOfArrayElement(symbol);
                 match(OzScanner.lexASSIGN);
                 expression();
                 assignValue(symbol);
+            } else {
+                match(OzScanner.lexASSIGN);
+                assignArrayDefinition(symbol);
             }
+        } else {
+            evaluateAddressOfVariable(symbol);
+            match(OzScanner.lexASSIGN);
+            expression();
+            assignValue(symbol);
         }
     }
 
@@ -106,10 +108,6 @@ public class OzParser {
     }
 
     private void evaluateAddressOfArrayElement(final OzSymbols.Symbol symbol) throws Exception {
-        if( !symbol.isArray ) {
-            OzCompileError.expected(scanner, "[", scanner.loc);
-        }
-
         match(OzScanner.lexLSQUARE);
         evaluateAddressOfVariable(symbol);
 
