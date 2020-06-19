@@ -86,11 +86,11 @@ public class OzParser {
         if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
             if( symbol.isArray ) {
                 evaluateAddressOfArrayElement2(symbol);
-                if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-                    match(OzScanner.lexASSIGN);
-                    expression();
-                    assignValue(symbol);
-                }
+
+                match(OzScanner.lexASSIGN);
+                expression();
+                assignValue(symbol);
+
             } else {
                 // TODO error
             }
