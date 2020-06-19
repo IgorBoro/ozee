@@ -106,9 +106,10 @@ public class OzParser {
                 match(OzScanner.lexASSIGN);
                 assignArrayDefinition(symbol);
             } else {
-                match(OzScanner.lexASSIGN);
                 emit(OzVm.OPCODE_PUSH, symbol);
                 scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+
+                match(OzScanner.lexASSIGN);
 
                 expression();
                 genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
