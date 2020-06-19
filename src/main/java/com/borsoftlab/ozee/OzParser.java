@@ -61,23 +61,10 @@ public class OzParser {
                 if( symbol.isArray ){
                     assignArrayDefinition(symbol);
                 } else {
-
                     emit(OzVm.OPCODE_PUSH, symbol);
                     scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-
-
                     expression();
-
-
-
-                    genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-
-                    emit(OzVm.OPCODE_SWAP);
-                    genAssignCode(symbol.varType);
-            
-
-
-                    //assignExpressionToValue(symbol);
+                    assignValue(symbol);
                 }
             }
         } else
@@ -92,15 +79,6 @@ public class OzParser {
         final boolean isArray = checkArrayDeclaration(varType);
         OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
         return symbol;
-//        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-//            match(OzScanner.lexASSIGN);
-//            if( symbol.isArray ){
-//                assignArrayDefinition(symbol);
-//            } else {
-//                expression();
-//                assignExpressionToValue(symbol);
-//            }
-//        }
     }
 
     private void varName() throws Exception {
@@ -111,7 +89,7 @@ public class OzParser {
                 if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
                     match(OzScanner.lexASSIGN);
                     expression();
-                    assignExpressionToElementOfArray(symbol);
+                    assignValue(symbol);
                 }
             } else {
                 // TODO error
@@ -125,38 +103,18 @@ public class OzParser {
                 scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
 
                 match(OzScanner.lexASSIGN);
-
                 expression();
-                genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-                emit(OzVm.OPCODE_SWAP);
-                genAssignCode(symbol.varType);
-                          
-//                expression();
-//                assignExpressionToValue(symbol);
-   
+                assignValue(symbol);
             }
         }
-
-        /*
-        if( symbol.isArray ){
-            if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                evaluateAddressOfArrayElement2(symbol);
-                if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-                    match(OzScanner.lexASSIGN);
-                    expression();
-                    assignExpressionToElementOfArray(symbol);
-                }
-            } else {
-                match(OzScanner.lexASSIGN);
-                assignArrayDefinition(symbol);
-            }
-        } else {
-            match(OzScanner.lexASSIGN);
-            expression();
-            assignExpressionToValue(symbol);
-        } 
-        */  
     }
+
+    private void assignValue(OzSymbols.Symbol symbol) throws Exception {
+        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+        emit(OzVm.OPCODE_SWAP);
+        genAssignCode(symbol.varType);
+    }
+
 
     private OzSymbols.Symbol getVariable() throws Exception {
         if (scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF) {
@@ -164,12 +122,6 @@ public class OzParser {
         }
         match(OzScanner.lexVARNAME, "variable name");
         return scanner.symbol;
-    }
-
-    private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-        emit(OzVm.OPCODE_SWAP);
-        genAssignCode(symbol.varType);
     }
 
     private void evaluateAddressOfArrayElement2(final OzSymbols.Symbol symbol) throws Exception {
