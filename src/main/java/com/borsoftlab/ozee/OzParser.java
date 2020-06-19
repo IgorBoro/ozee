@@ -61,8 +61,23 @@ public class OzParser {
                 if( symbol.isArray ){
                     assignArrayDefinition(symbol);
                 } else {
+
+                    emit(OzVm.OPCODE_PUSH, symbol);
+                    scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+
+
                     expression();
-                    assignExpressionToValue(symbol);
+
+
+
+                    genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+
+                    emit(OzVm.OPCODE_SWAP);
+                    genAssignCode(symbol.varType);
+            
+
+
+                    //assignExpressionToValue(symbol);
                 }
             }
         } else
@@ -149,13 +164,6 @@ public class OzParser {
         }
         match(OzScanner.lexVARNAME, "variable name");
         return scanner.symbol;
-    }
-
-    private void assignExpressionToValue(OzSymbols.Symbol symbol) throws Exception {
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
-        emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-        genAssignCode(symbol.varType);
     }
 
     private void assignExpressionToElementOfArray(OzSymbols.Symbol symbol) throws Exception {
@@ -356,11 +364,13 @@ public class OzParser {
                     break;
                 case OzScanner.lexVARNAME:
                     final OzSymbols.Symbol symbol = getVariable();
-                    emit(OzVm.OPCODE_PUSH, symbol);
-                    scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
                     if (symbol.isArray) {
                         // определяем адрес элемента массива
                         evaluateAddressOfArrayElement2(symbol);
+                    } else {
+                        emit(OzVm.OPCODE_PUSH, symbol);
+                        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+   
                     }
                     // на стеке адрес переменной или элемента массива
                     if (symbol.varType == OzScanner.VAR_TYPE_BYTE || symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
