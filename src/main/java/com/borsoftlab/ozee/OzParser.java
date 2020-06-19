@@ -85,7 +85,7 @@ public class OzParser {
         OzSymbols.Symbol symbol = getVariable();
         if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
             if( symbol.isArray ) {
-                evaluateAddressOfArrayElement2(symbol);
+                evaluateAddressOfArrayElement(symbol);
 
                 match(OzScanner.lexASSIGN);
                 expression();
@@ -124,7 +124,7 @@ public class OzParser {
         return scanner.symbol;
     }
 
-    private void evaluateAddressOfArrayElement2(final OzSymbols.Symbol symbol) throws Exception {
+    private void evaluateAddressOfArrayElement(final OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexLSQUARE);
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
@@ -318,7 +318,7 @@ public class OzParser {
                     final OzSymbols.Symbol symbol = getVariable();
                     if (symbol.isArray) {
                         // определяем адрес элемента массива
-                        evaluateAddressOfArrayElement2(symbol);
+                        evaluateAddressOfArrayElement(symbol);
                     } else {
                         emit(OzVm.OPCODE_PUSH, symbol);
                         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
