@@ -177,34 +177,34 @@ public class OzParser {
 
     private void assignArrayDefinition(final OzSymbols.Symbol lSymbol) throws Exception {
         if ( scanner.lookAheadLexeme == OzScanner.lexVARTYPE || scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
-        final OzLocation loc = new OzLocation(scanner.loc);
-        if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            // final int varType = getVarType();
-            match(OzScanner.lexVARTYPE, "var type definition");
-            final int varType = scanner.varType;
+            final OzLocation loc = new OzLocation(scanner.loc);
+            if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+                // final int varType = getVarType();
+                match(OzScanner.lexVARTYPE, "var type definition");
+                final int varType = scanner.varType;
 
-            if (lSymbol.isArray && lSymbol.varType == varType) {
-                if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                    parseArrayDefinition();
+                if (lSymbol.isArray && lSymbol.varType == varType) {
+                    if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
+                        parseArrayDefinition();
+                    }
+                } else {
+                    OzCompileError.message(scanner, "incompatible array types", loc);
                 }
-            } else {
-                OzCompileError.message(scanner, "incompatible array types", loc);
-            }
-        } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            final OzSymbols.Symbol rSymbol = getVariable();
-            if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
-                if( rSymbol.arraySize == 0 ){
-                    OzCompileError.message(scanner, "array '" + rSymbol.name + "' undefined", loc);
+            } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+                final OzSymbols.Symbol rSymbol = getVariable();
+                if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
+                    if( rSymbol.arraySize == 0 ){
+                        OzCompileError.message(scanner, "array '" + rSymbol.name + "' undefined", loc);
+                    }
+                    genArrayAssignCode(lSymbol, rSymbol);
+                } else {
+                    OzCompileError.message(scanner, "incompatible types", loc);
                 }
-                genArrayAssignCode(lSymbol, rSymbol);
-            } else {
-                OzCompileError.message(scanner, "incompatible types", loc);
             }
+        } else {
+            OzCompileError.expected(scanner, "array definition", scanner.loc);
         }
-    } else {
-        OzCompileError.expected(scanner, "array definition", scanner.loc);
     }
-}
 
     private void genArrayAssignCode(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
         evaluateAddressOfVariable(rSymbol);
