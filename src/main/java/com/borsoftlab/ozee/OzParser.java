@@ -61,8 +61,7 @@ public class OzParser {
                 if( symbol.isArray ){
                     assignArrayDefinition(symbol);
                 } else {
-                    emit(OzVm.OPCODE_PUSH, symbol);
-                    scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+                    evaluateAddressOfVariable(symbol);
                     expression();
                     assignValue(symbol);
                 }
@@ -86,7 +85,6 @@ public class OzParser {
         if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
             if( symbol.isArray ) {
                 evaluateAddressOfArrayElement(symbol);
-
                 match(OzScanner.lexASSIGN);
                 expression();
                 assignValue(symbol);
@@ -99,14 +97,33 @@ public class OzParser {
                 match(OzScanner.lexASSIGN);
                 assignArrayDefinition(symbol);
             } else {
-                emit(OzVm.OPCODE_PUSH, symbol);
-                scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-
+                evaluateAddressOfVariable(symbol);
                 match(OzScanner.lexASSIGN);
                 expression();
                 assignValue(symbol);
             }
         }
+    }
+
+    private void evaluateAddressOfVariable(OzSymbols.Symbol symbol) {
+        emit(OzVm.OPCODE_PUSH, symbol);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+    }
+
+    private void evaluateAddressOfArrayElement(final OzSymbols.Symbol symbol) throws Exception {
+        match(OzScanner.lexLSQUARE);
+        evaluateAddressOfVariable(symbol);
+
+        emit(OzVm.OPCODE_PUSH, OzSymbols.sizeOfType(symbol.varType));
+        emitCommentListing("evaluate the offset the element inside the array");
+        final OzLocation loc = new OzLocation(scanner.loc);
+        expression(); // put on the stack the index of the element
+        final int type = tsStack.pop();
+        if (type != OzScanner.VAR_TYPE_INT) {
+            OzCompileError.expected(scanner, "integer value", loc);
+        }
+        emit(OzVm.OPCODE_EVALA);
+        match(OzScanner.lexRSQUARE);
     }
 
     private void assignValue(OzSymbols.Symbol symbol) throws Exception {
@@ -122,23 +139,6 @@ public class OzParser {
         }
         match(OzScanner.lexVARNAME, "variable name");
         return scanner.symbol;
-    }
-
-    private void evaluateAddressOfArrayElement(final OzSymbols.Symbol symbol) throws Exception {
-        match(OzScanner.lexLSQUARE);
-        emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-
-        emit(OzVm.OPCODE_PUSH, OzSymbols.sizeOfType(symbol.varType));
-        emitCommentListing("evaluate the offset the element inside the array");
-        final OzLocation loc = new OzLocation(scanner.loc);
-        expression(); // put on the stack the index of the element
-        final int type = tsStack.pop();
-        if (type != OzScanner.VAR_TYPE_INT) {
-            OzCompileError.expected(scanner, "integer value", loc);
-        }
-        emit(OzVm.OPCODE_EVALA);
-        match(OzScanner.lexRSQUARE);
     }
 
     private boolean checkArrayDeclaration(final int varType) throws Exception {
@@ -208,11 +208,9 @@ public class OzParser {
 }
 
     private void genArrayAssignCode(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
-        emit(OzVm.OPCODE_PUSH, rSymbol);
-        scanner.symbolTable.addDataSegmentRef( outputBuffer.used - 4 );
+        evaluateAddressOfVariable(rSymbol);
         emit(OzVm.OPCODE_EVAL);
-        emit(OzVm.OPCODE_PUSH, lSymbol);
-        scanner.symbolTable.addDataSegmentRef( outputBuffer.used - 4 );
+        evaluateAddressOfVariable(lSymbol);
         emit(OzVm.OPCODE_ASGN);
         lSymbol.refValue = rSymbol.refValue;
     }
@@ -320,8 +318,7 @@ public class OzParser {
                         // определяем адрес элемента массива
                         evaluateAddressOfArrayElement(symbol);
                     } else {
-                        emit(OzVm.OPCODE_PUSH, symbol);
-                        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+                        evaluateAddressOfVariable(symbol);
    
                     }
                     // на стеке адрес переменной или элемента массива
