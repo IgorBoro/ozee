@@ -62,7 +62,7 @@ public class OzParser {
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             int varType = varType();
             boolean isArray = declareArray();
-            OzSymbols.Symbol symbol = newIdent( varType, isArray );
+            OzSymbols.Symbol symbol = newIdent(varType, isArray);
             if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
                 storeIdentReference(symbol);
                 match(OzScanner.lexASSIGN);
@@ -129,11 +129,6 @@ public class OzParser {
         return varType;
     }
 
-    private OzSymbols.Symbol newIdent( int varType, boolean isArray) throws Exception {
-        OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
-        return symbol;
-    }
-
     private OzSymbols.Symbol ident() throws Exception {
         OzSymbols.Symbol symbol = scanner.symbol;
         if (symbol.varType == OzScanner.VAR_TYPE_UNDEF) {
@@ -161,7 +156,7 @@ public class OzParser {
         genAssignCode(targetType);
     }
 
-    private OzSymbols.Symbol declareNewVariable(final int varType, boolean isArray) throws Exception {
+    private OzSymbols.Symbol newIdent(final int varType, boolean isArray) throws Exception {
         final boolean isExport = checkNameExportAttribute();
         OzSymbols.Symbol symbol = scanner.symbol;
         if (symbol.lexeme == OzScanner.lexVARNAME && symbol.varType != OzScanner.VAR_TYPE_UNDEF) {
