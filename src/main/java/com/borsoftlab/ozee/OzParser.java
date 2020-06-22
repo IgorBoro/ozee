@@ -72,32 +72,18 @@ public class OzParser {
                 match(OzScanner.lexASSIGN);
                 boolean isRef = symbol.isArray;
                 expression(symbol, isRef);
-                /*
-                if( isRef ){
-                    assignReference(symbol);
-                } else {
-                    arithmeticExpression();
-                    assignValue(symbol);
-                }
-                */
             } else {
                 // empty - expected ';'
             }
         } else
         if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = ident();
-            boolean isSelector = selector(symbol);
-            match(OzScanner.lexASSIGN);
-            boolean isRef = symbol.isArray && !isSelector;
-            expression(symbol, isRef);
-            /*
-            if( isRef ) {
-                assignReference(symbol);
-            } else {
-                arithmeticExpression();
-                assignValue(symbol);
+            boolean isSelector = isSelector(symbol);
+            if( isSelector ){
+                evaluateSelector(symbol);
             }
-            */
+            match(OzScanner.lexASSIGN);
+            expression(symbol, symbol.isArray && !isSelector);
         }
     }
 
@@ -110,14 +96,8 @@ public class OzParser {
         }        
     }
 
-    private boolean selector(Symbol symbol) throws Exception {
-        if (symbol.isArray) {
-            if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-            evaluateAddressOfArrayElement(symbol);
-            return true;
-            }
-        }
-        return false;
+    private boolean isSelector(Symbol symbol) throws Exception {
+        return symbol.isArray && scanner.lookAheadLexeme == OzScanner.lexLSQUARE;
     }
 
     private boolean declareArray() throws Exception {
@@ -132,9 +112,6 @@ public class OzParser {
     private int varType() throws Exception {
         match(OzScanner.lexVARTYPE, "var type definition");
         final int varType = scanner.varType;
-//        final boolean isArray = checkArrayDeclaration(varType);
-//        OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
-//        return symbol;
         return varType;
     }
 
@@ -155,16 +132,8 @@ public class OzParser {
         return scanner.symbol;
     }
 
-    /*
-    private void evaluateAddressOfVariable(OzSymbols.Symbol symbol) {
-        emit(OzVm.OPCODE_PUSH, symbol);
-        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-    }
-    */
-    private void evaluateAddressOfArrayElement(final OzSymbols.Symbol symbol) throws Exception {
+    private void evaluateSelector(final OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexLSQUARE);
-        // evaluateAddressOfVariable(symbol);
-
         emit(OzVm.OPCODE_PUSH, OzSymbols.sizeOfType(symbol.varType));
         emitCommentListing("evaluate the offset the element inside the array");
         final OzLocation loc = new OzLocation(scanner.loc);
@@ -343,7 +312,9 @@ public class OzParser {
                     break;
                 case OzScanner.lexVARNAME:
                     final OzSymbols.Symbol symbol = ident();
-                    selector(symbol);
+                    if( isSelector(symbol) ) {
+                        evaluateSelector(symbol);
+                    }
                     // на стеке адрес переменной или элемента массива
                     if (symbol.varType == OzScanner.VAR_TYPE_BYTE || symbol.varType == OzScanner.VAR_TYPE_UBYTE) {
                         emit(OzVm.OPCODE_EVALB);
