@@ -170,8 +170,8 @@ public class OzParser {
         if (isArray && scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
             match(OzScanner.lexLSQUARE);
             int size = evaluateArraySize();
-            symbol.allocateArray( size );
             match(OzScanner.lexRSQUARE);
+            symbol.allocateArray( size );
         }
         return symbol;
     }
@@ -193,20 +193,25 @@ public class OzParser {
                     if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                         match(OzScanner.lexLSQUARE);
                         int size = evaluateArraySize();
-                        lSymbol.allocateArray( size );
                         match(OzScanner.lexRSQUARE);
+                        lSymbol.allocateArray( size );
                     }
                 } else {
                     OzCompileError.message(scanner, "incompatible array types", loc);
                 }
             } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
                 final OzSymbols.Symbol rSymbol = ident();
-                storeIdentReference(rSymbol);
                 if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
-                    if( rSymbol.arraySize == 0 ){
+                    if( rSymbol.arraySize == 0 ) {
                         OzCompileError.message(scanner, "array '" + rSymbol.name + "' undefined", loc);
                     }
-                    genArrayAssignCode(lSymbol, rSymbol);
+                    // evaluate address of array
+                    storeIdentReference(rSymbol);
+                    emit(OzVm.OPCODE_EVAL);
+                    // assign
+                    genAssignCode(OzScanner.VAR_TYPE_REF);
+
+                    lSymbol.refValue = rSymbol.refValue;
                 } else {
                     OzCompileError.message(scanner, "incompatible types", loc);
                 }
@@ -214,12 +219,6 @@ public class OzParser {
         } else {
             OzCompileError.expected(scanner, "array definition", scanner.loc);
         }
-    }
-
-    private void genArrayAssignCode(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
-        emit(OzVm.OPCODE_EVAL);
-        emit(OzVm.OPCODE_ASGN);
-        lSymbol.refValue = rSymbol.refValue;
     }
 
     private int evaluateArraySize() throws Exception {
@@ -236,6 +235,7 @@ public class OzParser {
 
     private void genAssignCode(final int varType) throws Exception {
         switch (varType) {
+            case OzScanner.VAR_TYPE_REF:
             case OzScanner.VAR_TYPE_INT:
             case OzScanner.VAR_TYPE_FLOAT:
                 emit(OzVm.OPCODE_ASGN);

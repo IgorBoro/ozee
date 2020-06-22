@@ -20,12 +20,13 @@ public class OzScanner {
     public static final int lexRSQUARE     = 14;
 
     public static final int VAR_TYPE_UNDEF  = 0;
-    public static final int VAR_TYPE_INT    = 1;
-    public static final int VAR_TYPE_SHORT  = 2;
-    public static final int VAR_TYPE_USHORT = 3;
-    public static final int VAR_TYPE_BYTE   = 4;
-    public static final int VAR_TYPE_UBYTE  = 5;
-    public static final int VAR_TYPE_FLOAT  = 6;
+    public static final int VAR_TYPE_REF    = 1;
+    public static final int VAR_TYPE_INT    = 2;
+    public static final int VAR_TYPE_SHORT  = 3;
+    public static final int VAR_TYPE_USHORT = 4;
+    public static final int VAR_TYPE_BYTE   = 5;
+    public static final int VAR_TYPE_UBYTE  = 6;
+    public static final int VAR_TYPE_FLOAT  = 7;
 
     public int lookAheadLexeme;
     public OzText text;
