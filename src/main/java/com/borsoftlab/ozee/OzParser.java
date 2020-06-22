@@ -62,7 +62,6 @@ public class OzParser {
             int varType = varType();
             boolean isArray = declareArray();
             OzSymbols.Symbol symbol = newIdent(varType, isArray);
-
             if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
                 // если это оператор присваивания, постфактум
                 // вставляем в стек ссылку на область сохранения результата
@@ -79,7 +78,7 @@ public class OzParser {
             OzSymbols.Symbol symbol = ident();
             storeIdentReference(symbol);
             boolean isSelector = isSelector(symbol);
-            if( isSelector ){
+            if( isSelector ) {
                 match(OzScanner.lexLSQUARE);
                 evaluateSelector(symbol);
                 match(OzScanner.lexRSQUARE);
@@ -185,39 +184,46 @@ public class OzParser {
     }
 
     private void referenceExpression(final OzSymbols.Symbol lSymbol) throws Exception {
-        if ( scanner.lookAheadLexeme == OzScanner.lexVARTYPE || scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
-            final OzLocation loc = new OzLocation(scanner.loc);
-            if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-                final int varType = varType();
-                if (lSymbol.isArray && lSymbol.varType == varType) {
-                    if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                        match(OzScanner.lexLSQUARE);
-                        int size = evaluateArraySize();
-                        match(OzScanner.lexRSQUARE);
-                        lSymbol.allocateArray( size );
-                    }
-                } else {
-                    OzCompileError.message(scanner, "incompatible array types", loc);
-                }
-            } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-                final OzSymbols.Symbol rSymbol = ident();
-                if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
-                    if( rSymbol.arraySize == 0 ) {
-                        OzCompileError.message(scanner, "array '" + rSymbol.name + "' undefined", loc);
-                    }
-                    // evaluate address of array
-                    storeIdentReference(rSymbol);
-                    emit(OzVm.OPCODE_EVAL);
-                    // assign
-                    genAssignCode(OzScanner.VAR_TYPE_REF);
+        if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
+            assignArrayDefinition( lSymbol );
+        } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+            assignArrayReference(lSymbol);
+        }
+        else {
+            OzCompileError.expected(scanner, "array definition", scanner.loc);
+        }
+    }
 
-                    lSymbol.refValue = rSymbol.refValue;
-                } else {
-                    OzCompileError.message(scanner, "incompatible types", loc);
-                }
+    private void assignArrayReference(final OzSymbols.Symbol lSymbol) throws Exception {
+        final OzLocation loc = new OzLocation(scanner.loc);
+        final OzSymbols.Symbol rSymbol = ident();
+        if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
+            if( rSymbol.arraySize == 0 ) {
+                OzCompileError.message(scanner, "array '" + rSymbol.name + "' undefined", loc);
+            }
+            // evaluate address of array
+            storeIdentReference(rSymbol);
+            emit(OzVm.OPCODE_EVAL);
+            // assign
+            genAssignCode(OzScanner.VAR_TYPE_REF);
+            lSymbol.refValue = rSymbol.refValue;
+        } else {
+            OzCompileError.message(scanner, "incompatible types", loc);
+        }
+    }
+
+    private void assignArrayDefinition(final OzSymbols.Symbol lSymbol) throws Exception {
+        final OzLocation loc = new OzLocation(scanner.loc);
+        final int varType = varType();
+        if (lSymbol.isArray && lSymbol.varType == varType) {
+            if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
+                match(OzScanner.lexLSQUARE);
+                int size = evaluateArraySize();
+                match(OzScanner.lexRSQUARE);
+                lSymbol.allocateArray( size );
             }
         } else {
-            OzCompileError.expected(scanner, "array definition", scanner.loc);
+            OzCompileError.message(scanner, "incompatible array types", loc);
         }
     }
 

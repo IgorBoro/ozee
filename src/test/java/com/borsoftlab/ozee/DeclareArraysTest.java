@@ -166,9 +166,7 @@ public class DeclareArraysTest {
                         + "    ^"    + "\n"
                         + "Error in line 3: array 'j' undefined" + "\n";
 
-
 // -----------------------------------------------------------------------                        
-
 
     OzParser parser   = new OzParser();
     OzScanner scanner = new OzScanner();
