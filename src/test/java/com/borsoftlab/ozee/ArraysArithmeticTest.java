@@ -280,6 +280,15 @@ public class ArraysArithmeticTest {
     static float expect12 
             = 10000f;
 
+    static String program13
+            = "float[] a[4];" + "\n"
+            + "a[3] = 7.47;"  + "\n"
+            + "float[] b;"    + "\n"
+            + "b = a;"     + "\n"
+            + "float *v = b[3];";
+    static float expect13 
+            = 7.47f;
+
     // ------------------------------
   
     static String program110
@@ -384,7 +393,8 @@ public class ArraysArithmeticTest {
             Arguments.of( program9, expect9 ),
             Arguments.of( program10, expect10 ),
             Arguments.of( program11, expect11 ),
-            Arguments.of( program12, expect12 )
+            Arguments.of( program12, expect12 ),
+            Arguments.of( program13, expect13 )
         );
     }
 
