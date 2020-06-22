@@ -93,7 +93,7 @@ public class OzParser {
             } else
             if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
                 arrayReferenceExpression ( symbol );
-                // assign
+                // assignValue
                 emit(OzVm.OPCODE_SWAP);
                 genAssignCode(OzScanner.VAR_TYPE_REF);
 
@@ -102,7 +102,7 @@ public class OzParser {
             }
         } else {
             arithmeticExpression();
-            assignValue(symbol);
+            assignValue(symbol.varType);
         }        
     }
 
@@ -158,10 +158,10 @@ public class OzParser {
         emit(OzVm.OPCODE_EVALA);
     }
 
-    private void assignValue(OzSymbols.Symbol symbol) throws Exception {
-        genCodeConvertTypeAssign(tsStack.pop(), symbol.varType);
+    private void assignValue(int targetType) throws Exception {
+        genCodeConvertTypeAssign(tsStack.pop(), targetType);
         emit(OzVm.OPCODE_SWAP);
-        genAssignCode(symbol.varType);
+        genAssignCode(targetType);
     }
 
     private OzSymbols.Symbol declareNewVariable(final int varType, boolean isArray) throws Exception {
