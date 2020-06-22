@@ -35,6 +35,7 @@ public class OzParser {
         scanner.symbolTable.addCodeSegmentRef(label);
         // jump over 4 bytes
         emit(OzVm.OPCODE_JUMP);
+        // store 4 zero bytes to memory
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
         emit(OzVm.OPCODE_STOP);
@@ -60,8 +61,7 @@ public class OzParser {
     void stmt() throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             int varType = varType();
-            boolean isArray = declareArray();
-            OzSymbols.Symbol symbol = newIdent(varType, isArray);
+            OzSymbols.Symbol symbol = newIdent(varType);
             if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
                 // если это оператор присваивания, постфактум
                 // вставляем в стек ссылку на область сохранения результата
@@ -70,8 +70,6 @@ public class OzParser {
                 match(OzScanner.lexASSIGN);
                 boolean isRef = symbol.isArray;
                 expression(symbol, isRef);
-            } else {
-                // empty - expected ';'
             }
         } else
         if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
@@ -121,7 +119,8 @@ public class OzParser {
         return varType;
     }
 
-    private OzSymbols.Symbol newIdent(int varType, boolean isArray) throws Exception {
+    private OzSymbols.Symbol newIdent( int varType ) throws Exception {
+        boolean isArray = declareArray();
         OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
         return symbol;
     }
@@ -186,10 +185,10 @@ public class OzParser {
     private void referenceExpression(final OzSymbols.Symbol lSymbol) throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             assignArrayDefinition( lSymbol );
-        } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            assignArrayReference(lSymbol);
-        }
-        else {
+        } else
+        if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
+            assignArrayReference ( lSymbol );
+        } else {
             OzCompileError.expected(scanner, "array definition", scanner.loc);
         }
     }
