@@ -70,7 +70,7 @@ public class OzParser {
             }
         } else
         if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            OzSymbols.Symbol symbol = varName();
+            OzSymbols.Symbol symbol = ident();
             if( symbol.isArray ) {
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                     evaluateAddressOfArrayElement(symbol);
@@ -98,7 +98,7 @@ public class OzParser {
         return symbol;
     }
 
-    private OzSymbols.Symbol varName() throws Exception {
+    private OzSymbols.Symbol ident() throws Exception {
         if (scanner.symbol.varType == OzScanner.VAR_TYPE_UNDEF) {
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined", scanner.loc);
         }
@@ -184,7 +184,7 @@ public class OzParser {
                     OzCompileError.message(scanner, "incompatible array types", loc);
                 }
             } else if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-                final OzSymbols.Symbol rSymbol = varName();
+                final OzSymbols.Symbol rSymbol = ident();
                 if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
                     if( rSymbol.arraySize == 0 ){
                         OzCompileError.message(scanner, "array '" + rSymbol.name + "' undefined", loc);
@@ -305,7 +305,7 @@ public class OzParser {
                     }
                     break;
                 case OzScanner.lexVARNAME:
-                    final OzSymbols.Symbol symbol = varName();
+                    final OzSymbols.Symbol symbol = ident();
                     if (symbol.isArray) {
                         // определяем адрес элемента массива
                         evaluateAddressOfArrayElement(symbol);
