@@ -55,13 +55,21 @@ public class OzParser {
 
     void stmt() throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            OzSymbols.Symbol symbol = varType();
+            int varType = varType();
+            boolean isArray = declareSelector();
+            OzSymbols.Symbol symbol = newIdent(varType, isArray);
+
             if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+
+                emit(OzVm.OPCODE_PUSH, scanner.symbol);
+                scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+        
+
                 match(OzScanner.lexASSIGN);
                 if( symbol.isArray ){
                     assignArrayDefinition(symbol);
                 } else {
-                    evaluateAddressOfVariable(symbol);
+//                    evaluateAddressOfVariable(symbol);
                     expression();
                     assignValue(symbol);
                 }
@@ -83,7 +91,7 @@ public class OzParser {
                     assignArrayDefinition(symbol);
                 }
             } else {
-                evaluateAddressOfVariable(symbol);
+               // evaluateAddressOfVariable(symbol);
                 match(OzScanner.lexASSIGN);
                 expression();
                 assignValue(symbol);
@@ -92,12 +100,28 @@ public class OzParser {
     }
 
     private void selector(Symbol symbol) {
+//        final boolean isArray = checkArrayDeclaration(varType);
     }
 
-    private OzSymbols.Symbol varType() throws Exception {
+    private boolean declareSelector() throws Exception {
+        if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
+            match(OzScanner.lexLSQUARE);
+            match(OzScanner.lexRSQUARE);
+            return true;
+        }
+        return false;
+    }
+
+    private int varType() throws Exception {
         match(OzScanner.lexVARTYPE, "var type definition");
         final int varType = scanner.varType;
-        final boolean isArray = checkArrayDeclaration(varType);
+//        final boolean isArray = checkArrayDeclaration(varType);
+//        OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
+//        return symbol;
+        return varType;
+    }
+
+    private OzSymbols.Symbol newIdent(int varType, boolean isArray) throws Exception {
         OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
         return symbol;
     }
@@ -107,17 +131,22 @@ public class OzParser {
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' not defined", scanner.loc);
         }
         match(OzScanner.lexVARNAME, "variable name");
+
+        emit(OzVm.OPCODE_PUSH, scanner.symbol);
+        scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
+
         return scanner.symbol;
     }
 
+    /*
     private void evaluateAddressOfVariable(OzSymbols.Symbol symbol) {
         emit(OzVm.OPCODE_PUSH, symbol);
         scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
     }
-
+    */
     private void evaluateAddressOfArrayElement(final OzSymbols.Symbol symbol) throws Exception {
         match(OzScanner.lexLSQUARE);
-        evaluateAddressOfVariable(symbol);
+        // evaluateAddressOfVariable(symbol);
 
         emit(OzVm.OPCODE_PUSH, OzSymbols.sizeOfType(symbol.varType));
         emitCommentListing("evaluate the offset the element inside the array");
@@ -137,16 +166,7 @@ public class OzParser {
         genAssignCode(symbol.varType);
     }
 
-    private boolean checkArrayDeclaration(final int varType) throws Exception {
-        if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-            match(OzScanner.lexLSQUARE);
-            match(OzScanner.lexRSQUARE);
-            return true;
-        }
-        return false;
-    }
-
-    private OzSymbols.Symbol declareNewVariable(final int varType, final boolean isArray) throws Exception {
+    private OzSymbols.Symbol declareNewVariable(final int varType, boolean isArray) throws Exception {
         final boolean isExport = checkNameExportAttribute();
         if (scanner.symbol.lexeme == OzScanner.lexVARNAME && scanner.symbol.varType != OzScanner.VAR_TYPE_UNDEF) {
             OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined", scanner.loc);
@@ -204,9 +224,9 @@ public class OzParser {
     }
 
     private void genArrayAssignCode(final OzSymbols.Symbol lSymbol, final OzSymbols.Symbol rSymbol) {
-        evaluateAddressOfVariable(rSymbol);
+      //  evaluateAddressOfVariable(rSymbol);
         emit(OzVm.OPCODE_EVAL);
-        evaluateAddressOfVariable(lSymbol);
+       // evaluateAddressOfVariable(lSymbol);
         emit(OzVm.OPCODE_ASGN);
         lSymbol.refValue = rSymbol.refValue;
     }
@@ -314,7 +334,7 @@ public class OzParser {
                         // определяем адрес элемента массива
                         evaluateAddressOfArrayElement(symbol);
                     } else {
-                        evaluateAddressOfVariable(symbol);
+                     //   evaluateAddressOfVariable(symbol);
    
                     }
                     // на стеке адрес переменной или элемента массива
