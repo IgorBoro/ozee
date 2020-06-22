@@ -61,7 +61,8 @@ public class OzParser {
     void stmt() throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
             int varType = varType();
-            OzSymbols.Symbol symbol = newIdent(varType);
+            boolean isArray = declareArray();
+            OzSymbols.Symbol symbol = newIdent( varType, isArray );
             if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
                 storeIdentReference(symbol);
                 match(OzScanner.lexASSIGN);
@@ -128,8 +129,7 @@ public class OzParser {
         return varType;
     }
 
-    private OzSymbols.Symbol newIdent( int varType ) throws Exception {
-        boolean isArray = declareArray();
+    private OzSymbols.Symbol newIdent( int varType, boolean isArray) throws Exception {
         OzSymbols.Symbol symbol = declareNewVariable(varType, isArray);
         return symbol;
     }
