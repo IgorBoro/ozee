@@ -63,10 +63,7 @@ public class OzParser {
             int varType = varType();
             OzSymbols.Symbol symbol = newIdent(varType);
             if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-                // если это оператор присваивания, постфактум
-                // вставляем в стек ссылку на область сохранения результата
                 storeIdentReference(symbol);
-                // едим символ присваивания
                 match(OzScanner.lexASSIGN);
                 boolean isRef = symbol.isArray;
                 expression(symbol, isRef);
