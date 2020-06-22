@@ -75,7 +75,7 @@ public class OzParser {
                 if( symbol.isArray ){
                     assignArrayDefinition(symbol);
                 } else {
-                    expression();
+                    arithmeticExpression();
                     assignValue(symbol);
                 }
             } else {
@@ -89,7 +89,7 @@ public class OzParser {
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                     evaluateAddressOfArrayElement(symbol);
                     match(OzScanner.lexASSIGN);
-                    expression();
+                    arithmeticExpression();
                     assignValue(symbol);
                 } else {
                     match(OzScanner.lexASSIGN);
@@ -97,7 +97,7 @@ public class OzParser {
                 }
             } else {
                 match(OzScanner.lexASSIGN);
-                expression();
+                arithmeticExpression();
                 assignValue(symbol);
             }
         }
@@ -155,7 +155,7 @@ public class OzParser {
         emit(OzVm.OPCODE_PUSH, OzSymbols.sizeOfType(symbol.varType));
         emitCommentListing("evaluate the offset the element inside the array");
         final OzLocation loc = new OzLocation(scanner.loc);
-        expression(); // put on the stack the index of the element
+        arithmeticExpression(); // put on the stack the index of the element
         final int type = tsStack.pop();
         if (type != OzScanner.VAR_TYPE_INT) {
             OzCompileError.expected(scanner, "integer value", loc);
@@ -272,7 +272,7 @@ public class OzParser {
         }
     }
 
-    public void expression() throws Exception {
+    public void arithmeticExpression() throws Exception {
         term();
         while (true) {
             switch (scanner.lookAheadLexeme) {
@@ -313,7 +313,7 @@ public class OzParser {
         ;
         if (scanner.lookAheadLexeme == OzScanner.lexLPAREN) {
             match(OzScanner.lexLPAREN, "(");
-            expression();
+            arithmeticExpression();
             match(OzScanner.lexRPAREN, ")");
         } else {
             switch (scanner.lookAheadLexeme) {
