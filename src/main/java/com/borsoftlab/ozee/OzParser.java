@@ -34,7 +34,11 @@ public class OzParser {
         final int label = outputBuffer.used - 4;
         scanner.symbolTable.addCodeSegmentRef(label);
         // jump over 4 bytes
-        emit(OzVm.OPCODE_JUMP, 0x0);
+        emit(OzVm.OPCODE_JUMP);
+        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_STOP);
         // store jump address to push command saved in label
         outputBuffer.store(label, outputBuffer.used);
     }
@@ -60,16 +64,17 @@ public class OzParser {
             OzSymbols.Symbol symbol = newIdent(varType, isArray);
 
             if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-
+                // если это оператор присваивания, постфактум
+                // вставляем в стек ссылку на область сохранения результата
                 emit(OzVm.OPCODE_PUSH, scanner.symbol);
                 scanner.symbolTable.addDataSegmentRef(outputBuffer.used - 4);
-        
-
+                // едим символ присваивания
                 match(OzScanner.lexASSIGN);
+
+
                 if( symbol.isArray ){
                     assignArrayDefinition(symbol);
                 } else {
-//                    evaluateAddressOfVariable(symbol);
                     expression();
                     assignValue(symbol);
                 }
@@ -91,7 +96,6 @@ public class OzParser {
                     assignArrayDefinition(symbol);
                 }
             } else {
-               // evaluateAddressOfVariable(symbol);
                 match(OzScanner.lexASSIGN);
                 expression();
                 assignValue(symbol);
