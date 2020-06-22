@@ -96,7 +96,7 @@ public class OzParser {
 
     private void expression(final OzSymbols.Symbol symbol, final boolean isRef) throws Exception {
         if( isRef ){
-            assignReference(symbol);
+            referenceExpression(symbol);
         } else {
             arithmeticExpression();
             assignValue(symbol);
@@ -156,20 +156,24 @@ public class OzParser {
 
     private OzSymbols.Symbol declareNewVariable(final int varType, boolean isArray) throws Exception {
         final boolean isExport = checkNameExportAttribute();
-        if (scanner.symbol.lexeme == OzScanner.lexVARNAME && scanner.symbol.varType != OzScanner.VAR_TYPE_UNDEF) {
-            OzCompileError.message(scanner, "name '" + scanner.symbol.name + "' already defined", scanner.loc);
+        OzSymbols.Symbol symbol = scanner.symbol;
+        if (symbol.lexeme == OzScanner.lexVARNAME && symbol.varType != OzScanner.VAR_TYPE_UNDEF) {
+            OzCompileError.message(scanner, "name '" + symbol.name + "' already defined", scanner.loc);
         }
         match(OzScanner.lexVARNAME, "variable name");
-        scanner.symbol.isExport = isExport;
-        scanner.symbol.isArray = isArray;
-        scanner.symbol.allocateVariable(varType);
+        symbol.isExport = isExport;
+        symbol.isArray = isArray;
+        symbol.allocateVariable(varType);
 
         // проверяем объявление имени переменной на дальнейшую квадратную скобку
         // доопределим массив
         if (isArray && scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-            parseArrayDefinition();
+            match(OzScanner.lexLSQUARE);
+            int size = evaluateArraySize();
+            symbol.allocateArray( size );
+            match(OzScanner.lexRSQUARE);
         }
-        return scanner.symbol;
+        return symbol;
     }
 
     private boolean checkNameExportAttribute() throws Exception {
@@ -180,14 +184,17 @@ public class OzParser {
         return false;
     }
 
-    private void assignReference(final OzSymbols.Symbol lSymbol) throws Exception {
+    private void referenceExpression(final OzSymbols.Symbol lSymbol) throws Exception {
         if ( scanner.lookAheadLexeme == OzScanner.lexVARTYPE || scanner.lookAheadLexeme == OzScanner.lexVARNAME ) {
             final OzLocation loc = new OzLocation(scanner.loc);
             if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
                 final int varType = varType();
                 if (lSymbol.isArray && lSymbol.varType == varType) {
                     if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
-                        parseArrayDefinition();
+                        match(OzScanner.lexLSQUARE);
+                        int size = evaluateArraySize();
+                        lSymbol.allocateArray( size );
+                        match(OzScanner.lexRSQUARE);
                     }
                 } else {
                     OzCompileError.message(scanner, "incompatible array types", loc);
@@ -215,8 +222,7 @@ public class OzParser {
         lSymbol.refValue = rSymbol.refValue;
     }
 
-    private void parseArrayDefinition() throws Exception {
-        match(OzScanner.lexLSQUARE);
+    private int evaluateArraySize() throws Exception {
         if (scanner.lookAheadLexeme != OzScanner.lexNUMBER || scanner.varType != OzScanner.VAR_TYPE_INT) {
             OzCompileError.expected(scanner, "a positive integer number for array size", scanner.loc);
         }
@@ -225,12 +231,7 @@ public class OzParser {
         if (scanner.intNumber <= 0) {
             OzCompileError.expected(scanner, "an integer above zero for array size", loc);
         }
-        match(OzScanner.lexRSQUARE);
-        scanner.symbol.allocateArray(scanner.intNumber);
-
-        if (scanner.lookAheadLexeme != OzScanner.lexSEMICOLON) {
-            OzCompileError.expected(scanner, "';'", scanner.loc);
-        }
+        return scanner.intNumber;
     }
 
     private void genAssignCode(final int varType) throws Exception {
