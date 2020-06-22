@@ -71,6 +71,7 @@ public class OzParser {
         } else
         if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
             OzSymbols.Symbol symbol = ident();
+            selector(symbol);
             if( symbol.isArray ) {
                 if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                     evaluateAddressOfArrayElement(symbol);
@@ -88,6 +89,9 @@ public class OzParser {
                 assignValue(symbol);
             }
         }
+    }
+
+    private void selector(Symbol symbol) {
     }
 
     private OzSymbols.Symbol varType() throws Exception {
