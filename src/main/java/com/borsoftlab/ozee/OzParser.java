@@ -1,3 +1,32 @@
+
+/*
+ * oZee EBNF
+ * 
+ * ident         ::= letter { letter | digit }
+ * stmt-list     ::= stmt { ; stmt }
+ * stmt          ::= empty | declare-var | assign-var
+ * declare-var   ::= var-type ident declare-array | var-type ident declare-array selector "=" expression
+ * declare-array ::= empty | "[" "]"
+ * 
+ * 
+ * 
+ * 
+ */ 
+
+
+/*
+    * <stmt-list>           ::= <stmt> { ; <stmt> }
+    * <stmt>                ::= <declare-vars> | <assign>
+    * <declare-vars>        ::= <var-type> <declare-var-list>
+    * <declare-var-list>    ::= <declare-var> { , <declare-var> }
+    * <declare-var>         ::= <id> | <assign>
+    * <assign>              ::= <id> = <expr>
+    * <expr>                ::= <term> { + <term> | - <term> }
+    * <term>                ::= <factor> { * <factor> | / <factor> }
+    * <factor>              ::= id | int | float | ( expr )
+    */
+
+
 package com.borsoftlab.ozee;
 
 import java.util.Locale;
@@ -35,7 +64,7 @@ public class OzParser {
         scanner.symbolTable.addCodeSegmentRef(label);
         // jump over 4 bytes
         emit(OzVm.OPCODE_JUMP);
-        // store 4 zero bytes to memory
+        // store 4 zero bytes reserve to memory
         emit(OzVm.OPCODE_NOP);
         emit(OzVm.OPCODE_NOP);
         emit(OzVm.OPCODE_NOP);
