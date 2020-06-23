@@ -123,6 +123,7 @@ public class ObdTest {
     static float expect0 
             = 60984.0f;
 
+    // calculate engine load value        
     static String program01_04
             = "ubyte[] buffer[8];"     + "\n"
             + "buffer[0] = 178;"       + "\n" 
@@ -130,6 +131,7 @@ public class ObdTest {
     static float expect01_04 
             = 69.803925f;
 
+    // engine coolant temperature
     static String program01_05
             = "ubyte[] *buffer[8];"   + "\n"
             + "buffer[0] = 24;"       + "\n" 
@@ -137,6 +139,46 @@ public class ObdTest {
     static float expect01_05 
             = -16;
 
+    // short term fuel % trim
+    static String program01_06
+            = "ubyte[] *buffer[8];"   + "\n"
+            + "buffer[0] = 134;"       + "\n" 
+            + "float *v = (buffer[0] - 128.0) * 100.0/128.0;";
+    static float expect01_06 
+            = 4.6875f;
+
+    // fuel pressure
+    static String program01_0A
+            = "ubyte[] *buffer[8];"   + "\n"
+            + "buffer[0] = 255;"       + "\n" 
+            + "float *v = buffer[0] * 3 ;";
+    static float expect01_0A 
+            = 765.0f;
+
+    // intake manifold absolute pressure
+    static String program01_0B
+            = "ubyte[] *buffer[8];"   + "\n"
+            + "buffer[0] = 178;"       + "\n" 
+            + "float *v = buffer[0];";
+    static float expect01_0B 
+            = 178.0f;
+
+    // engine RPM        
+    static String program01_0C
+            = "ubyte[] *buffer[8];"   + "\n"
+            + "buffer[0] = 178;"       + "\n" 
+            + "buffer[1] = 49;"       + "\n" 
+            + "float *v = ((buffer[0] * 256.0) + buffer[1])/4.0;";
+    static float expect01_0C 
+            = 11404.25f;
+
+    // engine RPM        
+    static String program01_0C_2
+            = "ubyte *A = 178;"  + "\n" 
+            + "ubyte *B = 49;"   + "\n" 
+            + "float *v = ((A*256.0)+B)/4.0;";
+    static float expect01_0C_2 
+            = 11404.25f;
 
     // -----------------------------------------------------------------------                        
 
@@ -145,6 +187,11 @@ public class ObdTest {
             Arguments.of( program0, expect0 )
            ,Arguments.of( program01_04, expect01_04 )
            ,Arguments.of( program01_05, expect01_05 )
+           ,Arguments.of( program01_06, expect01_06 )
+           ,Arguments.of( program01_0A, expect01_0A )
+           ,Arguments.of( program01_0B, expect01_0B )
+           ,Arguments.of( program01_0C, expect01_0C )
+           ,Arguments.of( program01_0C_2, expect01_0C_2 )
         );
     }
 
