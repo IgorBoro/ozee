@@ -172,13 +172,42 @@ public class ObdTest {
     static float expect01_0C 
             = 11404.25f;
 
-    // engine RPM        
+    // engine RPM
     static String program01_0C_2
             = "ubyte *A = 178;"  + "\n" 
             + "ubyte *B = 49;"   + "\n" 
-            + "float *v = ((A*256.0)+B)/4.0;";
+            + "float *v = (A*256.0+B)/4.0;";
     static float expect01_0C_2 
             = 11404.25f;
+
+    // vehicle speed
+    static String program01_0D
+            = "ubyte *A = 54;"  + "\n" 
+            + "float *v = A;";
+    static float expect01_0D 
+            = 54f;
+
+    // timing advance
+    static String program01_0E
+            = "ubyte *A = 63;"  + "\n" 
+            + "float *v = A/2.0 - 64.0;";
+    static float expect01_0E 
+            = -32.5f;
+
+    // intake air temperature
+    static String program01_0F
+            = "ubyte *A = 75;"  + "\n" 
+            + "float *v = A - 40.0;";
+    static float expect01_0F 
+            = 35.0f;
+
+    // MAF air flow rate
+    static String program01_10
+            = "ubyte *A = 75;"  + "\n" 
+            + "ubyte *B = 195;"  + "\n" 
+            + "float *v = (A*256 + B)/100.0;";
+    static float expect01_10 
+            = 193.95f;
 
     // -----------------------------------------------------------------------                        
 
@@ -192,6 +221,10 @@ public class ObdTest {
            ,Arguments.of( program01_0B, expect01_0B )
            ,Arguments.of( program01_0C, expect01_0C )
            ,Arguments.of( program01_0C_2, expect01_0C_2 )
+           ,Arguments.of( program01_0D, expect01_0D )
+           ,Arguments.of( program01_0E, expect01_0E )
+           ,Arguments.of( program01_0F, expect01_0F )
+           ,Arguments.of( program01_10, expect01_10 )
         );
     }
 
