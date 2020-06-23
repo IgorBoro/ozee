@@ -6,33 +6,35 @@ public class OzVm{
      * oZee Instruction Set Architecture (opcodes)
      */
 
-    public static final byte OPCODE_STOP  = (byte) 0x00;
+    public static final byte OPCODE_NOP  = (byte) 0x00;
+
+    public static final byte OPCODE_STOP  = (byte) 0x01;
 
     /*
      * Arithmetic operations
      */
 
-    public static final byte OPCODE_INC  = (byte) 0x01;
-    public static final byte OPCODE_DEC  = (byte) 0x02;
-    public static final byte OPCODE_ADD  = (byte) 0x03;
-    public static final byte OPCODE_ADDF = (byte) 0x04;
-    public static final byte OPCODE_SUB  = (byte) 0x05;
-    public static final byte OPCODE_SUBF = (byte) 0x06;
-    public static final byte OPCODE_MUL  = (byte) 0x07;
-    public static final byte OPCODE_MULF = (byte) 0x08;
-    public static final byte OPCODE_DIV  = (byte) 0x09;
-    public static final byte OPCODE_DIVF = (byte) 0x0A;
-    public static final byte OPCODE_MOD  = (byte) 0x0B;
-    public static final byte OPCODE_NEG  = (byte) 0x0C;
-    public static final byte OPCODE_NEGF = (byte) 0x0D;
-    public static final byte OPCODE_CMP  = (byte) 0x0E;
-    public static final byte OPCODE_INT  = (byte) 0x0F;
-    public static final byte OPCODE_FLT  = (byte) 0x10;
+    public static final byte OPCODE_INC  = (byte) 0x02;
+    public static final byte OPCODE_DEC  = (byte) 0x03;
+    public static final byte OPCODE_ADD  = (byte) 0x04;
+    public static final byte OPCODE_ADDF = (byte) 0x05;
+    public static final byte OPCODE_SUB  = (byte) 0x06;
+    public static final byte OPCODE_SUBF = (byte) 0x07;
+    public static final byte OPCODE_MUL  = (byte) 0x08;
+    public static final byte OPCODE_MULF = (byte) 0x09;
+    public static final byte OPCODE_DIV  = (byte) 0x0A;
+    public static final byte OPCODE_DIVF = (byte) 0x0B;
+    public static final byte OPCODE_MOD  = (byte) 0x0C;
+    public static final byte OPCODE_NEG  = (byte) 0x0D;
+    public static final byte OPCODE_NEGF = (byte) 0x0E;
+    public static final byte OPCODE_CMP  = (byte) 0x0F;
+    public static final byte OPCODE_INT  = (byte) 0x10;
+    public static final byte OPCODE_FLT  = (byte) 0x11;
     // shifts
-    public static final byte OPCODE_LSL  = (byte) 0x11;
-    public static final byte OPCODE_LSR  = (byte) 0x12;
-    public static final byte OPCODE_ASR  = (byte) 0x13;
-    public static final byte OPCODE_ROR  = (byte) 0x14;
+    public static final byte OPCODE_LSL  = (byte) 0x12;
+    public static final byte OPCODE_LSR  = (byte) 0x13;
+    public static final byte OPCODE_ASR  = (byte) 0x14;
+    public static final byte OPCODE_ROR  = (byte) 0x15;
 
     /*
      * Memory operations

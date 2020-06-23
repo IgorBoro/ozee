@@ -21,6 +21,7 @@ public class OzAsm {
     }
 
     private void installOpcodes(){
+        install(OzVm.OPCODE_NOP, "NOP");
         install(OzVm.OPCODE_STOP, "STOP");
 
         install(OzVm.OPCODE_INC,  "INC");

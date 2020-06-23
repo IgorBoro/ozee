@@ -36,10 +36,10 @@ public class OzParser {
         // jump over 4 bytes
         emit(OzVm.OPCODE_JUMP);
         // store 4 zero bytes to memory
-        emit(OzVm.OPCODE_STOP);
-        emit(OzVm.OPCODE_STOP);
-        emit(OzVm.OPCODE_STOP);
-        emit(OzVm.OPCODE_STOP);
+        emit(OzVm.OPCODE_NOP);
+        emit(OzVm.OPCODE_NOP);
+        emit(OzVm.OPCODE_NOP);
+        emit(OzVm.OPCODE_NOP);
         // store jump address to push command saved in label
         outputBuffer.store(label, outputBuffer.used);
     }
