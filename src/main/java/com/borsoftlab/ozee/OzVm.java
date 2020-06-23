@@ -6,8 +6,7 @@ public class OzVm{
      * oZee Instruction Set Architecture (opcodes)
      */
 
-    public static final byte OPCODE_NOP  = (byte) 0x00;
-
+    public static final byte OPCODE_NOP   = (byte) 0x00;
     public static final byte OPCODE_STOP  = (byte) 0x01;
 
     /*
