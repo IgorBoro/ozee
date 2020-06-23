@@ -209,6 +209,20 @@ public class ObdTest {
     static float expect01_10 
             = 193.95f;
 
+    // throttle position
+    static String program01_11
+            = "ubyte *A = 121;"  + "\n" 
+            + "float *v = A*100.0/255.0 ;";
+    static float expect01_11 
+            = 47.45098f;
+
+    // throttle position
+    static String program01_11_2
+            = "ubyte *A = 121;"  + "\n" 
+            + "float *v = 0.39215686*A;";
+    static float expect01_11_2 
+            = 47.45098f;
+
     // -----------------------------------------------------------------------                        
 
     private static Stream<Arguments> floatArgumentProvider() {
@@ -225,6 +239,8 @@ public class ObdTest {
            ,Arguments.of( program01_0E, expect01_0E )
            ,Arguments.of( program01_0F, expect01_0F )
            ,Arguments.of( program01_10, expect01_10 )
+           ,Arguments.of( program01_11, expect01_11 )
+           ,Arguments.of( program01_11_2, expect01_11_2 )
         );
     }
 
