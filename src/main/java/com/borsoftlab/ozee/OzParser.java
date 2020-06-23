@@ -86,15 +86,13 @@ public class OzParser {
 
     private void expression(final OzSymbols.Symbol symbol, final boolean isRef) throws Exception {
         if( isRef ){
+            tsStack.push(OzScanner.VAR_TYPE_REF);
             if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
                 arrayDefinitionExpression( symbol );
             } else
             if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
                 arrayReferenceExpression ( symbol );
-                // assignValue
-                emit(OzVm.OPCODE_SWAP);
-                genAssignCode(OzScanner.VAR_TYPE_REF);
-
+                assignValue(OzScanner.VAR_TYPE_REF);
             } else {
                 OzCompileError.expected(scanner, "array definition", scanner.loc);
             }
