@@ -60,23 +60,31 @@ public class OzParser {
 
     void stmt() throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-            int varType = varType();
-            boolean isArray = declareArray();
-            OzSymbols.Symbol symbol = newIdent(varType, isArray);
-            if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-                storeIdentReference(symbol);
-                match(OzScanner.lexASSIGN);
-                boolean isRef = symbol.isArray;
-                expression(symbol, isRef);
-            }
+            varDecl();
         } else
         if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-            OzSymbols.Symbol symbol = ident();
-            storeIdentReference(symbol);
-            boolean isSelector = selector( symbol );
-            match(OzScanner.lexASSIGN);
-            expression(symbol, symbol.isArray && !isSelector);
+            varAssign();
         }
+    }
+
+    private void varDecl() throws Exception {
+        int varType = varType();
+        boolean isArray = declareArray();
+        OzSymbols.Symbol symbol = newIdent(varType, isArray);
+        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
+            storeIdentReference(symbol);
+            match(OzScanner.lexASSIGN);
+            boolean isRef = symbol.isArray;
+            expression(symbol, isRef);
+        }
+    }
+
+    private void varAssign() throws Exception {
+        OzSymbols.Symbol symbol = ident();
+        storeIdentReference(symbol);
+        boolean isSelector = selector( symbol );
+        match(OzScanner.lexASSIGN);
+        expression(symbol, symbol.isArray && !isSelector);
     }
 
     private void storeIdentReference(OzSymbols.Symbol symbol) {
