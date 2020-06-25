@@ -2,27 +2,29 @@
 /*
  * oZee EBNF
  *
- * <stmt-list>         ::= <stmt> { ";" <stmt> } | ";"
- * <stmt>              ::= <declarator> | <var-assignment> 
- * <declarator>        ::= <simple-declarator> | <init-declarator>
- * <simple-declarator> ::= <type> <ident> | <type> <declare-array> <ident>
- * <init-declarator>   ::= <simple-declarator> "=" <initializer>
- * <initializer>       ::= <expression> | <array-initializer>
- * <declare-array>     ::= "[" "]" | <array-initializer>
- * <array-initializer> ::= <type> "[" <int-number> "]"
- * <var-assignment>    ::= <left-value> "=" <expression>
- * <left-value>        :: <ident> | <ident> <selector>
- * <selector>          ::= "[" <expression> "]"
- * <expression>        ::= <term> { "+" <term> | "-" <term> }
- * <term>              ::= <factor> { "*" <factor> | "/"" <factor> }
- * <factor>            ::= <ident> | <ident> <selector> | <number> | "(" <expression> ")""
- * <number>            ::= <int-number> | <float-number> 
- * <int-number>        ::= <digit> { <digit> }
- * <float-number>      ::= <digit> { <digit> } "." <digit> { <digit> }
- * <type>              ::= "byte" | "ubyte" | "short" | "ushort" | "int" | "float"
- * <ident>             ::= <letter> { <letter> | <digit> }
- * <letter>            ::= "_" | "a"-"z" | "A"-"Z"
- * <digit>             ::= "0"-"9" 
+ * <stmt-list>             ::= <stmt> { ";" <stmt> } | ";"
+ * <stmt>                  ::= <declarator> | <var-assignment> 
+ * <declarator>            ::= <simple-declarator> | <init-declarator>
+ * <simple-declarator>     ::= <type> <ident> | <type> <array-declarator> <ident>
+ * <init-declarator>       ::= <simple-declarator> "=" <initializer>
+ * <initializer>           ::= <expression> | <array-initializer>
+ * <array-declarator>      ::= "[" "]" | <array-initializer>
+ * <array-initializer>     ::= <type> "[" <int-number> "]"
+ * <var-assignment>        ::= <left-value> "=" <expression>
+ * <expression>            ::= <arithmetic-expression> | <array-initializer> | <array-referenced>
+ * <array-referenced>      ::= <ident> 
+ * <left-value>            ::= <ident> | <ident> <selector>
+ * <selector>              ::= "[" <arithmetic-expression> "]"
+ * <arithmetic-expression> ::= <term> { "+" <term> | "-" <term> }
+ * <term>                  ::= <factor> { "*" <factor> | "/"" <factor> }
+ * <factor>                ::= <ident> | <ident> <selector> | <number> | "(" <arithmetic-expression> ")""
+ * <number>                ::= <int-number> | <float-number> 
+ * <int-number>            ::= <digit> { <digit> }
+ * <float-number>          ::= <digit> { <digit> } "." <digit> { <digit> }
+ * <type>                  ::= "byte" | "ubyte" | "short" | "ushort" | "int" | "float"
+ * <ident>                 ::= <letter> { <letter> | <digit> }
+ * <letter>                ::= "_" | "a"-"z" | "A"-"Z"
+ * <digit>                 ::= "0"-"9" 
  *
  *
  * 
@@ -185,8 +187,8 @@ public class OzParser {
     }
 
     private void declarator() throws Exception {
-        int varType = varType();
-        boolean isArray = declareArray();
+        int varType = type();
+        boolean isArray = arrayDeclarator();
         OzSymbols.Symbol symbol = newIdent(varType, isArray);
         if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
             storeIdentReference(symbol);
@@ -213,10 +215,10 @@ public class OzParser {
         if( isRef ){
             tsStack.push(OzScanner.VAR_TYPE_REF);
             if (scanner.lookAheadLexeme == OzScanner.lexVARTYPE) {
-                arrayDefinitionExpression( symbol );
+                arrayInitializer( symbol );
             } else
             if (scanner.lookAheadLexeme == OzScanner.lexVARNAME) {
-                arrayReferenceExpression ( symbol );
+                arrayReferenced ( symbol );
                 assignValue(OzScanner.VAR_TYPE_REF);
             } else {
                 OzCompileError.expected(scanner, "array definition", scanner.loc);
@@ -237,7 +239,7 @@ public class OzParser {
         return false;
     }
 
-    private boolean declareArray() throws Exception {
+    private boolean arrayDeclarator() throws Exception {
         if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
             match(OzScanner.lexLSQUARE);
             match(OzScanner.lexRSQUARE);
@@ -246,7 +248,7 @@ public class OzParser {
         return false;
     }
 
-    private int varType() throws Exception {
+    private int type() throws Exception {
         match(OzScanner.lexVARTYPE, "var type definition");
         final int varType = scanner.varType;
         return varType;
@@ -309,7 +311,7 @@ public class OzParser {
         return false;
     }
 
-    private void arrayReferenceExpression(final OzSymbols.Symbol lSymbol) throws Exception {
+    private void arrayReferenced(final OzSymbols.Symbol lSymbol) throws Exception {
         final OzLocation loc = new OzLocation(scanner.loc);
         final OzSymbols.Symbol rSymbol = ident();
         if ((lSymbol.isArray == rSymbol.isArray) && (lSymbol.varType == rSymbol.varType)) {
@@ -325,9 +327,9 @@ public class OzParser {
         }
     }
 
-    private void arrayDefinitionExpression(final OzSymbols.Symbol lSymbol) throws Exception {
+    private void arrayInitializer(final OzSymbols.Symbol lSymbol) throws Exception {
         final OzLocation loc = new OzLocation(scanner.loc);
-        final int varType = varType();
+        final int varType = type();
         if (lSymbol.isArray && lSymbol.varType == varType) {
             if (scanner.lookAheadLexeme == OzScanner.lexLSQUARE) {
                 match(OzScanner.lexLSQUARE);
