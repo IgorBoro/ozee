@@ -2,22 +2,21 @@
 /*
  * oZee EBNF
  *
- * <stmt-list>             ::= <stmt> { ";" <stmt> } | ";"
+ * <stmt-list>             ::= <stmt> ";" { ";" <stmt> }
  * <stmt>                  ::= <declarator> | <var-assignment> 
  * <declarator>            ::= <simple-declarator> | <init-declarator>
- * <simple-declarator>     ::= <type> <ident> | <type> <array-declarator> <ident>
+ * <simple-declarator>     ::= <type> [<array-declarator>] <ident>
  * <init-declarator>       ::= <simple-declarator> "=" <initializer>
  * <initializer>           ::= <expression> | <array-initializer>
  * <array-declarator>      ::= "[" "]" | <array-initializer>
  * <array-initializer>     ::= <type> "[" <int-number> "]"
- * <var-assignment>        ::= <left-value> "=" <expression>
+ * <var-assignment>        ::= <ident> [<selector>] "=" <expression>
  * <expression>            ::= <arithmetic-expression> | <array-initializer> | <array-referenced>
  * <array-referenced>      ::= <ident> 
- * <left-value>            ::= <ident> | <ident> <selector>
  * <selector>              ::= "[" <arithmetic-expression> "]"
  * <arithmetic-expression> ::= <term> { "+" <term> | "-" <term> }
  * <term>                  ::= <factor> { "*" <factor> | "/" <factor> }
- * <factor>                ::= <ident> | <ident> <selector> | <number> | "(" <arithmetic-expression> ")"
+ * <factor>                ::= <ident> [<selector>] | <number> | "(" <arithmetic-expression> ")"
  * <number>                ::= <int-number> | <float-number> 
  * <int-number>            ::= <digit> { <digit> }
  * <float-number>          ::= <digit> { <digit> } "." <digit> { <digit> }
