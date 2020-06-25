@@ -2,13 +2,13 @@
 /*
  * oZee EBNF
  *
- * <stmt-list>             ::= <stmt> ";" { ";" <stmt> }
+ * <stmt-list>             ::= <stmt> ";" { <stmt> ";" }
  * <stmt>                  ::= <declarator> | <var-assignment> 
  * <declarator>            ::= <simple-declarator> | <init-declarator>
- * <simple-declarator>     ::= <type> [<array-declarator>] <ident>
+ * <simple-declarator>     ::= <type> [<array-declarator>] <ident> [<array-initializer>]
  * <init-declarator>       ::= <simple-declarator> "=" <initializer>
  * <initializer>           ::= <expression> | <array-initializer>
- * <array-declarator>      ::= "[" "]" | <array-initializer>
+ * <array-declarator>      ::= "[" "]"
  * <array-initializer>     ::= <type> "[" <int-number> "]"
  * <var-assignment>        ::= <ident> [<selector>] "=" <expression>
  * <expression>            ::= <arithmetic-expression> | <array-initializer> | <array-referenced>
