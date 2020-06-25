@@ -466,22 +466,22 @@ public class OzParser {
 
     private void emit(final byte opcode) {
         emitListing(opcode);
-        emitMem(opcode);
+        outputBuffer.emit(opcode);
     }
 
     private void emit(final byte opcode, final int arg) {
         emitListing(opcode, arg);
-        emitMem(opcode, arg);
+        outputBuffer.emit(opcode, arg);
     }
 
     private void emit(final byte opcode, final float arg) {
         emitListing(opcode, arg);
-        emitMem(opcode, arg);
+        outputBuffer.emit(opcode, arg);
     }
 
     private void emit(final byte opcode, final Symbol symbol) {
         emitListing(opcode, symbol);
-        emitMem(opcode, symbol);
+        outputBuffer.emit(opcode, symbol);
     }
 
     private void emitCommentListing(final String comment) {
@@ -531,27 +531,6 @@ public class OzParser {
 
         emitHexListing(opcode);
         System.out.println(String.format(" 0x%08X", sym.allocAddress));
-    }
-
-    private void emitMem(final byte opcode) {
-        outputBuffer.add(opcode);
-    }
-
-    private void emitMem(final byte opcode, final int arg) {
-        emitMem(opcode);
-        outputBuffer.add(arg);
-    }
-
-    private void emitMem(final byte opcode, final float arg) {
-        emitMem(opcode, Float.floatToIntBits(arg));
-    }
-
-    private void emitMem(final byte opcode, final Symbol sym) {
-        emitMem(opcode, sym.allocAddress);
-    }
-
-    public byte[] getProgramImage() {
-        return outputBuffer.cut();
     }
 
     private void match(final int lexeme, final String msg) throws Exception {
@@ -611,6 +590,10 @@ public class OzParser {
         return typeOfTop;
     }
 
+    public byte[] getProgramImage() {
+        return outputBuffer.cut();
+    }
+
     public class ByteArrayBuffer {
 
         final static int CHUNK_SIZE = 64;
@@ -659,5 +642,23 @@ public class OzParser {
             System.arraycopy(buffer, 0, tmp, 0, used);
             return tmp;
         }
+
+        private void emit(final byte opcode) {
+            add(opcode);
+        }
+    
+        private void emit(final byte opcode, final int arg) {
+            emit(opcode);
+            add(arg);
+        }
+    
+        private void emit(final byte opcode, final float arg) {
+            emit(opcode, Float.floatToIntBits(arg));
+        }
+    
+        private void emit(final byte opcode, final Symbol sym) {
+            emit(opcode, sym.allocAddress);
+        }
+  
     }
 }
