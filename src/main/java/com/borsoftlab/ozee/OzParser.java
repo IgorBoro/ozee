@@ -16,8 +16,8 @@
  * <left-value>            ::= <ident> | <ident> <selector>
  * <selector>              ::= "[" <arithmetic-expression> "]"
  * <arithmetic-expression> ::= <term> { "+" <term> | "-" <term> }
- * <term>                  ::= <factor> { "*" <factor> | "/"" <factor> }
- * <factor>                ::= <ident> | <ident> <selector> | <number> | "(" <arithmetic-expression> ")""
+ * <term>                  ::= <factor> { "*" <factor> | "/" <factor> }
+ * <factor>                ::= <ident> | <ident> <selector> | <number> | "(" <arithmetic-expression> ")"
  * <number>                ::= <int-number> | <float-number> 
  * <int-number>            ::= <digit> { <digit> }
  * <float-number>          ::= <digit> { <digit> } "." <digit> { <digit> }
@@ -25,96 +25,9 @@
  * <ident>                 ::= <letter> { <letter> | <digit> }
  * <letter>                ::= "_" | "a"-"z" | "A"-"Z"
  * <digit>                 ::= "0"-"9" 
- *
- *
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * ident         ::= letter { letter | digit }
- * stmt-list     ::= stmt { ; stmt }
- * stmt          ::= empty | declare-var | assign-var
- * declare-var   ::= var-type ident declare-array | var-type ident declare-array selector "=" expression
- * declare-array ::= empty | "[" "]"
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * ===========================================================================================================
- * http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf
- * 
- * <identifier> ::= <nondigit> | <identifier> <nondigit> | <identifier> <digit> 
- * <nondigit> ::= "_" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" 
- * <digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
- * <constant> : <integer-constant> | <floating-constant>  
- * <integer-constant> ::= <nonzero-digit> | <decimal-constant> <digit> 
- * <nonzero-digit> : "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"  
- * <floating-constant> ::= <fractional-constant> | <fractional-constant> <exponent-part>  | <digit-sequence> <exponent-part> #
- * <fractional-constant> ::= <digit-sequence> "." <digit-sequence> | "." <digit-sequence> | <digit-sequence> "."
- * <exponent-part> ::= "e" <sign> <digit-sequence> | "E" <sign> <digit-sequence> | "e" <digit-sequence> | "E" <digit-sequence> #
- * <sign> ::= "+" | "-"
- * <digit-sequence> ::= <digit> | <digit-sequence> <digit> 
- * 
- * <declaration> ::=  <declaration-specifiers> <init-declarator-list> ";" 
- * <declaration-specifiers>  ::= <type-specifier>
- * <type-specifier> ::=  "int" | "float"
- * <init-declarator-list> ::= <init-declarator> 
- * <init-declarator> : <declarator> | <declarator> "=" <initializer>
- * <declarator> ::= <direct-declarator> 
- * <direct-declarator> ::= <identifier> | <direct-declarator> "[" <assignment-expression> "]" | <direct-declarator> "["  "]"   
- * <initializer> ::= <assignment-expression> | "{" <initializer-list> "}" 
- * <initializer-list> ::= <designation> <initializer> | <initializer> |   <initializer-list> "," <designation> <initializer>  | <initializer-list> ","  <initializer> #
- * <designation> ::= <designator-list> "=" #
- * <designator-list> ::= <designator> | <designator-list> <designator> #
- * <designator> ::= "[" <constant-expression> "]"  #
- * 
- * <primary-expression> ::= <identifier> | <constant> 
- * <postfix-expression> ::= <primary-expression> | <postfix-expression> "[" <expression> "]"  
- * <multiplicative-expression> ::= <postfix-expression> | <multiplicative-expression> "*"<postfix-expression> | <multiplicative-expression> "/" <postfix-expression>
- * <additive-expression> ::= <multiplicative-expression> | additive-expression "+" <multiplicative-expression>
- * <shift-expression> ::= <additive-expression>
- * <relational-expression> ::= <shift-expression> | <relational-expression> ">" <shift-expression>  
- * <equality-expression> ::= <relational-expression> | <equality-expression> "!=" <relational-expression>
- * <conditional-expression> ::= <equality-expression> 
- * <assignment-expression> ::= <conditional-expression> | <unary-expression> <assignment-operator> <assignment-expression> 
- * <assignment-operator> ::= "="
- * <expression> ::= <assignment-expression> 
- * 
- * <statement> ::= <expression-statement> | <selection-statement> | <iteration-statement> | <jump-statement> 
- * <expression-statement> ::= <expression> ";" | ";" 
- * <selection-statement> ::= "if" "(" <expression> ")" <statement>
- * <iteration-statement> ::= "for" "(" <expression> ";" <expression> ";" <expression> ")" <statement> | "for" "("  ";" <expression> ";" <expression> ")" <statement> | "for" "(" <expression> ";"  ";" <expression> ")" <statement> | "for" "(" <expression> ";" <expression> ";"  ")" <statement> | "for" "("  ";"  ";" <expression> ")" <statement> | "for" "("  ";" <expression> ";"  ")" <statement> | "for" "(" <expression> ";"  ";"  ")" <statement> | "for" "("  ";"  ";"  ")" <statement> 
- * <jump-statement> ::= "continue" ";"
- * 
- * 
- * ===========================================================================================================
- * 
  * 
  * 
  */ 
-
-
-/*
-    * <stmt-list>           ::= <stmt> { ; <stmt> }
-    * <stmt>                ::= <declare-vars> | <assign>
-    * <declare-vars>        ::= <var-type> <declare-var-list>
-    * <declare-var-list>    ::= <declare-var> { , <declare-var> }
-    * <declare-var>         ::= <id> | <assign>
-    * <assign>              ::= <id> = <expr>
-    * <expr>                ::= <term> { + <term> | - <term> }
-    * <term>                ::= <factor> { * <factor> | / <factor> }
-    * <factor>              ::= id | int | float | ( expr )
-    */
 
 
 package com.borsoftlab.ozee;
