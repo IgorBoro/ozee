@@ -24,8 +24,6 @@
  * <ident>                 ::= <letter> { <letter> | <digit> }
  * <letter>                ::= "_" | "a"-"z" | "A"-"Z"
  * <digit>                 ::= "0"-"9" 
- * 
- * 
  */ 
 
 
@@ -635,7 +633,6 @@ public class OzParser {
             System.arraycopy(buffer, 0, tmp, 0, buffer.length);
             buffer = tmp;
         }
-
 
         final byte[] cut() {
             final byte[] tmp = new byte[used];
