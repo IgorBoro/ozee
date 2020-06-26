@@ -23,7 +23,8 @@
  * <type>                  ::= "byte" | "ubyte" | "short" | "ushort" | "int" | "float"
  * <ident>                 ::= <letter> { <letter> | <digit> }
  * <letter>                ::= "_" | "a"-"z" | "A"-"Z"
- * <digit>                 ::= "0"-"9" 
+ * <digit>                 ::= "0"-"9"
+ * 
  */ 
 
 
