@@ -101,7 +101,10 @@ public class OzParser {
         int varType = type();
         boolean isArray = arrayDeclarator();
         OzSymbols.Symbol symbol = newIdent(varType, isArray);
-        // if it's not an array or not defined array - continue parse <init-declarator>
+        /*
+         * if it's not an array or an array wasn't defined,
+         * but only declared - continue the parsing <init-declarator>
+         */
         if ( !isArray || ( isArray && symbol.arraySize == 0 ) ) {
             initDeclarator(symbol);
         }
@@ -120,6 +123,9 @@ public class OzParser {
         OzSymbols.Symbol symbol = ident();
         storeIdentReference(symbol);
         boolean isSelector = selector( symbol );
+        /*
+         * check - if an array was defined
+         */
         if( symbol.isArray && !isSelector && symbol.arraySize != 0 ) {
             OzCompileError.message(scanner, "array '" + symbol.name + "' already defined", scanner.loc);
         }
