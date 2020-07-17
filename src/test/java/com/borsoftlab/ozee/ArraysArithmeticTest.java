@@ -347,7 +347,7 @@ public class ArraysArithmeticTest {
     static String expect115 
             = "b = arf;" + "\n"
             + "  ^"      + "\n"
-            + "Error in line 5:  array 'b' already defined" + "\n";
+            + "Error in line 5: array 'b' already defined" + "\n";
 
     static String program116
             = "float[] arf[4];"+ "\n"
@@ -366,7 +366,7 @@ public class ArraysArithmeticTest {
     static String expect117 
             = "val[4] = 7;"     + "\n"
             + "   ^"      + "\n"
-            + "Error in line 2: unexpected symbol" + "\n";
+            + "Error in line 2: unexpected lexeme" + "\n";
 
     static String program118
             = "float val = 7;"+ "\n"

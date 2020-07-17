@@ -101,9 +101,16 @@ public class OzParser {
         int varType = type();
         boolean isArray = arrayDeclarator();
         OzSymbols.Symbol symbol = newIdent(varType, isArray);
-        if (scanner.lookAheadLexeme == OzScanner.lexASSIGN) {
-            storeIdentReference(symbol);
+        // if it's not an array or not defined array - continue parse <init-declarator>
+        if ( !isArray || ( isArray && symbol.arraySize == 0 ) ) {
+            initDeclarator(symbol);
+        }
+    }
+
+    private void initDeclarator(OzSymbols.Symbol symbol) throws Exception {
+        if ( scanner.lookAheadLexeme == OzScanner.lexASSIGN ) {
             match(OzScanner.lexASSIGN);
+            storeIdentReference(symbol);
             boolean isRef = symbol.isArray;
             expression(symbol, isRef);
         }
@@ -113,6 +120,9 @@ public class OzParser {
         OzSymbols.Symbol symbol = ident();
         storeIdentReference(symbol);
         boolean isSelector = selector( symbol );
+        if( symbol.isArray && !isSelector && symbol.arraySize != 0 ) {
+            OzCompileError.message(scanner, "array '" + symbol.name + "' already defined", scanner.loc);
+        }
         match(OzScanner.lexASSIGN);
         expression(symbol, symbol.isArray && !isSelector);
     }
