@@ -87,7 +87,7 @@ public class DeclareVarsTest {
     static String message9 
                         = "int i + "   + '\n'
                         + "      ^"    + '\n'
-                        + "Error in line 1: expected '=' or ';'" + '\n';
+                        + "Error in line 1: unexpected lexeme" + '\n';
 
 
     final static String program10 

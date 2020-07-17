@@ -139,7 +139,7 @@ public class DeclareArraysTest {
     final static String message17
                         = "i = j;" + "\n"
                         + "  ^"    + "\n"
-                        + "Error in line 3:  array 'i' already defined" + "\n";
+                        + "Error in line 3: array 'i' already defined" + "\n";
 
     final static String program18
                         = "int[] i[16];" + "\n"
@@ -155,7 +155,7 @@ public class DeclareArraysTest {
     final static String message19
                         = "i = j;" + "\n"
                         + "  ^"    + "\n"
-                        + "Error in line 3:  array 'i' already defined" + "\n";
+                        + "Error in line 3: array 'i' already defined" + "\n";
 
     final static String program20
                         = "int[] i;" + "\n"

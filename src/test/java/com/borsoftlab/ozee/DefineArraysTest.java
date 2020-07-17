@@ -112,7 +112,7 @@ public class DefineArraysTest {
     static String message2 
             = "int[] vv[16] = int[16];" + "\n"
             + "             ^"          + "\n"
-            + "Error in line 1: expected ';'" + "\n";
+            + "Error in line 1: unexpected lexeme" + "\n";
 
     static String program3
             = "int[] vv[16];" + "\n"
